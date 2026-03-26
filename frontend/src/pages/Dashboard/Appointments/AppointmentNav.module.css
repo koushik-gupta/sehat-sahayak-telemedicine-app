@@ -1,0 +1,37 @@
+/* src/pages/Dashboard/Appointments/AppointmentNav.module.css */
+.navbar {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  background-color: #ffffff;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.links {
+  display: flex;
+  gap: 1rem;
+}
+
+.links button {
+  background-color: transparent;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4b5563; /* A calm gray for inactive buttons */
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.links button:hover {
+  background-color: #f3f4f6; /* Light gray on hover */
+}
+
+/* Style for the active button */
+.links button.active {
+  background-color: var(--emergency-red, #d32f2f); /* Use the app's main red color */
+  color: #ffffff;
+}

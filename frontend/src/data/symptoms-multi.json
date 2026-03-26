@@ -1,0 +1,795 @@
+{
+  "en": {
+    "start": {
+      "question": "Hello! I am your offline health assistant. Please select your primary issue from the list below.",
+      "options": {
+        "Fever (Adult)": "fever_start", "Fever (Child)": "child_fever_start", "Cough & Cold": "cold_start", "Headache": "headache_start", "Dizziness / Fainting": "dizziness_start", "Fatigue / Tiredness": "fatigue_start", "Stomach & Digestive Issues": "stomach_pain_start", "Diarrhea / Vomiting": "diarrhea_start", "Dehydration": "dehydration_start", "Food Poisoning": "food_poisoning_start", "Constipation": "constipation_start", "Indigestion / Heartburn": "heartburn_start", "Pain (Back, Neck, Joint)": "pain_menu", "Ear, Nose, Throat": "ent_menu", "Urinary Problems": "uti_start", "Skin Issues (Rash, Burn, Bite)": "skin_menu", "Women's Health": "womens_health_menu", "Eye Problems": "eye_start", "Trouble Sleeping": "insomnia_start", "Stress / Anxiety": "anxiety_start"
+      }
+    },
+    "pain_menu": { "question": "What kind of pain are you experiencing?", "options": { "Back Pain": "back_pain_start", "Neck Pain": "neck_pain_start", "Joint Pain / Sprain": "sprain_start", "Muscle Cramps": "muscle_cramp_start" } },
+    "ent_menu": { "question": "What is your primary Ear, Nose, or Throat symptom?", "options": { "Earache": "earache_start", "Nosebleed": "nosebleed_start", "Sore Throat": "cold_throat", "Allergies (Sneezing/Runny Nose)": "allergies_start" } },
+    "skin_menu": { "question": "What kind of skin issue are you experiencing?", "options": { "Minor Wound / Cut": "wound_start", "Skin Rash / Itching": "rash_start", "Minor Burn": "burn_start", "Insect Bite / Sting": "insect_bite_start", "Animal / Human Bite": "animal_bite_start", "Sunburn": "sunburn_start" } },
+    "womens_health_menu": { "question": "What women's health issue are you concerned about?", "options": { "Menstrual Cramps": "cramps_start", "Irregular Periods": "periods_irregular" } },
+    "fever_start": { "question": "I understand you have a fever. Is it high (above 102°F / 39°C) or low?", "options": { "High Fever": "fever_high", "Low Fever": "fever_low" } },
+    "fever_high": { "recommendation": "A high fever can be serious. It is highly recommended to consult a doctor immediately. While you arrange for a consultation, you can use a wet cloth on the forehead to provide comfort. This is not medical advice." },
+    "fever_low": { "question": "Okay. Do you also have a headache or body aches?", "options": { "Yes": "fever_low_aches_yes", "No": "fever_low_aches_no" } },
+    "fever_low_aches_yes": { "question": "Do you also have a cough or a sore throat?", "options": { "Yes": "fever_flu_symptoms", "No": "fever_aches_no_cough" } },
+    "fever_flu_symptoms": { "recommendation": "Symptoms like low fever, aches, and a cough/sore throat often suggest a viral infection like the flu. Ensure you get plenty of rest and drink lots of fluids (water, soup). It is best to consult a doctor for a proper diagnosis. This is not medical advice." },
+    "fever_aches_no_cough": { "recommendation": "Fever with body aches can be due to various reasons, including viral infections or exhaustion. Rest and hydration are key. If the symptoms persist for more than two days, please see a doctor. This is not medical advice." },
+    "fever_low_aches_no": { "recommendation": "A low fever without other major symptoms should be monitored. Rest and stay hydrated. If the fever persists for more than 3 days, it is essential to see a doctor. This is not medical advice." },
+    "child_fever_start": { "question": "A fever in a child can be serious. What is the age of the child?", "options": { "0-3 months old": "child_fever_infant", "3 months to 3 years": "child_fever_toddler", "Over 3 years": "child_fever_older" } },
+    "child_fever_infant": { "recommendation": "A fever in a baby under 3 months old is considered a MEDICAL EMERGENCY. Please take the child to the nearest hospital or emergency room immediately. Do not give any medication without a doctor's direct supervision." },
+    "child_fever_toddler": { "question": "Besides the fever, is the child unusually sleepy, refusing to drink fluids, having trouble breathing, or have a new skin rash?", "options": { "Yes, they have other serious symptoms": "child_fever_serious", "No, just the fever": "child_fever_monitor" } },
+    "child_fever_older": { "recommendation": "For a child over 3, you can help keep them comfortable and hydrated. Monitor for other symptoms. It is always safest to consult a pediatrician for a fever, especially if it is high or lasts more than a couple of days. Do not give any medication without consulting a doctor first. This is not medical advice." },
+    "child_fever_serious": { "recommendation": "These are serious warning signs in a young child. Please consult a doctor or go to an emergency room immediately. This is not medical advice." },
+    "child_fever_monitor": { "recommendation": "It is important to ensure the child drinks plenty of fluids to avoid dehydration. You can use a lukewarm sponge bath to help comfort them. It is always best to consult a pediatrician for any fever in a young child. This is not medical advice." },
+    "cough_start": { "question": "Regarding your cough, is it a dry cough or a wet cough (with phlegm)?", "options": { "Dry Cough": "cough_dry", "Wet Cough": "cough_wet" } },
+    "cough_dry": { "recommendation": "For a dry cough, try soothing remedies like honey with warm water or ginger tea. Steam inhalation can also help. If the cough is persistent or severe, consult a doctor. This is not medical advice." },
+    "cough_wet": { "recommendation": "For a wet cough, steam inhalation can help loosen the phlegm. Stay well-hydrated. It is important to see a doctor to understand the cause, especially if the phlegm is not clear. This is not medical advice." },
+    "cold_start": { "question": "Are your main symptoms a runny/stuffy nose and sneezing, or is it primarily a sore throat?", "options": { "Runny/Stuffy Nose": "allergies_start", "Sore Throat": "cold_throat" } },
+    "cold_throat": { "recommendation": "For a sore throat, gargling with warm salt water can provide relief. Drink warm beverages like tea with honey. Avoid straining your voice. If it's very painful to swallow or if you have a high fever, see a doctor immediately. This is not medical advice." },
+    "headache_start": { "question": "Is your headache severe and sudden (like a thunderclap), or is it a more typical, persistent ache?", "options": { "Severe and Sudden": "headache_severe", "Typical Ache": "headache_dull" } },
+    "headache_severe": { "recommendation": "A sudden, severe 'thunderclap' headache can be a sign of a serious condition. Please seek medical attention from a doctor or emergency room immediately. This is not medical advice." },
+    "headache_dull": { "question": "Are you also feeling sensitive to light or sound, or experiencing nausea?", "options": { "Yes": "headache_migraine", "No": "headache_tension" } },
+    "headache_migraine": { "recommendation": "A headache with sensitivity to light and sound may be a migraine. Rest in a quiet, dark room. A cool cloth on your forehead may help. It is very important to consult a doctor for a proper diagnosis and treatment plan. This is not medical advice." },
+    "headache_tension": { "recommendation": "This might be a tension headache. Gentle neck stretches, rest, and ensuring you are hydrated can help. If headaches are frequent or very painful, please consult a doctor. This is not medical advice." },
+    "dizziness_start": { "question": "Has someone fainted, or are you just feeling dizzy?", "options": { "Someone fainted": "fainting_start", "I feel dizzy": "dizziness_feeling" } },
+    "fainting_start": { "question": "Is the person conscious and responsive now?", "options": { "Yes, they are awake": "fainting_awake", "No, they are still unconscious": "fainting_unconscious" } },
+    "fainting_unconscious": { "recommendation": "This is a MEDICAL EMERGENCY. Call for an ambulance immediately. Check if the person is breathing. If you are trained, be prepared to perform CPR. Do not give them anything to eat or drink." },
+    "fainting_awake": { "recommendation": "Have the person lie down with their legs slightly elevated. Check for any injuries from the fall. Do not let them get up too quickly. Fainting should always be evaluated by a doctor to find the underlying cause. This is not medical advice." },
+    "dizziness_feeling": { "question": "Does it feel like the room is spinning around you (vertigo), or more like you are feeling faint and lightheaded?", "options": { "Room is spinning": "dizziness_vertigo", "Feeling faint": "dizziness_lightheaded" } },
+    "dizziness_vertigo": { "recommendation": "Vertigo can have several causes. It's best to sit or lie down in a safe place until the sensation passes. Avoid sudden movements. Please schedule a consultation with a doctor to determine the underlying cause. This is not medical advice." },
+    "dizziness_lightheaded": { "recommendation": "Feeling lightheaded can be due to dehydration or low blood sugar. Try drinking water and having a small snack. Sit or lie down to avoid falling. If the feeling persists or is frequent, you should consult a doctor. This is not medical advice." },
+    "fatigue_start": { "recommendation": "Fatigue can be caused by many factors, including lack of sleep, stress, poor diet, or an underlying medical condition. Ensure you are getting 7-9 hours of sleep, eating balanced meals, and staying hydrated. If tiredness is persistent and affects your daily life, it is important to consult a doctor. This is not medical advice." },
+    "stomach_pain_start": { "question": "Is the pain sharp and localized in one spot, or is it a general cramping/discomfort all over?", "options": { "Sharp and Localized": "stomach_sharp", "General Cramping": "stomach_cramping" } },
+    "stomach_sharp": { "recommendation": "Sharp, localized abdominal pain, especially if it's severe or on the lower right side, requires immediate medical attention. Please consult a doctor without delay. This is not medical advice." },
+    "stomach_cramping": { "question": "Did the cramping start within a few hours of eating a specific meal?", "options": { "Yes": "food_poisoning_start", "No": "stomach_indigestion" } },
+    "stomach_indigestion": { "recommendation": "General cramping can be due to indigestion or gas. Try sipping warm water or mint tea. Eat light, simple food like rice. If the pain is severe or persists for many hours, please consult a doctor. This is not medical advice." },
+    "food_poisoning_start": { "recommendation": "Food poisoning often involves symptoms like nausea, vomiting, diarrhea, and stomach cramps. The most important thing is to stay hydrated. Sip small amounts of water or an Oral Rehydration Solution (ORS) frequently. Rest your stomach and then slowly reintroduce bland foods (BRAT diet: Bananas, Rice, Applesauce, Toast). If you have a high fever, see blood, or cannot keep any fluids down, you must see a doctor. This is not medical advice." },
+    "diarrhea_start": { "question": "Are you experiencing signs of dehydration (like extreme thirst, very dry mouth, little to no urination, or dizziness)?", "options": { "Yes, I feel dehydrated": "dehydration_start", "No, I feel okay": "diarrhea_ok" } },
+    "diarrhea_ok": { "recommendation": "To manage diarrhea, it's important to stay hydrated with fluids like ORS and water. Eat a simple diet (BRAT diet: Bananas, Rice, Applesauce, Toast). If it lasts for more than 2 days, or if you see blood, see a doctor immediately. This is not medical advice." },
+    "dehydration_start": { "recommendation": "Dehydration needs to be treated by replacing lost fluids and electrolytes. Sip an Oral Rehydration Solution (ORS) if available. Coconut water and clear broths are also good. Drink small amounts frequently rather than a lot at once. Avoid caffeine and sugary drinks. If you have symptoms of severe dehydration (confusion, fainting, unable to keep fluids down), seek medical attention immediately. This is not medical advice." },
+    "constipation_start": { "question": "Is the constipation accompanied by severe abdominal pain, vomiting, or have you not had a bowel movement for more than 4-5 days?", "options": { "Yes, I have severe symptoms": "constipation_severe", "No, it's just mild discomfort": "constipation_mild" } },
+    "constipation_severe": { "recommendation": "Severe symptoms along with constipation can indicate a more serious issue like a blockage. Please consult a doctor immediately. This is not medical advice." },
+    "constipation_mild": { "recommendation": "For mild constipation, try increasing your intake of fiber (fruits, vegetables, whole grains) and water. Gentle physical activity like walking can also help. Over-the-counter laxatives can be used occasionally, but it is best to consult a doctor if the problem persists. This is not medical advice." },
+    "heartburn_start": { "question": "Are you experiencing a burning sensation in your chest, especially after eating or when lying down?", "options": { "Yes, that's it": "heartburn_yes", "No, that's not it": "heartburn_no" } },
+    "heartburn_yes": { "recommendation": "This sounds like heartburn or acid reflux. Try avoiding spicy, fatty, or acidic foods. Eating smaller meals and not lying down for 2-3 hours after eating can help. Over-the-counter antacids can provide temporary relief. If this happens frequently, please consult a doctor. If you have severe chest pain, seek emergency medical care to rule out heart issues. This is not medical advice." },
+    "heartburn_no": { "recommendation": "If you are experiencing other types of chest discomfort, it is very important to consult a doctor to rule out any serious conditions. Please seek medical advice immediately." },
+    "back_pain_start": { "question": "Did your back pain start from a sudden injury or movement, or has it developed gradually?", "options": { "Sudden Injury": "back_pain_injury", "Developed Gradually": "back_pain_gradual" } },
+    "back_pain_injury": { "question": "Are you experiencing any numbness, tingling, or weakness in your legs?", "options": { "Yes": "back_pain_nerve", "No": "back_pain_strain" } },
+    "back_pain_nerve": { "recommendation": "Numbness or weakness in the legs associated with back pain can be serious. Please consult a doctor immediately to rule out any nerve-related issues. This is not medical advice." },
+    "back_pain_strain": { "recommendation": "This may be a muscle strain. Try applying a cold pack for the first 24-48 hours, then switch to a warm pack. Gentle stretching may help, but avoid activities that worsen the pain. If the pain is severe or doesn't improve in a few days, see a doctor. This is not medical advice." },
+    "back_pain_gradual": { "recommendation": "Gradual back pain is often related to posture or muscle strain. Be mindful of how you sit and lift objects. Gentle exercises like walking can help. If the pain is constant or worsening, it is best to consult a doctor. This is not medical advice." },
+    "neck_pain_start": { "question": "Did the neck pain start after an injury (like a car accident), or is it a stiff neck that developed on its own?", "options": { "After an Injury": "neck_pain_injury", "Stiff Neck": "neck_pain_stiff" } },
+    "neck_pain_injury": { "recommendation": "Neck pain after an injury should always be evaluated by a medical professional to rule out serious issues. Please consult a doctor, especially if the pain is severe or you have numbness/tingling in your arms." },
+    "neck_pain_stiff": { "recommendation": "A stiff neck is often due to posture, especially from using screens, or sleeping in an awkward position. Gentle neck stretches (do not force them) and applying a warm compress can help. If the pain is severe or doesn't improve, see a doctor. This is not medical advice." },
+    "sprain_start": { "question": "Is the affected joint (e.g., ankle, wrist) severely swollen, deformed, or are you completely unable to put any weight or pressure on it?", "options": { "Yes, it looks very bad": "sprain_severe", "No, it's painful but I can move it slightly": "sprain_mild" } },
+    "sprain_severe": { "recommendation": "Severe pain, deformity, or inability to bear weight could indicate a fracture or a severe sprain. It is crucial to seek immediate medical attention at a clinic or hospital for an X-ray and proper treatment." },
+    "sprain_mild": { "recommendation": "For a mild sprain, follow the R.I.C.E. principle: Rest the joint, apply Ice for 20 minutes at a time, use a bandage for Compression, and keep it Elevated. If the pain and swelling don't improve in 2-3 days, consult a doctor. This is not medical advice." },
+    "muscle_cramp_start": { "recommendation": "For a muscle cramp, gently stretch and massage the affected muscle. Applying heat can help relax the muscle. Dehydration and mineral imbalances can cause cramps, so ensure you are drinking enough water and have a balanced diet. If cramps are very frequent or severe, consult a doctor. This is not medical advice." },
+    "earache_start": { "question": "Is the earache accompanied by a fever or any discharge (fluid) coming from the ear?", "options": { "Yes": "earache_infection", "No": "earache_simple" } },
+    "earache_infection": { "recommendation": "An earache with fever or discharge often indicates an ear infection, which may require antibiotics. Please consult a doctor for a proper diagnosis and prescription. This is not medical advice." },
+    "earache_simple": { "recommendation": "You can try applying a warm compress to the outside of the ear for relief. Do not put anything inside your ear canal. If the pain is severe or lasts for more than a day, it's important to see a doctor. This is not medical advice." },
+    "uti_start": { "question": "Are you experiencing a burning or painful sensation during urination?", "options": { "Yes": "uti_burning", "No": "uti_no" } },
+    "uti_burning": { "question": "Is this accompanied by a frequent urge to urinate, or have you noticed blood in your urine?", "options": { "Yes": "uti_confirm", "No": "uti_possible" } },
+    "uti_confirm": { "recommendation": "These are strong signs of a Urinary Tract Infection (UTI), which typically requires antibiotics. It is essential to consult a doctor for diagnosis and treatment. In the meantime, drink plenty of water to help flush the system. This is not medical advice." },
+    "uti_possible": { "recommendation": "A burning sensation during urination can be a sign of a UTI or other irritation. Please drink plenty of water. If the symptom persists for more than a day, it is important to see a doctor. This is not medical advice." },
+    "uti_no": { "recommendation": "If you are having other urinary issues without a burning sensation, it is best to consult a doctor to understand the cause. Please monitor your symptoms and seek medical advice." },
+    "wound_start": { "question": "Is the wound bleeding heavily and the bleeding does not stop after applying pressure for 5-10 minutes?", "options": { "Yes, it's bleeding a lot": "wound_bleeding", "No, the bleeding is minor or has stopped": "wound_minor" } },
+    "wound_bleeding": { "recommendation": "Uncontrolled bleeding requires immediate emergency medical care. Continue applying firm, direct pressure on the wound with a clean cloth and go to the nearest hospital or clinic immediately." },
+    "wound_minor": { "recommendation": "For a minor wound, first clean it gently with clean water and mild soap. Apply an antiseptic ointment and cover it with a clean bandage. Watch for signs of infection like redness, swelling, or pus. If the wound is deep or from a rusty object, consult a doctor for a tetanus shot. This is not medical advice." },
+    "rash_start": { "question": "Is the rash accompanied by difficulty breathing, swelling of the face or lips, or dizziness?", "options": { "Yes": "rash_allergic_reaction", "No": "rash_simple" } },
+    "rash_allergic_reaction": { "recommendation": "These are signs of a severe allergic reaction (anaphylaxis) and are a medical emergency. Please seek immediate medical help from the nearest hospital or clinic without any delay." },
+    "rash_simple": { "recommendation": "For a simple skin rash, keep the area clean and dry. Avoid scratching it. Applying a cool compress or calamine lotion can soothe itching. If the rash spreads, is painful, or doesn't improve, please consult a doctor for a diagnosis. This is not medical advice." },
+    "burn_start": { "question": "Is the burn larger than the palm of your hand, or is it on the face, hands, feet, or joints?", "options": { "Yes": "burn_major", "No": "burn_minor" } },
+    "burn_major": { "recommendation": "A burn of that size or location is considered serious and requires immediate medical attention. Please go to the nearest clinic or hospital. Do not apply any creams or ointments yourself. This is not medical advice." },
+    "burn_minor": { "recommendation": "For a minor burn, immediately run cool (not cold) water over the area for 10-15 minutes. Do not use ice. Do not break any blisters that form. You can cover it loosely with a sterile, non-stick bandage. If pain is severe or it looks infected, please see a doctor. This is not medical advice." },
+    "insect_bite_start": { "question": "Are you experiencing symptoms beyond the bite area, like difficulty breathing, widespread rash, swelling of the face, or feeling faint?", "options": { "Yes, I have severe symptoms": "insect_bite_severe", "No, it's just a local reaction": "insect_bite_local" } },
+    "insect_bite_severe": { "recommendation": "These are signs of a severe allergic reaction and require immediate emergency medical attention. Please go to the nearest hospital or call for an ambulance without delay." },
+    "insect_bite_local": { "recommendation": "For a local reaction, wash the area with soap and water. Apply a cold compress to reduce swelling and itching. An over-the-counter hydrocortisone cream or antihistamine may help. Avoid scratching. If a stinger is visible, scrape it off gently with a flat edge. If swelling is severe or you see signs of infection, consult a doctor. This is not medical advice." },
+    "animal_bite_start": { "question": "Did the bite break the skin?", "options": { "Yes": "animal_bite_broken_skin", "No": "animal_bite_no_break" } },
+    "animal_bite_no_break": { "recommendation": "If the skin was not broken, wash the area thoroughly with soap and water. You should still monitor it for redness or swelling. The risk of infection is low, but it's good to be cautious." },
+    "animal_bite_broken_skin": { "recommendation": "Any bite that breaks the skin, from a pet or a stray animal, requires medical attention due to the high risk of infection and rabies. Wash the wound thoroughly with soap and water for several minutes, then consult a doctor immediately. This is not medical advice." },
+    "sunburn_start": { "recommendation": "For sunburn, get out of the sun immediately. Apply a cool compress or take a cool bath. Use a soothing moisturizer, like one containing aloe vera. Drink extra water to prevent dehydration. Do not break any blisters. For severe, blistering sunburn, you should consult a doctor. This is not medical advice." },
+    "nosebleed_start": { "question": "Is the nosebleed the result of a significant injury to the head, or did it start on its own?", "options": { "Result of Head Injury": "nosebleed_injury", "Started on its Own": "nosebleed_spontaneous" } },
+    "nosebleed_injury": { "recommendation": "A nosebleed following a head injury requires immediate medical evaluation to rule out more serious issues. Please go to an emergency room." },
+    "nosebleed_spontaneous": { "recommendation": "To stop a nosebleed, sit down and lean slightly FORWARD, not back. Pinch the soft part of your nose firmly for 10-15 minutes while breathing through your mouth. An ice pack on the bridge of your nose can also help. If the bleeding is very heavy or doesn't stop after 20 minutes, you should see a doctor. This is not medical advice." },
+    "allergies_start": { "recommendation": "For seasonal allergies (like sneezing, itchy eyes, runny nose), over-the-counter antihistamines can be effective. Try to identify and avoid your triggers if possible. A saline nasal rinse can help clear pollen from your nasal passages. If symptoms are severe or affect your breathing, consult a doctor. This is not medical advice." },
+    "insomnia_start": { "recommendation": "To improve sleep, try to establish a regular sleep schedule, even on weekends. Make sure your bedroom is dark, quiet, and cool. Avoid caffeine and heavy meals late in the evening. Avoid using screens (phone, TV) for at least an hour before bed. If you consistently have trouble sleeping, it is a good idea to speak with a doctor. This is not medical advice." },
+    "anxiety_start": { "question": "Are you currently experiencing physical symptoms like a racing heart, shortness of breath, chest tightness, or trembling?", "options": { "Yes, right now": "anxiety_panic", "No, I feel more generally worried": "anxiety_general" } },
+    "anxiety_panic": { "recommendation": "It sounds like you may be experiencing a panic attack. Try to find a quiet place to sit. Focus on your breathing: breathe in slowly for 4 counts, hold for 4, and breathe out slowly for 6. Remind yourself that these feelings are temporary and will pass. The 5-4-3-2-1 grounding technique can help: name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, and 1 you can taste. It is very important to speak with a doctor or a mental health professional about these experiences. This is not medical advice." },
+    "anxiety_general": { "recommendation": "Feelings of stress and anxiety are common. Practices like deep breathing, mindfulness, regular physical activity, and talking about your feelings with a trusted person can help. If these feelings are persistent and interfere with your daily life, seeking help from a therapist or counselor is a very effective step. Please consider speaking with a professional. This is not medical advice." },
+    "cramps_start": { "recommendation": "For menstrual cramps, applying a heating pad to your abdomen or lower back can provide relief. Over-the-counter pain relievers can also be effective. Gentle exercise like walking may also help. If the pain is severe and interferes with your daily activities, it's a good idea to consult a doctor. This is not medical advice." },
+    "periods_irregular": { "recommendation": "Irregular periods can be caused by many factors, including stress, diet, exercise, or underlying health conditions. It's common to have some variation. However, if your cycle is consistently irregular or you have other concerns, it is best to consult a gynecologist for a proper evaluation. This is not medical advice." },
+    "eye_start": { "question": "Are you experiencing eye pain, a sudden change in vision, or have you had a chemical splash or physical injury to the eye?", "options": { "Yes, it's an emergency situation": "eye_emergency", "No, it's mild irritation or redness": "eye_mild" } },
+    "eye_emergency": { "recommendation": "Severe pain, sudden vision loss, a chemical splash, or an object in the eye are all MEDICAL EMERGENCIES. Go to the nearest emergency room immediately. Do not rub your eye or try to remove a stuck object." },
+    "eye_mild": { "recommendation": "For mild redness or irritation, you can try flushing the eye with clean, lukewarm water or using over-the-counter lubricating eye drops (artificial tears). Avoid rubbing your eyes. If the condition doesn't improve in a day or gets worse, please see a doctor. This is not medical advice." }
+  },
+  "hi": {
+    "start": {
+      "question": "नमस्ते! मैं आपका ऑफ़लाइन स्वास्थ्य सहायक हूँ। कृपया नीचे दी गई सूची से अपनी प्राथमिक समस्या चुनें।",
+      "options": {
+        "बुखार (वयस्क)": "fever_start", "बुखार (बच्चा)": "child_fever_start", "खांसी और जुकाम": "cold_start", "सिरदर्द": "headache_start", "चक्कर आना / बेहोशी": "dizziness_start", "थकान / थकावट": "fatigue_start", "पेट और पाचन संबंधी समस्याएं": "stomach_pain_start", "दस्त / उल्टी": "diarrhea_start", "निर्जलीकरण (Dehydration)": "dehydration_start", "फ़ूड पॉइज़निंग": "food_poisoning_start", "कब्ज़": "constipation_start", "अपच / सीने में जलन": "heartburn_start", "दर्द (पीठ, गर्दन, जोड़)": "pain_menu", "कान, नाक, गला": "ent_menu", "मूत्र संबंधी समस्याएं": "uti_start", "त्वचा की समस्याएं (चकत्ते, जलन, काटना)": "skin_menu", "महिलाओं का स्वास्थ्य": "womens_health_menu", "आंखों की समस्याएं": "eye_start", "नींद न आना": "insomnia_start", "तनाव / चिंता": "anxiety_start"
+      }
+    },
+    "pain_menu": { "question": "आप किस तरह का दर्द अनुभव कर रहे हैं?", "options": { "पीठ दर्द": "back_pain_start", "गर्दन का दर्द": "neck_pain_start", "जोड़ों का दर्द / मोच": "sprain_start", "मांसपेशियों में ऐंठन": "muscle_cramp_start" } },
+    "ent_menu": { "question": "आपके कान, नाक या गले का मुख्य लक्षण क्या है?", "options": { "कान का दर्द": "earache_start", "नकसीर": "nosebleed_start", "गले में खराश": "cold_throat", "एलर्जी (छींकना/बहती नाक)": "allergies_start" } },
+    "skin_menu": { "question": "आप किस तरह की त्वचा की समस्या का सामना कर रहे हैं?", "options": { "मामूली घाव / कट": "wound_start", "त्वचा पर लाल चकत्ते / खुजली": "rash_start", "मामूली जलन": "burn_start", "कीड़े का काटना / डंक": "insect_bite_start", "जानवर / इंसान का काटना": "animal_bite_start", "सनबर्न": "sunburn_start" } },
+    "womens_health_menu": { "question": "आप महिलाओं के स्वास्थ्य संबंधी किस मुद्दे को लेकर चिंतित हैं?", "options": { "मासिक धर्म में ऐंठन": "cramps_start", "अनियमित पीरियड्स": "periods_irregular" } },
+    "fever_start": { "question": "मुझे समझ आया कि आपको बुखार है। क्या यह तेज़ है (102°F / 39°C से ऊपर) या हल्का?", "options": { "तेज़ बुखार": "fever_high", "हल्का बुखार": "fever_low" } },
+    "fever_high": { "recommendation": "तेज बुखार गंभीर हो सकता है। तुरंत डॉक्टर से सलाह लेने की强烈 सलाह दी जाती है। जब तक आप परामर्श की व्यवस्था करते हैं, आप आराम के लिए माथे पर गीला कपड़ा इस्तेमाल कर सकते हैं। यह चिकित्सा सलाह नहीं है।" },
+    "fever_low": { "question": "ठीक है। क्या आपको सिरदर्द या बदन दर्द भी है?", "options": { "हाँ": "fever_low_aches_yes", "नहीं": "fever_low_aches_no" } },
+    "fever_low_aches_yes": { "question": "क्या आपको खांसी या गले में खराश भी है?", "options": { "हाँ": "fever_flu_symptoms", "नहीं": "fever_aches_no_cough" } },
+    "fever_flu_symptoms": { "recommendation": "हल्का बुखार, बदन दर्द, और खांसी/गले में खराश जैसे लक्षण अक्सर फ्लू जैसे वायरल संक्रमण का संकेत देते हैं। सुनिश्चित करें कि आप भरपूर आराम करें और खूब सारे तरल पदार्थ (पानी, सूप) पिएं। उचित निदान के लिए डॉक्टर से परामर्श करना सबसे अच्छा है। यह चिकित्सा सलाह नहीं है।" },
+    "fever_aches_no_cough": { "recommendation": "बदन दर्द के साथ बुखार वायरल संक्रमण या थकावट सहित विभिन्न कारणों से हो सकता है। आराम और हाइड्रेशन महत्वपूर्ण हैं। यदि लक्षण दो दिनों से अधिक समय तक बने रहते हैं, तो कृपया डॉक्टर से मिलें। यह चिकित्सा सलाह नहीं है।" },
+    "fever_low_aches_no": { "recommendation": "अन्य प्रमुख लक्षणों के बिना हल्का बुखार की निगरानी की जानी चाहिए। आराम करें और हाइड्रेटेड रहें। यदि बुखार 3 दिनों से अधिक समय तक बना रहता है, तो डॉक्टर को दिखाना आवश्यक है। यह चिकित्सा सलाह नहीं है।" },
+    "child_fever_start": { "question": "बच्चे में बुखार गंभीर हो सकता है। बच्चे की उम्र क्या है?", "options": { "0-3 महीने का": "child_fever_infant", "3 महीने से 3 साल": "child_fever_toddler", "3 साल से अधिक": "child_fever_older" } },
+    "child_fever_infant": { "recommendation": "3 महीने से कम उम्र के बच्चे में बुखार को एक चिकित्सा आपात स्थिति माना जाता है। कृपया बच्चे को तुरंत नजदीकी अस्पताल या आपातकालीन कक्ष में ले जाएं। डॉक्टर की सीधी निगरानी के बिना कोई भी दवा न दें।" },
+    "child_fever_toddler": { "question": "बुखार के अलावा, क्या बच्चा असामान्य रूप से सुस्त है, तरल पदार्थ पीने से मना कर रहा है, सांस लेने में तकलीफ हो रही है, या त्वचा पर कोई नया दाने है?", "options": { "हाँ, उसे अन्य गंभीर लक्षण हैं": "child_fever_serious", "नहीं, सिर्फ बुखार है": "child_fever_monitor" } },
+    "child_fever_older": { "recommendation": "3 साल से बड़े बच्चे के लिए, आप उन्हें आरामदायक और हाइड्रेटेड रखने में मदद कर सकते हैं। अन्य लक्षणों पर नज़र रखें। बुखार के लिए हमेशा बाल रोग विशेषज्ञ से परामर्श करना सबसे सुरक्षित होता है, खासकर अगर यह तेज़ हो या कुछ दिनों से अधिक समय तक रहे। डॉक्टर से सलाह लिए बिना कोई दवा न दें। यह चिकित्सा सलाह नहीं है।" },
+    "child_fever_serious": { "recommendation": "ये एक छोटे बच्चे में गंभीर चेतावनी के संकेत हैं। कृपया तुरंत डॉक्टर से सलाह लें या आपातकालीन कक्ष में जाएं। यह चिकित्सा सलाह नहीं है।" },
+    "child_fever_monitor": { "recommendation": "निर्जलीकरण से बचने के लिए यह सुनिश्चित करना महत्वपूर्ण है कि बच्चा खूब सारे तरल पदार्थ पिए। आप उन्हें आराम देने के लिए गुनगुने पानी के स्पंज स्नान का उपयोग कर सकते हैं। एक छोटे बच्चे में किसी भी बुखार के लिए बाल रोग विशेषज्ञ से परामर्श करना हमेशा सबसे अच्छा होता है। यह चिकित्सा सलाह नहीं है।" },
+    "cough_start": { "question": "आपकी खांसी के संबंध में, क्या यह सूखी खांसी है या गीली खांसी (बलगम के साथ)?", "options": { "सूखी खांसी": "cough_dry", "गीली खांसी": "cough_wet" } },
+    "cough_dry": { "recommendation": "सूखी खांसी के लिए, गर्म पानी में शहद या अदरक की चाय जैसे आरामदायक उपचार आजमाएं। भाप लेना भी मदद कर सकता है। यदि खांसी लगातार या गंभीर है, तो डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "cough_wet": { "recommendation": "गीली खांसी के लिए, भाप लेने से बलगम को ढीला करने में मदद मिल सकती है। अच्छी तरह से हाइड्रेटेड रहें। कारण समझने के लिए डॉक्टर को दिखाना महत्वपूर्ण है, खासकर अगर बलगम साफ नहीं है। यह चिकित्सा सलाह नहीं है।" },
+    "cold_start": { "question": "क्या आपके मुख्य लक्षण बहती/भरी हुई नाक और छींकना है, या यह मुख्य रूप से गले में खराश है?", "options": { "बहती/भरी हुई नाक": "allergies_start", "गले में खराश": "cold_throat" } },
+    "cold_throat": { "recommendation": "गले में खराश के लिए, गर्म नमक के पानी से गरारे करने से राहत मिल सकती है। शहद वाली चाय जैसे गर्म पेय पिएं। अपनी आवाज पर जोर देने से बचें। यदि निगलने में बहुत दर्द हो या आपको तेज बुखार हो, तो तुरंत डॉक्टर से मिलें। यह चिकित्सा सलाह नहीं है।" },
+    "headache_start": { "question": "क्या आपका सिरदर्द गंभीर और अचानक है (जैसे बिजली का कड़कना), या यह एक अधिक सामान्य, लगातार दर्द है?", "options": { "गंभीर और अचानक": "headache_severe", "सामान्य दर्द": "headache_dull" } },
+    "headache_severe": { "recommendation": "एक अचानक, गंभीर 'थंडरक्लैप' सिरदर्द एक गंभीर स्थिति का संकेत हो सकता है। कृपया तुरंत डॉक्टर या आपातकालीन कक्ष से चिकित्सा सहायता लें। यह चिकित्सा सलाह नहीं है।" },
+    "headache_dull": { "question": "क्या आप प्रकाश या ध्वनि के प्रति संवेदनशील महसूस कर रहे हैं, या मतली का अनुभव कर रहे हैं?", "options": { "हाँ": "headache_migraine", "नहीं": "headache_tension" } },
+    "headache_migraine": { "recommendation": "प्रकाश और ध्वनि के प्रति संवेदनशीलता के साथ सिरदर्द माइग्रेन हो सकता है। एक शांत, अंधेरे कमरे में आराम करें। आपके माथे पर एक ठंडा कपड़ा मदद कर सकता है। उचित निदान और उपचार योजना के लिए डॉक्टर से परामर्श करना बहुत महत्वपूर्ण है। यह चिकित्सा सलाह नहीं है।" },
+    "headache_tension": { "recommendation": "यह एक तनाव सिरदर्द हो सकता है। गर्दन के हल्के व्यायाम, आराम, और यह सुनिश्चित करना कि आप हाइड्रेटेड हैं, मदद कर सकता है। यदि सिरदर्द अक्सर या बहुत दर्दनाक होता है, तो कृपया डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "dizziness_start": { "question": "क्या कोई बेहोश हो गया है, या आपको सिर्फ चक्कर आ रहे हैं?", "options": { "कोई बेहोश हो गया है": "fainting_start", "मुझे चक्कर आ रहे हैं": "dizziness_feeling" } },
+    "fainting_start": { "question": "क्या व्यक्ति अब होश में है और प्रतिक्रिया दे रहा है?", "options": { "हाँ, वे जाग रहे हैं": "fainting_awake", "नहीं, वे अभी भी बेहोश हैं": "fainting_unconscious" } },
+    "fainting_unconscious": { "recommendation": "यह एक चिकित्सा आपात स्थिति है। तुरंत एम्बुलेंस के लिए कॉल करें। जांचें कि व्यक्ति सांस ले रहा है या नहीं। यदि आप प्रशिक्षित हैं, तो सीपीआर करने के लिए तैयार रहें। उन्हें खाने या पीने के लिए कुछ भी न दें।" },
+    "fainting_awake": { "recommendation": "व्यक्ति को थोड़ा ऊपर उठाए हुए पैरों के साथ लेटा दें। गिरने से किसी भी चोट की जाँच करें। उन्हें बहुत जल्दी उठने न दें। बेहोशी का मूल्यांकन हमेशा एक डॉक्टर द्वारा अंतर्निहित कारण का पता लगाने के लिए किया जाना चाहिए। यह चिकित्सा सलाह नहीं है।" },
+    "dizziness_feeling": { "question": "क्या ऐसा महसूस होता है कि कमरा आपके चारों ओर घूम रहा है (वर्टिगो), या ऐसा लगता है कि आप बेहोश और हल्का महसूस कर रहे हैं?", "options": { "कमरा घूम रहा है": "dizziness_vertigo", "बेहोशी महसूस हो रही है": "dizziness_lightheaded" } },
+    "dizziness_vertigo": { "recommendation": "वर्टिगो के कई कारण हो सकते हैं। जब तक यह सनसनी खत्म न हो जाए, तब तक किसी सुरक्षित स्थान पर बैठना या लेटना सबसे अच्छा है। अचानक हिलने-डुलने से बचें। अंतर्निहित कारण का पता लगाने के लिए कृपया डॉक्टर से परामर्श लें। यह चिकित्सा सलाह नहीं है।" },
+    "dizziness_lightheaded": { "recommendation": "हल्का महसूस करना निर्जलीकरण या निम्न रक्त शर्करा के कारण हो सकता है। पानी पीने और एक छोटा नाश्ता करने का प्रयास करें। गिरने से बचने के लिए बैठें या लेटें। यदि यह भावना बनी रहती है या बार-बार होती है, तो आपको डॉक्टर से परामर्श करना चाहिए। यह चिकित्सा सलाह नहीं है।" },
+    "fatigue_start": { "recommendation": "थकान कई कारकों के कारण हो सकती है, जिसमें नींद की कमी, तनाव, खराब आहार, या एक अंतर्निहित चिकित्सा स्थिति शामिल है। सुनिश्चित करें कि आप 7-9 घंटे की नींद ले रहे हैं, संतुलित भोजन कर रहे हैं, और हाइड्रेटेड रह रहे हैं। यदि थकान लगातार है और आपके दैनिक जीवन को प्रभावित करती है, तो डॉक्टर से परामर्श करना महत्वपूर्ण है। यह चिकित्सा सलाह नहीं है।" },
+    "stomach_pain_start": { "question": "क्या दर्द तेज और एक स्थान पर केंद्रित है, या यह पूरे पेट में एक सामान्य ऐंठन/असुविधा है?", "options": { "तेज और स्थानीयकृत": "stomach_sharp", "सामान्य ऐंठन": "stomach_cramping" } },
+    "stomach_sharp": { "recommendation": "तेज, स्थानीयकृत पेट दर्द, खासकर अगर यह गंभीर हो या निचले दाहिने हिस्से में हो, तो तत्काल चिकित्सा ध्यान देने की आवश्यकता है। कृपया बिना देर किए डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "stomach_cramping": { "question": "क्या ऐंठन एक विशिष्ट भोजन खाने के कुछ घंटों के भीतर शुरू हुई?", "options": { "हाँ": "food_poisoning_start", "नहीं": "stomach_indigestion" } },
+    "stomach_indigestion": { "recommendation": "सामान्य ऐंठन अपच या गैस के कारण हो सकती है। गर्म पानी या पुदीने की चाय पीने की कोशिश करें। चावल जैसा हल्का, सादा भोजन करें। यदि दर्द गंभीर हो या कई घंटों तक बना रहे, तो कृपया डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "food_poisoning_start": { "recommendation": "फ़ूड पॉइज़निंग में अक्सर मतली, उल्टी, दस्त और पेट में ऐंठन जैसे लक्षण शामिल होते हैं। सबसे महत्वपूर्ण बात हाइड्रेटेड रहना है। बार-बार थोड़ी मात्रा में पानी या ओरल रिहाइड्रेशन सॉल्यूशन (ओआरएस) पिएं। अपने पेट को आराम दें और फिर धीरे-धीरे नरम खाद्य पदार्थ (केला, चावल, सेब की चटनी, टोस्ट) फिर से शुरू करें। यदि आपको तेज बुखार है, खून दिखाई देता है, या आप कोई तरल पदार्थ नहीं रख सकते हैं, तो आपको डॉक्टर को दिखाना होगा। यह चिकित्सा सलाह नहीं है।" },
+    "diarrhea_start": { "question": "क्या आप निर्जलीकरण के लक्षण अनुभव कर रहे हैं (जैसे अत्यधिक प्यास, बहुत शुष्क मुंह, बहुत कम या कोई पेशाब न होना, या चक्कर आना)?", "options": { "हाँ, मुझे निर्जलीकरण महसूस हो रहा है": "dehydration_start", "नहीं, मैं ठीक महसूस कर रहा हूँ": "diarrhea_ok" } },
+    "diarrhea_ok": { "recommendation": "दस्त को प्रबंधित करने के लिए, ओआरएस और पानी जैसे तरल पदार्थों के साथ हाइड्रेटेड रहना महत्वपूर्ण है। एक साधारण आहार (केला, चावल, सेब की चटनी, टोस्ट) खाएं। यदि यह 2 दिनों से अधिक समय तक रहता है, या यदि आपको खून दिखाई देता है, तो तुरंत डॉक्टर से मिलें। यह चिकित्सा सलाह नहीं है।" },
+    "dehydration_start": { "recommendation": "निर्जलीकरण का इलाज खोए हुए तरल पदार्थों और इलेक्ट्रोलाइट्स को बदलकर किया जाना चाहिए। यदि उपलब्ध हो तो एक ओरल रिहाइड्रेशन सॉल्यूशन (ओआरएस) पिएं। नारियल पानी और साफ शोरबा भी अच्छे हैं। एक बार में बहुत सारा पीने के बजाय बार-बार थोड़ी मात्रा में पिएं। कैफीन और मीठे पेय से बचें। यदि आपको गंभीर निर्जलीकरण के लक्षण (भ्रम, बेहोशी, तरल पदार्थ नहीं रख पाना) हैं, तो तुरंत चिकित्सा सहायता लें। यह चिकित्सा सलाह नहीं है।" },
+    "constipation_start": { "question": "क्या कब्ज के साथ गंभीर पेट दर्द, उल्टी होती है, या आपको 4-5 दिनों से अधिक समय से मल त्याग नहीं हुआ है?", "options": { "हाँ, मुझे गंभीर लक्षण हैं": "constipation_severe", "नहीं, यह सिर्फ हल्की असुविधा है": "constipation_mild" } },
+    "constipation_severe": { "recommendation": "कब्ज के साथ गंभीर लक्षण एक रुकावट जैसी अधिक गंभीर समस्या का संकेत दे सकते हैं। कृपया तुरंत डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "constipation_mild": { "recommendation": "हल्के कब्ज के लिए, अपने फाइबर (फल, सब्जियां, साबुत अनाज) और पानी का सेवन बढ़ाने की कोशिश करें। चलने जैसी हल्की शारीरिक गतिविधि भी मदद कर सकती है। कभी-कभी ओवर-द-काउंटर जुलाब का उपयोग किया जा सकता है, लेकिन यदि समस्या बनी रहती है तो डॉक्टर से परामर्श करना सबसे अच्छा है। यह चिकित्सा सलाह नहीं है।" },
+    "heartburn_start": { "question": "क्या आप अपनी छाती में जलन महसूस कर रहे हैं, खासकर खाने के बाद या लेटते समय?", "options": { "हाँ, यही है": "heartburn_yes", "नहीं, यह वह नहीं है": "heartburn_no" } },
+    "heartburn_yes": { "recommendation": "यह सीने में जलन या एसिड रिफ्लक्स जैसा लगता है। मसालेदार, वसायुक्त या अम्लीय खाद्य पदार्थों से बचने की कोशिश करें। छोटे भोजन खाने और खाने के 2-3 घंटे बाद तक न लेटने से मदद मिल सकती है। ओवर-द-काउंटर एंटासिड अस्थायी राहत प्रदान कर सकते हैं। यदि यह अक्सर होता है, तो कृपया डॉक्टर से सलाह लें। यदि आपको सीने में गंभीर दर्द है, तो हृदय संबंधी समस्याओं को दूर करने के लिए आपातकालीन चिकित्सा देखभाल लें। यह चिकित्सा सलाह नहीं है।" },
+    "heartburn_no": { "recommendation": "यदि आप अन्य प्रकार की छाती की परेशानी का अनुभव कर रहे हैं, तो किसी भी गंभीर स्थिति को दूर करने के लिए डॉक्टर से परामर्श करना बहुत महत्वपूर्ण है। कृपया तुरंत चिकित्सा सलाह लें।" },
+    "back_pain_start": { "question": "क्या आपकी पीठ का दर्द अचानक चोट या हरकत से शुरू हुआ, या यह धीरे-धीरे विकसित हुआ है?", "options": { "अचानक चोट": "back_pain_injury", "धीरे-धीरे विकसित हुआ": "back_pain_gradual" } },
+    "back_pain_injury": { "question": "क्या आप अपने पैरों में कोई सुन्नता, झुनझुनी या कमजोरी का अनुभव कर रहे हैं?", "options": { "हाँ": "back_pain_nerve", "नहीं": "back_pain_strain" } },
+    "back_pain_nerve": { "recommendation": "पीठ दर्द से जुड़े पैरों में सुन्नता या कमजोरी गंभीर हो सकती है। किसी भी तंत्रिका-संबंधी समस्या को दूर करने के लिए कृपया तुरंत डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "back_pain_strain": { "recommendation": "यह एक मांसपेशियों में खिंचाव हो सकता है। पहले 24-48 घंटों के लिए एक ठंडा पैक लगाने की कोशिश करें, फिर एक गर्म पैक पर स्विच करें। हल्के स्ट्रेचिंग से मदद मिल सकती है, लेकिन उन गतिविधियों से बचें जो दर्द को बढ़ाती हैं। यदि दर्द गंभीर है या कुछ दिनों में सुधार नहीं होता है, तो डॉक्टर से मिलें। यह चिकित्सा सलाह नहीं है।" },
+    "back_pain_gradual": { "recommendation": "धीरे-धीरे पीठ दर्द अक्सर मुद्रा या मांसपेशियों में खिंचाव से संबंधित होता है। आप कैसे बैठते हैं और वस्तुओं को उठाते हैं, इस पर ध्यान दें। चलने जैसे हल्के व्यायाम मदद कर सकते हैं। यदि दर्द लगातार या बिगड़ रहा है, तो डॉक्टर से परामर्श करना सबसे अच्छा है। यह चिकित्सा सलाह नहीं है।" },
+    "neck_pain_start": { "question": "क्या गर्दन का दर्द किसी चोट (जैसे कार दुर्घटना) के बाद शुरू हुआ, या यह एक अकड़ी हुई गर्दन है जो अपने आप विकसित हुई?", "options": { "चोट के बाद": "neck_pain_injury", "अकड़ी हुई गर्दन": "neck_pain_stiff" } },
+    "neck_pain_injury": { "recommendation": "चोट के बाद गर्दन के दर्द का मूल्यांकन हमेशा एक चिकित्सा पेशेवर द्वारा किया जाना चाहिए ताकि गंभीर समस्याओं को दूर किया जा सके। कृपया डॉक्टर से सलाह लें, खासकर यदि दर्द गंभीर हो या आपके हाथों में सुन्नता/झुनझुनी हो।" },
+    "neck_pain_stiff": { "recommendation": "एक अकड़ी हुई गर्दन अक्सर मुद्रा के कारण होती है, खासकर स्क्रीन का उपयोग करने से, या एक अजीब स्थिति में सोने से। गर्दन के हल्के स्ट्रेच (उन्हें मजबूर न करें) और एक गर्म सेक लगाने से मदद मिल सकती है। यदि दर्द गंभीर है या सुधार नहीं होता है, तो डॉक्टर से मिलें। यह चिकित्सा सलाह नहीं है।" },
+    "sprain_start": { "question": "क्या प्रभावित जोड़ (जैसे, टखना, कलाई) गंभीर रूप से सूजा हुआ है, विकृत है, या आप उस पर कोई वजन या दबाव डालने में पूरी तरह से असमर्थ हैं?", "options": { "हाँ, यह बहुत बुरा लग रहा है": "sprain_severe", "नहीं, यह दर्दनाक है लेकिन मैं इसे थोड़ा हिला सकता हूँ": "sprain_mild" } },
+    "sprain_severe": { "recommendation": "गंभीर दर्द, विकृति, या वजन सहन करने में असमर्थता एक फ्रैक्चर या एक गंभीर मोच का संकेत दे सकती है। एक्स-रे और उचित उपचार के लिए किसी क्लिनिक या अस्पताल में तत्काल चिकित्सा ध्यान देना महत्वपूर्ण है।" },
+    "sprain_mild": { "recommendation": "एक हल्की मोच के लिए, R.I.C.E. सिद्धांत का पालन करें: जोड़ को आराम दें, एक बार में 20 मिनट के लिए बर्फ लगाएं, संपीड़न के लिए एक पट्टी का उपयोग करें, और इसे ऊंचा रखें। यदि दर्द और सूजन 2-3 दिनों में सुधार नहीं होती है, तो डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "muscle_cramp_start": { "recommendation": "मांसपेशियों में ऐंठन के लिए, प्रभावित मांसपेशी को धीरे-धीरे फैलाएं और मालिश करें। गर्मी लगाने से मांसपेशी को आराम देने में मदद मिल सकती है। निर्जलीकरण और खनिज असंतुलन ऐंठन का कारण बन सकते हैं, इसलिए सुनिश्चित करें कि आप पर्याप्त पानी पी रहे हैं और एक संतुलित आहार ले रहे हैं। यदि ऐंठन बहुत बार या गंभीर होती है, तो डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "earache_start": { "question": "क्या कान के दर्द के साथ बुखार या कान से कोई स्राव (तरल) आ रहा है?", "options": { "हाँ": "earache_infection", "नहीं": "earache_simple" } },
+    "earache_infection": { "recommendation": "बुखार या स्राव के साथ कान का दर्द अक्सर कान के संक्रमण का संकेत देता है, जिसके लिए एंटीबायोटिक दवाओं की आवश्यकता हो सकती है। कृपया उचित निदान और नुस्खे के लिए डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "earache_simple": { "recommendation": "आप राहत के लिए कान के बाहर एक गर्म सेक लगाने की कोशिश कर सकते हैं। अपने कान नहर के अंदर कुछ भी न डालें। यदि दर्द गंभीर है या एक दिन से अधिक समय तक रहता है, तो डॉक्टर को दिखाना महत्वपूर्ण है। यह चिकित्सा सलाह नहीं है।" },
+    "uti_start": { "question": "क्या आप पेशाब करते समय जलन या दर्द महसूस कर रहे हैं?", "options": { "हाँ": "uti_burning", "नहीं": "uti_no" } },
+    "uti_burning": { "question": "क्या इसके साथ बार-बार पेशाब करने की इच्छा होती है, या आपने अपने मूत्र में खून देखा है?", "options": { "हाँ": "uti_confirm", "नहीं": "uti_possible" } },
+    "uti_confirm": { "recommendation": "ये मूत्र पथ के संक्रमण (यूटीआई) के मजबूत संकेत हैं, जिसके लिए आमतौर पर एंटीबायोटिक दवाओं की आवश्यकता होती है। निदान और उपचार के लिए डॉक्टर से परामर्श करना आवश्यक है। इस बीच, सिस्टम को फ्लश करने में मदद करने के लिए खूब पानी पिएं। यह चिकित्सा सलाह नहीं है।" },
+    "uti_possible": { "recommendation": "पेशाब करते समय जलन महसूस होना यूटीआई या अन्य जलन का संकेत हो सकता है। कृपया खूब पानी पिएं। यदि लक्षण एक दिन से अधिक समय तक बना रहता है, तो डॉक्टर को दिखाना महत्वपूर्ण है। यह चिकित्सा सलाह नहीं है।" },
+    "uti_no": { "recommendation": "यदि आपको जलन महसूस किए बिना अन्य मूत्र संबंधी समस्याएं हो रही हैं, तो कारण समझने के लिए डॉक्टर से परामर्श करना सबसे अच्छा है। कृपया अपने लक्षणों की निगरानी करें और चिकित्सा सलाह लें।" },
+    "wound_start": { "question": "क्या घाव से भारी रक्तस्राव हो रहा है और 5-10 मिनट तक दबाव डालने के बाद भी रक्तस्राव नहीं रुकता है?", "options": { "हाँ, बहुत खून बह रहा है": "wound_bleeding", "नहीं, रक्तस्राव मामूली है या रुक गया है": "wound_minor" } },
+    "wound_bleeding": { "recommendation": "अनियंत्रित रक्तस्राव के लिए तत्काल आपातकालीन चिकित्सा देखभाल की आवश्यकता होती है। एक साफ कपड़े से घाव पर दृढ़, सीधा दबाव डालते रहें और तुरंत नजदीकी अस्पताल या क्लिनिक जाएं।" },
+    "wound_minor": { "recommendation": "एक मामूली घाव के लिए, पहले इसे साफ पानी और हल्के साबुन से धीरे से साफ करें। एक एंटीसेप्टिक मरहम लगाएं और इसे एक साफ पट्टी से ढक दें। लालिमा, सूजन या मवाद जैसे संक्रमण के संकेतों पर ध्यान दें। यदि घाव गहरा है या किसी जंग लगी वस्तु से है, तो टेटनस के टीके के लिए डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "rash_start": { "question": "क्या दाने के साथ सांस लेने में कठिनाई, चेहरे या होठों में सूजन, या चक्कर आना है?", "options": { "हाँ": "rash_allergic_reaction", "नहीं": "rash_simple" } },
+    "rash_allergic_reaction": { "recommendation": "ये एक गंभीर एलर्जी प्रतिक्रिया (एनाफिलेक्सिस) के संकेत हैं और एक चिकित्सा आपात स्थिति है। कृपया बिना किसी देरी के नजदीकी अस्पताल या क्लिनिक से तत्काल चिकित्सा सहायता लें।" },
+    "rash_simple": { "recommendation": "एक साधारण त्वचा के दाने के लिए, क्षेत्र को साफ और सूखा रखें। इसे खरोंचने से बचें। एक ठंडा सेक या कैलामाइन लोशन लगाने से खुजली शांत हो सकती है। यदि दाने फैलता है, दर्दनाक है, या सुधार नहीं होता है, तो कृपया निदान के लिए डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "burn_start": { "question": "क्या जलन आपकी हथेली से बड़ी है, या यह चेहरे, हाथ, पैर या जोड़ों पर है?", "options": { "हाँ": "burn_major", "नहीं": "burn_minor" } },
+    "burn_major": { "recommendation": "उस आकार या स्थान की जलन को गंभीर माना जाता है और तत्काल चिकित्सा ध्यान देने की आवश्यकता होती है। कृपया नजदीकी क्लिनिक या अस्पताल जाएं। खुद कोई क्रीम या मलहम न लगाएं। यह चिकित्सा सलाह नहीं है।" },
+    "burn_minor": { "recommendation": "एक मामूली जलन के लिए, तुरंत 10-15 मिनट के लिए क्षेत्र पर ठंडा (ठंडा नहीं) पानी चलाएं। बर्फ का उपयोग न करें। बनने वाले किसी भी छाले को न तोड़ें। आप इसे एक बाँझ, नॉन-स्टिक पट्टी से ढीले ढंग से ढक सकते हैं। यदि दर्द गंभीर है या यह संक्रमित दिखता है, तो कृपया डॉक्टर से मिलें। यह चिकित्सा सलाह नहीं है।" },
+    "insect_bite_start": { "question": "क्या आप काटने वाले क्षेत्र से परे लक्षणों का अनुभव कर रहे हैं, जैसे सांस लेने में कठिनाई, व्यापक दाने, चेहरे की सूजन, या बेहोशी महसूस करना?", "options": { "हाँ, मुझे गंभीर लक्षण हैं": "insect_bite_severe", "नहीं, यह सिर्फ एक स्थानीय प्रतिक्रिया है": "insect_bite_local" } },
+    "insect_bite_severe": { "recommendation": "ये एक गंभीर एलर्जी प्रतिक्रिया के संकेत हैं और तत्काल आपातकालीन चिकित्सा ध्यान देने की आवश्यकता है। कृपया बिना किसी देरी के नजदीकी अस्पताल जाएं या एम्बुलेंस के लिए कॉल करें।" },
+    "insect_bite_local": { "recommendation": "एक स्थानीय प्रतिक्रिया के लिए, क्षेत्र को साबुन और पानी से धो लें। सूजन और खुजली को कम करने के लिए एक ठंडा सेक लगाएं। एक ओवर-द-काउंटर हाइड्रोकार्टिसोन क्रीम या एंटीहिस्टामाइन मदद कर सकता है। खरोंचने से बचें। यदि एक डंक दिखाई दे रहा है, तो इसे एक सपाट किनारे से धीरे से खुरचें। यदि सूजन गंभीर है या आपको संक्रमण के लक्षण दिखाई देते हैं, तो डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "animal_bite_start": { "question": "क्या काटने से त्वचा फट गई?", "options": { "हाँ": "animal_bite_broken_skin", "नहीं": "animal_bite_no_break" } },
+    "animal_bite_no_break": { "recommendation": "यदि त्वचा नहीं फटी थी, तो क्षेत्र को साबुन और पानी से अच्छी तरह धो लें। आपको अभी भी लालिमा या सूजन के लिए इसकी निगरानी करनी चाहिए। संक्रमण का खतरा कम है, लेकिन सतर्क रहना अच्छा है।" },
+    "animal_bite_broken_skin": { "recommendation": "किसी भी काटने से जो त्वचा को तोड़ता है, चाहे वह पालतू जानवर से हो या आवारा जानवर से, संक्रमण और रेबीज के उच्च जोखिम के कारण चिकित्सा ध्यान देने की आवश्यकता होती है। घाव को कई मिनट तक साबुन और पानी से अच्छी तरह धो लें, फिर तुरंत डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "sunburn_start": { "recommendation": "सनबर्न के लिए, तुरंत धूप से बाहर निकलें। एक ठंडा सेक लगाएं या ठंडा स्नान करें। एलोवेरा युक्त एक सुखदायक मॉइस्चराइज़र का उपयोग करें। निर्जलीकरण को रोकने के लिए अतिरिक्त पानी पिएं। किसी भी छाले को न तोड़ें। गंभीर, छाले वाले सनबर्न के लिए, आपको डॉक्टर से सलाह लेनी चाहिए। यह चिकित्सा सलाह नहीं है।" },
+    "nosebleed_start": { "question": "क्या नकसीर सिर पर एक महत्वपूर्ण चोट का परिणाम है, या यह अपने आप शुरू हुई?", "options": { "सिर की चोट का परिणाम": "nosebleed_injury", "अपने आप शुरू हुई": "nosebleed_spontaneous" } },
+    "nosebleed_injury": { "recommendation": "सिर की चोट के बाद नकसीर के लिए अधिक गंभीर समस्याओं को दूर करने के लिए तत्काल चिकित्सा मूल्यांकन की आवश्यकता होती है। कृपया एक आपातकालीन कक्ष में जाएं।" },
+    "nosebleed_spontaneous": { "recommendation": "नकसीर को रोकने के लिए, बैठ जाएं और थोड़ा आगे झुकें, पीछे नहीं। अपनी नाक के नरम हिस्से को 10-15 मिनट के लिए मजबूती से चुटकी लें और अपने मुंह से सांस लें। आपकी नाक के पुल पर एक आइस पैक भी मदद कर सकता है। यदि रक्तस्राव बहुत भारी है या 20 मिनट के बाद नहीं रुकता है, तो आपको डॉक्टर को दिखाना चाहिए। यह चिकित्सा सलाह नहीं है।" },
+    "allergies_start": { "recommendation": "मौसमी एलर्जी (जैसे छींकना, आंखों में खुजली, बहती नाक) के लिए, ओवर-द-काउंटर एंटीहिस्टामाइन प्रभावी हो सकते हैं। यदि संभव हो तो अपने ट्रिगर्स को पहचानने और उनसे बचने की कोशिश करें। एक खारा नाक कुल्ला आपके नाक के मार्ग से पराग को साफ करने में मदद कर सकता है। यदि लक्षण गंभीर हैं या आपकी सांस को प्रभावित करते हैं, तो डॉक्टर से सलाह लें। यह चिकित्सा सलाह नहीं है।" },
+    "insomnia_start": { "recommendation": "नींद में सुधार के लिए, सप्ताहांत पर भी एक नियमित नींद कार्यक्रम स्थापित करने का प्रयास करें। सुनिश्चित करें कि आपका शयनकक्ष अंधेरा, शांत और ठंडा हो। शाम को देर से कैफीन और भारी भोजन से बचें। बिस्तर पर जाने से कम से कम एक घंटे पहले स्क्रीन (फोन, टीवी) का उपयोग करने से बचें। यदि आपको लगातार सोने में परेशानी होती है, तो डॉक्टर से बात करना एक अच्छा विचार है। यह चिकित्सा सलाह नहीं है।" },
+    "anxiety_start": { "question": "क्या आप वर्तमान में दिल की धड़कन तेज होना, सांस की तकलीफ, सीने में जकड़न, या कांपने जैसे शारीरिक लक्षणों का अनुभव कर रहे हैं?", "options": { "हाँ, अभी": "anxiety_panic", "नहीं, मैं आम तौर पर अधिक चिंतित महसूस करता हूँ": "anxiety_general" } },
+    "anxiety_panic": { "recommendation": "ऐसा लगता है कि आप एक पैनिक अटैक का अनुभव कर रहे हो सकते हैं। बैठने के लिए एक शांत जगह खोजने की कोशिश करें। अपनी सांस पर ध्यान केंद्रित करें: 4 की गिनती के लिए धीरे-धीरे सांस लें, 4 के लिए रोकें, और 6 के लिए धीरे-धीरे सांस छोड़ें। अपने आप को याद दिलाएं कि ये भावनाएं अस्थायी हैं और गुजर जाएंगी। 5-4-3-2-1 ग्राउंडिंग तकनीक मदद कर सकती है: 5 चीजें जिन्हें आप देख सकते हैं, 4 जिन्हें आप छू सकते हैं, 3 जिन्हें आप सुन सकते हैं, 2 जिन्हें आप सूंघ सकते हैं, और 1 जिसे आप चख सकते हैं, नाम दें। इन अनुभवों के बारे में डॉक्टर या मानसिक स्वास्थ्य पेशेवर से बात करना बहुत महत्वपूर्ण है। यह चिकित्सा सलाह नहीं है।" },
+    "anxiety_general": { "recommendation": "तनाव और चिंता की भावनाएं आम हैं। गहरी सांस लेने, दिमागीपन, नियमित शारीरिक गतिविधि, और किसी विश्वसनीय व्यक्ति के साथ अपनी भावनाओं के बारे में बात करने जैसे अभ्यास मदद कर सकते हैं। यदि ये भावनाएं लगातार हैं और आपके दैनिक जीवन में हस्तक्षेप करती हैं, तो एक चिकित्सक या परामर्शदाता से मदद लेना एक बहुत प्रभावी कदम है। कृपया एक पेशेवर से बात करने पर विचार करें। यह चिकित्सा सलाह नहीं है।" },
+    "cramps_start": { "recommendation": "मासिक धर्म में ऐंठन के लिए, आपके पेट या पीठ के निचले हिस्से में एक हीटिंग पैड लगाने से राहत मिल सकती है। ओवर-द-काउंटर दर्द निवारक भी प्रभावी हो सकते हैं। चलने जैसी हल्की कसरत भी मदद कर सकती है। यदि दर्द गंभीर है और आपकी दैनिक गतिविधियों में हस्तक्षेप करता है, तो डॉक्टर से सलाह लेना एक अच्छा विचार है। यह चिकित्सा सलाह नहीं है।" },
+    "periods_irregular": { "recommendation": "अनियमित पीरियड्स कई कारकों के कारण हो सकते हैं, जिनमें तनाव, आहार, व्यायाम, या अंतर्निहित स्वास्थ्य स्थितियां शामिल हैं। कुछ भिन्नता होना आम है। हालांकि, यदि आपका चक्र लगातार अनियमित है या आपको अन्य चिंताएं हैं, तो उचित मूल्यांकन के लिए एक स्त्री रोग विशेषज्ञ से परामर्श करना सबसे अच्छा है। यह चिकित्सा सलाह नहीं है।" },
+    "eye_start": { "question": "क्या आप आंखों में दर्द, दृष्टि में अचानक बदलाव का अनुभव कर रहे हैं, या आपकी आंख में कोई रासायनिक छीटें या शारीरिक चोट लगी है?", "options": { "हाँ, यह एक आपातकालीन स्थिति है": "eye_emergency", "नहीं, यह हल्की जलन या लालिमा है": "eye_mild" } },
+    "eye_emergency": { "recommendation": "गंभीर दर्द, अचानक दृष्टि की हानि, एक रासायनिक छीटें, या आंख में कोई वस्तु सभी चिकित्सा आपात स्थिति हैं। तुरंत नजदीकी आपातकालीन कक्ष में जाएं। अपनी आंख को न रगड़ें या किसी फंसी हुई वस्तु को निकालने की कोशिश न करें।" },
+    "eye_mild": { "recommendation": "हल्की लालिमा या जलन के लिए, आप आंख को साफ, गुनगुने पानी से धोने या ओवर-द-काउंटर चिकनाई वाली आई ड्रॉप्स (कृत्रिम आँसू) का उपयोग करने का प्रयास कर सकते हैं। अपनी आँखों को रगड़ने से बचें। यदि स्थिति एक दिन में सुधार नहीं होती है या खराब हो जाती है, तो कृपया डॉक्टर से मिलें। यह चिकित्सा सलाह नहीं है।" }
+  },
+  "bn": {
+    "start": {
+      "question": "নমস্কার! আমি আপনার অফলাইন স্বাস্থ্য সহকারী। অনুগ্রহ করে নিচের তালিকা থেকে আপনার প্রাথমিক সমস্যা নির্বাচন করুন।",
+      "options": {
+        "জ্বর (প্রাপ্তবয়স্ক)": "fever_start", "জ্বর (শিশু)": "child_fever_start", "কাশি এবং ঠান্ডা": "cold_start", "মাথাব্যথা": "headache_start", "মাথা ঘোরা / অজ্ঞান হওয়া": "dizziness_start", "ক্লান্তি / অবসাদ": "fatigue_start", "পেট এবং হজমের সমস্যা": "stomach_pain_start", "ডায়রিয়া / বমি": "diarrhea_start", "ডিহাইড্রেশন": "dehydration_start", "খাদ্যে বিষক্রিয়া": "food_poisoning_start", "কোষ্ঠকাঠিন্য": "constipation_start", "বদহজম / অম্বল": "heartburn_start", "ব্যথা (পিঠ, ঘাড়, জয়েন্ট)": "pain_menu", "কান, নাক, গলা": "ent_menu", "মূত্রথলির সমস্যা": "uti_start", "ত্বকের সমস্যা (ফুসকুড়ি, পোড়া, কামড়)": "skin_menu", "মহিলাদের স্বাস্থ্য": "womens_health_menu", "চোখের সমস্যা": "eye_start", "ঘুমের সমস্যা": "insomnia_start", "মানসিক চাপ / উদ্বেগ": "anxiety_start"
+      }
+    },
+    "pain_menu": { "question": "আপনি কি ধরনের ব্যথা অনুভব করছেন?", "options": { "পিঠে ব্যথা": "back_pain_start", "ঘাড়ে ব্যথা": "neck_pain_start", "জয়েন্টে ব্যথা / মচকানো": "sprain_start", "পেশীতে টান": "muscle_cramp_start" } },
+    "ent_menu": { "question": "আপনার কান, নাক বা গলার প্রধান লক্ষণ কী?", "options": { "কানে ব্যথা": "earache_start", "নাক দিয়ে রক্ত পড়া": "nosebleed_start", "গলায় ব্যথা": "cold_throat", "অ্যালার্জি (হাঁচি/নাক দিয়ে জল পড়া)": "allergies_start" } },
+    "skin_menu": { "question": "আপনি কি ধরনের ত্বকের সমস্যা অনুভব করছেন?", "options": { "ছোট ক্ষত / কাটা": "wound_start", "ত্বকে ফুসকুড়ি / চুলকানি": "rash_start", "সামান্য পোড়া": "burn_start", "পোকামাকড়ের কামড় / হুল": "insect_bite_start", "পশু / মানুষের কামড়": "animal_bite_start", "রোদে পোড়া": "sunburn_start" } },
+    "womens_health_menu": { "question": "আপনি মহিলাদের স্বাস্থ্য সংক্রান্ত কোন বিষয়ে চিন্তিত?", "options": { "মাসিকের ব্যথা": "cramps_start", "অনিয়মিত মাসিক": "periods_irregular" } },
+    "fever_start": { "question": "আমি বুঝতে পারছি আপনার জ্বর হয়েছে। এটি কি উচ্চ (১০২°F / ৩৯°C এর উপরে) নাকি কম?", "options": { "উচ্চ জ্বর": "fever_high", "কম জ্বর": "fever_low" } },
+    "fever_high": { "recommendation": "উচ্চ জ্বর গুরুতর হতে পারে। অবিলম্বে একজন ডাক্তারের সাথে পরামর্শ করার জন্য সুপারিশ করা হচ্ছে। আপনি পরামর্শের ব্যবস্থা করার সময়, আরামের জন্য কপালে একটি ভেজা কাপড় ব্যবহার করতে পারেন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "fever_low": { "question": "ঠিক আছে। আপনার কি মাথাব্যথা বা শরীর ব্যথাও আছে?", "options": { "হ্যাঁ": "fever_low_aches_yes", "না": "fever_low_aches_no" } },
+    "fever_low_aches_yes": { "question": "আপনার কি কাশি বা গলা ব্যথাও আছে?", "options": { "হ্যাঁ": "fever_flu_symptoms", "না": "fever_aches_no_cough" } },
+    "fever_flu_symptoms": { "recommendation": "কম জ্বর, শরীর ব্যথা এবং কাশি/গলা ব্যথার মতো লক্ষণগুলি প্রায়শই ফ্লুর মতো ভাইরাল সংক্রমণের ইঙ্গিত দেয়। নিশ্চিত করুন যে আপনি প্রচুর বিশ্রাম নিচ্ছেন এবং প্রচুর পরিমাণে তরল (জল, স্যুপ) পান করছেন। সঠিক রোগ নির্ণয়ের জন্য ডাক্তারের সাথে পরামর্শ করা ভাল। এটি ডাক্তারি পরামর্শ নয়।" },
+    "fever_aches_no_cough": { "recommendation": "শরীর ব্যথার সাথে জ্বর ভাইরাল সংক্রমণ বা ক্লান্তি সহ বিভিন্ন কারণে হতে পারে। বিশ্রাম এবং হাইড্রেশন মূল বিষয়। যদি লক্ষণগুলি দুই দিনের বেশি স্থায়ী হয়, দয়া করে একজন ডাক্তারের সাথে দেখা করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "fever_low_aches_no": { "recommendation": "অন্যান্য বড় লক্ষণ ছাড়াই কম জ্বর পর্যবেক্ষণ করা উচিত। বিশ্রাম নিন এবং হাইড্রেটেড থাকুন। যদি জ্বর ৩ দিনের বেশি স্থায়ী হয়, তবে ডাক্তারের সাথে দেখা করা অপরিহার্য। এটি ডাক্তারি পরামর্শ নয়।" },
+    "child_fever_start": { "question": "শিশুর জ্বর গুরুতর হতে পারে। শিশুটির বয়স কত?", "options": { "০-৩ মাস বয়সী": "child_fever_infant", "৩ মাস থেকে ৩ বছর": "child_fever_toddler", "৩ বছরের বেশি": "child_fever_older" } },
+    "child_fever_infant": { "recommendation": "৩ মাসের কম বয়সী শিশুর জ্বর একটি মেডিকেল ইমার্জেন্সি হিসাবে বিবেচিত হয়। অনুগ্রহ করে শিশুটিকে অবিলম্বে নিকটস্থ হাসপাতাল বা জরুরি কক্ষে নিয়ে যান। ডাক্তারের সরাসরি তত্ত্বাবধান ছাড়া কোনও ওষুধ দেবেন না।" },
+    "child_fever_toddler": { "question": "জ্বর ছাড়াও, শিশুটি কি অস্বাভাবিকভাবে ঘুমিয়ে আছে, তরল পান করতে অস্বীকার করছে, শ্বাস নিতে কষ্ট হচ্ছে বা ত্বকে নতুন ফুসকুড়ি হয়েছে?", "options": { "হ্যাঁ, তার অন্যান্য গুরুতর লক্ষণ রয়েছে": "child_fever_serious", "না, শুধু জ্বর": "child_fever_monitor" } },
+    "child_fever_older": { "recommendation": "৩ বছরের বেশি বয়সী শিশুর জন্য, আপনি তাদের আরামদায়ক এবং হাইড্রেটেড রাখতে সাহায্য করতে পারেন। অন্যান্য লক্ষণগুলির জন্য পর্যবেক্ষণ করুন। জ্বরের জন্য সর্বদা একজন শিশু বিশেষজ্ঞের সাথে পরামর্শ করা সবচেয়ে নিরাপদ, বিশেষ করে যদি এটি উচ্চ হয় বা কয়েক দিনের বেশি স্থায়ী হয়। ডাক্তারের সাথে পরামর্শ না করে কোনও ওষুধ দেবেন না। এটি ডাক্তারি পরামর্শ নয়।" },
+    "child_fever_serious": { "recommendation": "এগুলি একটি ছোট শিশুর মধ্যে গুরুতর সতর্কতার লক্ষণ। অনুগ্রহ করে অবিলম্বে একজন ডাক্তারের সাথে পরামর্শ করুন বা জরুরি কক্ষে যান। এটি ডাক্তারি পরামর্শ নয়।" },
+    "child_fever_monitor": { "recommendation": "ডিহাইড্রেশন এড়াতে শিশুটি যাতে প্রচুর পরিমাণে তরল পান করে তা নিশ্চিত করা গুরুত্বপূর্ণ। আপনি তাদের আরাম দেওয়ার জন্য একটি হালকা গরম স্পঞ্জ বাথ ব্যবহার করতে পারেন। একটি ছোট শিশুর যেকোনো জ্বরের জন্য সর্বদা একজন শিশু বিশেষজ্ঞের সাথে পরামর্শ করা ভাল। এটি ডাক্তারি পরামর্শ নয়।" },
+    "cough_start": { "question": "আপনার কাশি সম্পর্কে, এটি কি শুকনো কাশি নাকি কফযুক্ত কাশি?", "options": { "শুকনো কাশি": "cough_dry", "কফযুক্ত কাশি": "cough_wet" } },
+    "cough_dry": { "recommendation": "শুকনো কাশির জন্য, গরম জলে মধু বা আদা চা-এর মতো আরামদায়ক প্রতিকার চেষ্টা করুন। স্টিম ইনহেলেশনও সাহায্য করতে পারে। যদি কাশি ক্রমাগত বা গুরুতর হয়, তাহলে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "cough_wet": { "recommendation": "কফযুক্ত কাশির জন্য, স্টিম ইনহেলেশন কফ আলগা করতে সাহায্য করতে পারে। ভালভাবে হাইড্রেটেড থাকুন। কারণটি বোঝার জন্য ডাক্তারের সাথে দেখা করা গুরুত্বপূর্ণ, বিশেষ করে যদি কফ পরিষ্কার না হয়। এটি ডাক্তারি পরামর্শ নয়।" },
+    "cold_start": { "question": "আপনার প্রধান লক্ষণগুলি কি নাক দিয়ে জল পড়া/নাক বন্ধ এবং হাঁচি, নাকি এটি প্রাথমিকভাবে গলা ব্যথা?", "options": { "নাক দিয়ে জল পড়া/বন্ধ নাক": "allergies_start", "গলা ব্যথা": "cold_throat" } },
+    "cold_throat": { "recommendation": "গলা ব্যথার জন্য, গরম লবণ জল দিয়ে গার্গল করলে आराम পাওয়া যায়। মধু দিয়ে চা-এর মতো গরম পানীয় পান করুন। আপনার কণ্ঠস্বরের উপর চাপ দেওয়া এড়িয়ে চলুন। যদি গিলতে খুব কষ্ট হয় বা আপনার উচ্চ জ্বর থাকে, তাহলে অবিলম্বে ডাক্তারের সাথে দেখা করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "headache_start": { "question": "আপনার মাথাব্যথা কি গুরুতর এবং আকস্মিক (বজ্রপাতের মতো), নাকি এটি আরও সাধারণ, ক্রমাগত ব্যথা?", "options": { "গুরুতর এবং আকস্মিক": "headache_severe", "সাধারণ ব্যথা": "headache_dull" } },
+    "headache_severe": { "recommendation": "একটি আকস্মিক, গুরুতর 'বজ্রপাত' মাথাব্যথা একটি গুরুতর অবস্থার লক্ষণ হতে পারে। অনুগ্রহ করে অবিলম্বে একজন ডাক্তার বা জরুরি কক্ষ থেকে চিকিৎসা সহায়তা নিন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "headache_dull": { "question": "আপনি কি আলো বা শব্দের প্রতি সংবেদনশীল বোধ করছেন, বা বমি বমি ভাব অনুভব করছেন?", "options": { "হ্যাঁ": "headache_migraine", "না": "headache_tension" } },
+    "headache_migraine": { "recommendation": "আলো এবং শব্দের প্রতি সংবেদনশীলতার সাথে মাথাব্যথা মাইগ্রেন হতে পারে। একটি শান্ত, অন্ধকার ঘরে বিশ্রাম নিন। আপনার কপালে একটি ঠান্ডা কাপড় সাহায্য করতে পারে। সঠিক রোগ নির্ণয় এবং চিকিৎসা পরিকল্পনার জন্য ডাক্তারের সাথে পরামর্শ করা খুব গুরুত্বপূর্ণ। এটি ডাক্তারি পরামর্শ নয়।" },
+    "headache_tension": { "recommendation": "এটি একটি টেনশন মাথাব্যথা হতে পারে। ঘাড়ের হালকা প্রসারিত করা, বিশ্রাম এবং আপনি হাইড্রেটেড আছেন তা নিশ্চিত করা সাহায্য করতে পারে। যদি মাথাব্যথা ঘন ঘন বা খুব বেদনাদায়ক হয়, দয়া করে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "dizziness_start": { "question": "কেউ কি অজ্ঞান হয়ে গেছে, নাকি আপনার শুধু মাথা ঘুরছে?", "options": { "কেউ অজ্ঞান হয়ে গেছে": "fainting_start", "আমার মাথা ঘুরছে": "dizziness_feeling" } },
+    "fainting_start": { "question": "ব্যক্তিটি কি এখন সচেতন এবং প্রতিক্রিয়াশীল?", "options": { "হ্যাঁ, তারা জেগে আছে": "fainting_awake", "না, তারা এখনও অজ্ঞান": "fainting_unconscious" } },
+    "fainting_unconscious": { "recommendation": "এটি একটি মেডিকেল ইমার্জেন্সি। অবিলম্বে একটি অ্যাম্বুলেন্সের জন্য কল করুন। ব্যক্তিটি শ্বাস নিচ্ছে কিনা তা পরীক্ষা করুন। যদি আপনি প্রশিক্ষিত হন, তবে CPR করার জন্য প্রস্তুত থাকুন। তাদের খেতে বা পান করার জন্য কিছু দেবেন না।" },
+    "fainting_awake": { "recommendation": "ব্যক্তিটিকে পা সামান্য উঁচু করে শুইয়ে দিন। পড়ে যাওয়া থেকে কোনও আঘাত লেগেছে কিনা তা পরীক্ষা করুন। তাদের খুব তাড়াতাড়ি উঠতে দেবেন না। অন্তর্নিহিত কারণ খুঁজে বের করার জন্য অজ্ঞান হয়ে যাওয়া সর্বদা একজন ডাক্তারের দ্বারা মূল্যায়ন করা উচিত। এটি ডাক্তারি পরামর্শ নয়।" },
+    "dizziness_feeling": { "question": "আপনার কি মনে হচ্ছে ঘরটি আপনার চারপাশে ঘুরছে (ভার্টিগো), নাকি আপনার মনে হচ্ছে আপনি অজ্ঞান হয়ে যাবেন এবং মাথা হালকা লাগছে?", "options": { "ঘর ঘুরছে": "dizziness_vertigo", "অজ্ঞান বোধ করছি": "dizziness_lightheaded" } },
+    "dizziness_vertigo": { "recommendation": "ভার্টিগোর বিভিন্ন কারণ থাকতে পারে। সংবেদনটি কেটে না যাওয়া পর্যন্ত একটি নিরাপদ জায়গায় বসে বা শুয়ে থাকা ভাল। হঠাৎ নড়াচড়া এড়িয়ে চলুন। অন্তর্নিহিত কারণ নির্ধারণের জন্য অনুগ্রহ করে একজন ডাক্তারের সাথে পরামর্শের সময়সূচী করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "dizziness_lightheaded": { "recommendation": "মাথা হালকা লাগা ডিহাইড্রেশন বা লো ব্লাড সুগারের কারণে হতে পারে। জল পান করার এবং একটি ছোট নাস্তা খাওয়ার চেষ্টা করুন। পড়ে যাওয়া এড়াতে বসুন বা শুয়ে পড়ুন। যদি অনুভূতিটি স্থায়ী হয় বা ঘন ঘন হয়, তবে আপনার ডাক্তারের সাথে পরামর্শ করা উচিত। এটি ডাক্তারি পরামর্শ নয়।" },
+    "fatigue_start": { "recommendation": "ক্লান্তি ঘুমের অভাব, মানসিক চাপ, খারাপ ডায়েট বা কোনও অন্তর্নিহিত চিকিৎসা পরিস্থিতি সহ অনেক কারণে হতে পারে। নিশ্চিত করুন যে আপনি ৭-৯ ঘন্টা ঘুমাচ্ছেন, সুষম খাবার খাচ্ছেন এবং হাইড্রেটেড থাকছেন। যদি ক্লান্তি স্থায়ী হয় এবং আপনার দৈনন্দিন জীবনকে প্রভাবিত করে, তবে ডাক্তারের সাথে পরামর্শ করা গুরুত্বপূর্ণ। এটি ডাক্তারি পরামর্শ নয়।" },
+    "stomach_pain_start": { "question": "ব্যথাটি কি তীক্ষ্ণ এবং একটি নির্দিষ্ট স্থানে সীমাবদ্ধ, নাকি এটি পুরো পেট জুড়ে একটি সাধারণ মোচড়ানো/অস্বস্তি?", "options": { "তীক্ষ্ণ এবং স্থানীয়": "stomach_sharp", "সাধারণ মোচড়ানো": "stomach_cramping" } },
+    "stomach_sharp": { "recommendation": "তীক্ষ্ণ, স্থানীয় পেটে ব্যথা, বিশেষ করে যদি এটি গুরুতর হয় বা নীচের ডানদিকে থাকে, তবে অবিলম্বে চিকিৎসার প্রয়োজন। অনুগ্রহ করে দেরি না করে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "stomach_cramping": { "question": "একটি নির্দিষ্ট খাবার খাওয়ার কয়েক ঘন্টার মধ্যে কি মোচড়ানো শুরু হয়েছিল?", "options": { "হ্যাঁ": "food_poisoning_start", "না": "stomach_indigestion" } },
+    "stomach_indigestion": { "recommendation": "সাধারণ মোচড়ানো বদহজম বা গ্যাসের কারণে হতে পারে। গরম জল বা পুদিনা চা পান করার চেষ্টা করুন। ভাতের মতো হালকা, সাধারণ খাবার খান। যদি ব্যথা গুরুতর হয় বা অনেক ঘন্টা ধরে স্থায়ী হয়, দয়া করে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "food_poisoning_start": { "recommendation": "খাদ্যে বিষক্রিয়াতে প্রায়শই বমি বমি ভাব, বমি, ডায়রিয়া এবং পেটে ব্যথার মতো লক্ষণ থাকে। সবচেয়ে গুরুত্বপূর্ণ বিষয় হল হাইড্রেটেড থাকা। ঘন ঘন অল্প পরিমাণে জল বা ওরাল রিহাইড্রেশন সলিউশন (ORS) পান করুন। আপনার পেটকে বিশ্রাম দিন এবং তারপর ধীরে ধীরে নরম খাবার (কলা, ভাত, আপেল সস, টোস্ট) পুনরায় শুরু করুন। যদি আপনার উচ্চ জ্বর থাকে, রক্ত দেখেন বা কোনও তরল ধরে রাখতে না পারেন তবে আপনাকে অবশ্যই ডাক্তারের সাথে দেখা করতে হবে। এটি ডাক্তারি পরামর্শ নয়।" },
+    "diarrhea_start": { "question": "আপনি কি ডিহাইড্রেশনের লক্ষণ অনুভব করছেন (যেমন চরম তৃষ্ণা, খুব শুষ্ক মুখ, খুব কম বা কোনও প্রস্রাব না হওয়া, বা মাথা ঘোরা)?", "options": { "হ্যাঁ, আমি ডিহাইড্রেটেড বোধ করছি": "dehydration_start", "না, আমি ঠিক আছি": "diarrhea_ok" } },
+    "diarrhea_ok": { "recommendation": "ডায়রিয়া পরিচালনা করতে, ORS এবং জলের মতো তরল দিয়ে হাইড্রেটেড থাকা গুরুত্বপূর্ণ। একটি সাধারণ ডায়েট (কলা, ভাত, আপেল সস, টোস্ট) খান। যদি এটি ২ দিনের বেশি স্থায়ী হয়, বা যদি আপনি রক্ত দেখেন তবে অবিলম্বে ডাক্তারের সাথে দেখা করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "dehydration_start": { "recommendation": "ডিহাইড্রেশনের চিকিৎসা হারানো তরল এবং ইলেকট্রোলাইটগুলি প্রতিস্থাপন করে করা প্রয়োজন। যদি পাওয়া যায় তবে একটি ওরাল রিহাইড্রেশন সলিউশন (ORS) পান করুন। নারকেলের জল এবং পরিষ্কার ঝোলও ভাল। একবারে অনেকটা পান করার পরিবর্তে ঘন ঘন অল্প পরিমাণে পান করুন। ক্যাফিন এবং মিষ্টি পানীয় এড়িয়ে চলুন। যদি আপনার গুরুতর ডিহাইড্রেশনের লক্ষণ থাকে (বিভ্রান্তি, অজ্ঞান হয়ে যাওয়া, তরল ধরে রাখতে অক্ষম), অবিলম্বে চিকিৎসা সহায়তা নিন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "constipation_start": { "question": "কোষ্ঠকাঠিন্যের সাথে কি গুরুতর পেটে ব্যথা, বমি হয়, বা আপনার ৪-৫ দিনের বেশি মলত্যাগ হয়নি?", "options": { "হ্যাঁ, আমার গুরুতর লক্ষণ রয়েছে": "constipation_severe", "না, এটি কেবল হালকা অস্বস্তি": "constipation_mild" } },
+    "constipation_severe": { "recommendation": "কোষ্ঠকাঠিন্যের সাথে গুরুতর লক্ষণগুলি একটি ব্লকেজের মতো আরও গুরুতর সমস্যার ইঙ্গিত দিতে পারে। অনুগ্রহ করে অবিলম্বে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "constipation_mild": { "recommendation": "হালকা কোষ্ঠকাঠিন্যের জন্য, আপনার ফাইবার (ফল, শাকসবজি, গোটা শস্য) এবং জলের পরিমাণ বাড়ানোর চেষ্টা করুন। হাঁটার মতো হালকা শারীরিক কার্যকলাপও সাহায্য করতে পারে। মাঝে মাঝে ওভার-দ্য-কাউন্টার ল্যাক্সেটিভ ব্যবহার করা যেতে পারে, তবে সমস্যাটি যদি স্থায়ী হয় তবে ডাক্তারের সাথে পরামর্শ করা ভাল। এটি ডাক্তারি পরামর্শ নয়।" },
+    "heartburn_start": { "question": "আপনি কি আপনার বুকে জ্বালা অনুভব করছেন, বিশেষ করে খাওয়ার পরে বা শুয়ে থাকার সময়?", "options": { "হ্যাঁ, এটাই": "heartburn_yes", "না, এটা সেটা নয়": "heartburn_no" } },
+    "heartburn_yes": { "recommendation": "এটি অম্বল বা অ্যাসিড রিফ্লাক্সের মতো শোনাচ্ছে। মশলাদার, চর্বিযুক্ত বা অ্যাসিডিক খাবার এড়িয়ে চলার চেষ্টা করুন। ছোট খাবার খাওয়া এবং খাওয়ার ২-৩ ঘন্টা পর পর্যন্ত শুয়ে না থাকা সাহায্য করতে পারে। ওভার-দ্য-কাউন্টার অ্যান্টাসিডগুলি অস্থায়ী উপশম দিতে পারে। যদি এটি ঘন ঘন হয়, দয়া করে ডাক্তারের সাথে পরামর্শ করুন। যদি আপনার বুকে গুরুতর ব্যথা হয়, তবে হৃদপিণ্ডের সমস্যাগুলি দূর করতে জরুরি চিকিৎসা সেবা নিন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "heartburn_no": { "recommendation": "আপনি যদি অন্য ধরণের বুকের অস্বস্তি অনুভব করেন, তবে কোনও গুরুতর অবস্থা বাতিল করার জন্য ডাক্তারের সাথে পরামর্শ করা খুব গুরুত্বপূর্ণ। অনুগ্রহ করে অবিলম্বে চিকিৎসা পরামর্শ নিন।" },
+    "back_pain_start": { "question": "আপনার পিঠের ব্যথা কি হঠাৎ আঘাত বা নড়াচড়া থেকে শুরু হয়েছিল, নাকি এটি ধীরে ধীরে বিকশিত হয়েছে?", "options": { "হঠাৎ আঘাত": "back_pain_injury", "ধীরে ধীরে বিকশিত": "back_pain_gradual" } },
+    "back_pain_injury": { "question": "আপনি কি আপনার পায়ে কোনও অসাড়তা, ঝিঁ ঝিঁ ধরা বা দুর্বলতা অনুভব করছেন?", "options": { "হ্যাঁ": "back_pain_nerve", "না": "back_pain_strain" } },
+    "back_pain_nerve": { "recommendation": "পিঠের ব্যথার সাথে যুক্ত পায়ে অসাড়তা বা দুর্বলতা গুরুতর হতে পারে। কোনও স্নায়ু-সম্পর্কিত সমস্যা বাতিল করতে অনুগ্রহ করে অবিলম্বে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "back_pain_strain": { "recommendation": "এটি একটি পেশীর টান হতে পারে। প্রথম ২৪-৪৮ ঘন্টার জন্য একটি কোল্ড প্যাক প্রয়োগ করার চেষ্টা করুন, তারপর একটি উষ্ণ প্যাকে স্যুইচ করুন। হালকা প্রসারিত করা সাহায্য করতে পারে, তবে যে ক্রিয়াকলাপগুলি ব্যথা বাড়ায় সেগুলি এড়িয়ে চলুন। যদি ব্যথা গুরুতর হয় বা কয়েক দিনের মধ্যে উন্নতি না হয়, তবে ডাক্তারের সাথে দেখা করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "back_pain_gradual": { "recommendation": "ধীরে ধীরে পিঠের ব্যথা প্রায়শই ভঙ্গি বা পেশীর টানের সাথে সম্পর্কিত। আপনি কীভাবে বসেন এবং বস্তুগুলি তোলেন সে সম্পর্কে সচেতন থাকুন। হাঁটার মতো হালকা ব্যায়াম সাহায্য করতে পারে। যদি ব্যথা স্থির থাকে বা বাড়তে থাকে, তবে ডাক্তারের সাথে পরামর্শ করা ভাল। এটি ডাক্তারি পরামর্শ নয়।" },
+    "neck_pain_start": { "question": "ঘাড়ের ব্যথা কি কোনও আঘাতের পরে (যেমন গাড়ির দুর্ঘটনা) শুরু হয়েছিল, নাকি এটি একটি শক্ত ঘাড় যা নিজে থেকেই বিকশিত হয়েছে?", "options": { "আঘাতের পরে": "neck_pain_injury", "শক্ত ঘাড়": "neck_pain_stiff" } },
+    "neck_pain_injury": { "recommendation": "আঘাতের পরে ঘাড়ের ব্যথা গুরুতর সমস্যাগুলি বাতিল করার জন্য সর্বদা একজন চিকিৎসা পেশাদার দ্বারা মূল্যায়ন করা উচিত। অনুগ্রহ করে ডাক্তারের সাথে পরামর্শ করুন, বিশেষ করে যদি ব্যথা গুরুতর হয় বা আপনার বাহুতে অসাড়তা/ঝিঁ ঝিঁ ধরা থাকে।" },
+    "neck_pain_stiff": { "recommendation": "একটি শক্ত ঘাড় প্রায়শই ভঙ্গির কারণে হয়, বিশেষ করে স্ক্রিন ব্যবহার করা থেকে বা একটি বিশ্রী অবস্থানে ঘুমানো থেকে। ঘাড়ের হালকা প্রসারিত (তাদের জোর করবেন না) এবং একটি উষ্ণ কম্প্রেস প্রয়োগ করা সাহায্য করতে পারে। যদি ব্যথা গুরুতর হয় বা উন্নতি না হয়, তবে ডাক্তারের সাথে দেখা করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "sprain_start": { "question": "আক্রান্ত জয়েন্টটি (যেমন, গোড়ালি, কব্জি) কি গুরুতরভাবে ফোলা, বিকৃত, নাকি আপনি এর উপর কোনও ওজন বা চাপ দিতে সম্পূর্ণ অক্ষম?", "options": { "হ্যাঁ, এটি খুব খারাপ দেখাচ্ছে": "sprain_severe", "না, এটি বেদনাদায়ক তবে আমি এটি সামান্য সরাতে পারি": "sprain_mild" } },
+    "sprain_severe": { "recommendation": "গুরুতর ব্যথা, বিকৃতি বা ওজন বহন করতে অক্ষমতা একটি ফ্র্যাকচার বা গুরুতর মচকে যাওয়ার ইঙ্গিত দিতে পারে। এক্স-রে এবং সঠিক চিকিৎসার জন্য একটি ক্লিনিক বা হাসপাতালে অবিলম্বে চিকিৎসা সহায়তা নেওয়া অত্যন্ত গুরুত্বপূর্ণ।" },
+    "sprain_mild": { "recommendation": "একটি হালকা মচকে যাওয়ার জন্য, R.I.C.E. নীতি অনুসরণ করুন: জয়েন্টকে বিশ্রাম দিন, একবারে ২০ মিনিটের জন্য বরফ প্রয়োগ করুন, সংকোচনের জন্য একটি ব্যান্ডেজ ব্যবহার করুন এবং এটিকে উঁচু করে রাখুন। যদি ব্যথা এবং ফোলা ২-৩ দিনের মধ্যে উন্নতি না হয়, তবে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "muscle_cramp_start": { "recommendation": "একটি পেশীর ক্র্যাম্পের জন্য, আক্রান্ত পেশীটি আলতো করে প্রসারিত করুন এবং ম্যাসেজ করুন। তাপ প্রয়োগ করলে পেশী শিথিল হতে সাহায্য করতে পারে। ডিহাইড্রেশন এবং খনিজ ভারসাম্যহীনতা ক্র্যাম্পের কারণ হতে পারে, তাই নিশ্চিত করুন যে আপনি পর্যাপ্ত জল পান করছেন এবং একটি সুষম খাদ্য গ্রহণ করছেন। যদি ক্র্যাম্প খুব ঘন ঘন বা গুরুতর হয়, তবে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "earache_start": { "question": "কানের ব্যথার সাথে কি জ্বর বা কান থেকে কোনও স্রাব (তরল) আসছে?", "options": { "হ্যাঁ": "earache_infection", "না": "earache_simple" } },
+    "earache_infection": { "recommendation": "জ্বর বা স্রাবের সাথে কানের ব্যথা প্রায়শই কানের সংক্রমণের ইঙ্গিত দেয়, যার জন্য অ্যান্টিবায়োটিকের প্রয়োজন হতে পারে। অনুগ্রহ করে সঠিক রোগ নির্ণয় এবং প্রেসক্রিপশনের জন্য ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "earache_simple": { "recommendation": "আপনি আরামের জন্য কানের বাইরে একটি উষ্ণ কম্প্রেস প্রয়োগ করার চেষ্টা করতে পারেন। আপনার কানের খালে কিছু রাখবেন না। যদি ব্যথা গুরুতর হয় বা একদিনের বেশি স্থায়ী হয়, তবে ডাক্তারের সাথে দেখা করা গুরুত্বপূর্ণ। এটি ডাক্তারি পরামর্শ নয়।" },
+    "uti_start": { "question": "আপনি কি প্রস্রাবের সময় জ্বালা বা বেদনাদায়ক সংবেদন অনুভব করছেন?", "options": { "হ্যাঁ": "uti_burning", "না": "uti_no" } },
+    "uti_burning": { "question": "এর সাথে কি ঘন ঘন প্রস্রাব করার তাগিদ থাকে, বা আপনি কি আপনার প্রস্রাবে রক্ত লক্ষ্য করেছেন?", "options": { "হ্যাঁ": "uti_confirm", "না": "uti_possible" } },
+    "uti_confirm": { "recommendation": "এগুলি মূত্রনালীর সংক্রমণের (UTI) শক্তিশালী লক্ষণ, যার জন্য সাধারণত অ্যান্টিবায়োটিকের প্রয়োজন হয়। রোগ নির্ণয় এবং চিকিৎসার জন্য ডাক্তারের সাথে পরামর্শ করা অপরিহার্য। ইতিমধ্যে, সিস্টেমটি ফ্লাশ করতে সাহায্য করার জন্য প্রচুর জল পান করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "uti_possible": { "recommendation": "প্রস্রাবের সময় জ্বালা সংবেদন একটি UTI বা অন্য কোনও জ্বালার লক্ষণ হতে পারে। অনুগ্রহ করে প্রচুর জল পান করুন। যদি লক্ষণটি একদিনের বেশি স্থায়ী হয়, তবে ডাক্তারের সাথে দেখা করা গুরুত্বপূর্ণ। এটি ডাক্তারি পরামর্শ নয়।" },
+    "uti_no": { "recommendation": "যদি আপনার জ্বালা সংবেদন ছাড়াই অন্যান্য মূত্রথলির সমস্যা থাকে, তবে কারণটি বোঝার জন্য ডাক্তারের সাথে পরামর্শ করা ভাল। অনুগ্রহ করে আপনার লক্ষণগুলি পর্যবেক্ষণ করুন এবং চিকিৎসা পরামর্শ নিন।" },
+    "wound_start": { "question": "ক্ষত থেকে কি প্রচুর রক্তপাত হচ্ছে এবং ৫-১০ মিনিট চাপ দেওয়ার পরেও রক্তপাত বন্ধ হচ্ছে না?", "options": { "হ্যাঁ, প্রচুর রক্তপাত হচ্ছে": "wound_bleeding", "না, রক্তপাত সামান্য বা বন্ধ হয়ে গেছে": "wound_minor" } },
+    "wound_bleeding": { "recommendation": "অনিয়ন্ত্রিত রক্তপাতের জন্য অবিলম্বে জরুরি চিকিৎসা সেবা প্রয়োজন। একটি পরিষ্কার কাপড় দিয়ে ক্ষতের উপর দৃঢ়, সরাসরি চাপ প্রয়োগ করতে থাকুন এবং অবিলম্বে নিকটস্থ হাসপাতাল বা ক্লিনিকে যান।" },
+    "wound_minor": { "recommendation": "একটি ছোট ক্ষতের জন্য, প্রথমে এটি পরিষ্কার জল এবং হালকা সাবান দিয়ে আলতো করে পরিষ্কার করুন। একটি অ্যান্টিসেপটিক মলম প্রয়োগ করুন এবং এটি একটি পরিষ্কার ব্যান্ডেজ দিয়ে ঢেকে দিন। লালভাব, ফোলা বা পুঁজ-এর মতো সংক্রমণের লক্ষণগুলির জন্য দেখুন। যদি ক্ষতটি গভীর হয় বা কোনও মরিচা ধরা বস্তু থেকে হয়, তবে টিটেনাস শটের জন্য ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "rash_start": { "question": "ফুসকুড়ির সাথে কি শ্বাসকষ্ট, মুখ বা ঠোঁট ফোলা, বা মাথা ঘোরাচ্ছে?", "options": { "হ্যাঁ": "rash_allergic_reaction", "না": "rash_simple" } },
+    "rash_allergic_reaction": { "recommendation": "এগুলি একটি গুরুতর অ্যালার্জির প্রতিক্রিয়ার (অ্যানাফিল্যাক্সিস) লক্ষণ এবং এটি একটি মেডিকেল ইমার্জেন্সি। অনুগ্রহ করে কোনও দেরি না করে নিকটস্থ হাসপাতাল বা ক্লিনিক থেকে অবিলম্বে চিকিৎসা সহায়তা নিন।" },
+    "rash_simple": { "recommendation": "একটি সাধারণ ত্বকের ফুসকুড়ির জন্য, এলাকাটি পরিষ্কার এবং শুকনো রাখুন। এটি চুলকানো এড়িয়ে চলুন। একটি শীতল কম্প্রেস বা ক্যালামাইন লোশন প্রয়োগ করলে চুলকানি প্রশমিত হতে পারে। যদি ফুসকুড়ি ছড়িয়ে পড়ে, বেদনাদায়ক হয় বা উন্নতি না হয়, তবে রোগ নির্ণয়ের জন্য ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "burn_start": { "question": "পোড়াটি কি আপনার হাতের তালুর চেয়ে বড়, নাকি এটি মুখ, হাত, পা বা জয়েন্টগুলিতে রয়েছে?", "options": { "হ্যাঁ": "burn_major", "না": "burn_minor" } },
+    "burn_major": { "recommendation": "এই আকারের বা অবস্থানের একটি পোড়াকে গুরুতর হিসাবে বিবেচনা করা হয় এবং অবিলম্বে চিকিৎসা মনোযোগ প্রয়োজন। অনুগ্রহ করে নিকটস্থ ক্লিনিক বা হাসপাতালে যান। নিজে কোনও ক্রিম বা মলম প্রয়োগ করবেন না। এটি ডাক্তারি পরামর্শ নয়।" },
+    "burn_minor": { "recommendation": "একটি ছোট পোড়ার জন্য, অবিলম্বে ১০-১৫ মিনিটের জন্য এলাকাটির উপর ঠান্ডা (বরফ নয়) জল ঢালুন। বরফ ব্যবহার করবেন না। যে কোনও ফোস্কা তৈরি হলে তা ভাঙবেন না। আপনি এটি একটি জীবাণুমুক্ত, নন-স্টিক ব্যান্ডেজ দিয়ে আলগাভাবে ঢেকে রাখতে পারেন। যদি ব্যথা গুরুতর হয় বা এটি সংক্রামিত দেখায়, দয়া করে ডাক্তারের সাথে দেখা করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "insect_bite_start": { "question": "আপনি কি কামড়ের জায়গার বাইরে শ্বাসকষ্ট, ব্যাপক ফুসকুড়ি, মুখ ফোলা বা অজ্ঞান বোধ করার মতো লক্ষণ অনুভব করছেন?", "options": { "হ্যাঁ, আমার গুরুতর লক্ষণ রয়েছে": "insect_bite_severe", "না, এটি কেবল একটি স্থানীয় প্রতিক্রিয়া": "insect_bite_local" } },
+    "insect_bite_severe": { "recommendation": "এগুলি একটি গুরুতর অ্যালার্জির প্রতিক্রিয়ার লক্ষণ এবং অবিলম্বে জরুরি চিকিৎসা মনোযোগ প্রয়োজন। অনুগ্রহ করে কোনও দেরি না করে নিকটস্থ হাসপাতালে যান বা একটি অ্যাম্বুলেন্সের জন্য কল করুন।" },
+    "insect_bite_local": { "recommendation": "একটি স্থানীয় প্রতিক্রিয়ার জন্য, এলাকাটি সাবান এবং জল দিয়ে ধুয়ে ফেলুন। ফোলা এবং চুলকানি কমাতে একটি ঠান্ডা কম্প্রেস প্রয়োগ করুন। একটি ওভার-দ্য-কাউন্টার হাইড্রোকর্টিসোন ক্রিম বা অ্যান্টিহিস্টামিন সাহায্য করতে পারে। চুলকানো এড়িয়ে চলুন। যদি একটি হুল দেখা যায়, তবে এটি একটি সমতল প্রান্ত দিয়ে আলতো করে স্ক্র্যাপ করুন। যদি ফোলা গুরুতর হয় বা আপনি সংক্রমণের লক্ষণ দেখেন, তবে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "animal_bite_start": { "question": "কামড় দিয়ে কি চামড়া কেটে গেছে?", "options": { "হ্যাঁ": "animal_bite_broken_skin", "না": "animal_bite_no_break" } },
+    "animal_bite_no_break": { "recommendation": "যদি চামড়া না কাটে, তবে এলাকাটি সাবান এবং জল দিয়ে ভালভাবে ধুয়ে ফেলুন। আপনার এখনও লালভাব বা ফোলার জন্য এটি পর্যবেক্ষণ করা উচিত। সংক্রমণের ঝুঁকি কম, তবে সতর্ক থাকা ভাল।" },
+    "animal_bite_broken_skin": { "recommendation": "যে কোনও কামড় যা চামড়া কাটে, তা পোষা প্রাণী বা বিপথগামী প্রাণী থেকে হোক না কেন, সংক্রমণ এবং জলাতঙ্কের উচ্চ ঝুঁকির কারণে চিকিৎসার প্রয়োজন। ক্ষতটি কয়েক মিনিটের জন্য সাবান এবং জল দিয়ে ভালভাবে ধুয়ে ফেলুন, তারপর অবিলম্বে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "sunburn_start": { "recommendation": "রোদে পোড়ার জন্য, অবিলম্বে রোদ থেকে সরে যান। একটি ঠান্ডা কম্প্রেস প্রয়োগ করুন বা ঠান্ডা স্নান করুন। অ্যালোভেরা যুক্ত একটি আরামদায়ক ময়েশ্চারাইজার ব্যবহার করুন। ডিহাইড্রেশন রোধ করতে অতিরিক্ত জল পান করুন। কোনও ফোস্কা ভাঙবেন না। গুরুতর, ফোস্কাযুক্ত রোদে পোড়ার জন্য, আপনার ডাক্তারের সাথে পরামর্শ করা উচিত। এটি ডাক্তারি পরামর্শ নয়।" },
+    "nosebleed_start": { "question": "নাক দিয়ে রক্ত পড়া কি মাথায় গুরুতর আঘাতের ফল, নাকি এটি নিজে থেকেই শুরু হয়েছে?", "options": { "মাথায় আঘাতের ফল": "nosebleed_injury", "নিজে থেকেই শুরু হয়েছে": "nosebleed_spontaneous" } },
+    "nosebleed_injury": { "recommendation": "মাথায় আঘাতের পরে নাক দিয়ে রক্ত পড়লে আরও গুরুতর সমস্যা বাতিল করার জন্য অবিলম্বে চিকিৎসা মূল্যায়ন প্রয়োজন। অনুগ্রহ করে একটি জরুরি কক্ষে যান।" },
+    "nosebleed_spontaneous": { "recommendation": "নাক দিয়ে রক্ত পড়া বন্ধ করতে, বসে পড়ুন এবং সামান্য সামনের দিকে ঝুঁকুন, পিছনে নয়। আপনার নাকের নরম অংশটি ১০-১৫ মিনিটের জন্য দৃঢ়ভাবে চিপে ধরুন এবং আপনার মুখ দিয়ে শ্বাস নিন। আপনার নাকের সেতুতে একটি আইস প্যাকও সাহায্য করতে পারে। যদি রক্তপাত খুব ভারী হয় বা ২০ মিনিটের পরেও বন্ধ না হয়, তবে আপনার ডাক্তারের সাথে দেখা করা উচিত। এটি ডাক্তারি পরামর্শ নয়।" },
+    "allergies_start": { "recommendation": "ঋতুগত অ্যালার্জির জন্য (যেমন হাঁচি, চোখ চুলকানো, নাক দিয়ে জল পড়া), ওভার-দ্য-কাউন্টার অ্যান্টিহিস্টামিনগুলি কার্যকর হতে পারে। সম্ভব হলে আপনার ট্রিগারগুলি সনাক্ত করার এবং এড়িয়ে চলার চেষ্টা করুন। একটি স্যালাইন নেজাল রিন্স আপনার অনুনাসিক প্যাসেজ থেকে পরাগ পরিষ্কার করতে সাহায্য করতে পারে। যদি লক্ষণগুলি গুরুতর হয় বা আপনার শ্বাস-প্রশ্বাসকে প্রভাবিত করে, তবে ডাক্তারের সাথে পরামর্শ করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "insomnia_start": { "recommendation": "ঘুমের উন্নতির জন্য, সপ্তাহান্তেও একটি নিয়মিত ঘুমের সময়সূচী স্থাপন করার চেষ্টা করুন। নিশ্চিত করুন যে আপনার শোবার ঘরটি অন্ধকার, শান্ত এবং শীতল। সন্ধ্যায় দেরিতে ক্যাফিন এবং ভারী খাবার এড়িয়ে চলুন। বিছানায় যাওয়ার কমপক্ষে এক ঘন্টা আগে স্ক্রিন (ফোন, টিভি) ব্যবহার করা এড়িয়ে চলুন। যদি আপনার ধারাবাহিকভাবে ঘুমাতে সমস্যা হয়, তবে ডাক্তারের সাথে কথা বলা একটি ভাল ধারণা। এটি ডাক্তারি পরামর্শ নয়।" },
+    "anxiety_start": { "question": "আপনি কি বর্তমানে দ্রুত হৃদস্পন্দন, শ্বাসকষ্ট, বুকে আঁটসাঁট ভাব বা কাঁপুনি-র মতো শারীরিক লক্ষণ অনুভব করছেন?", "options": { "হ্যাঁ, এখনই": "anxiety_panic", "না, আমি আরও সাধারণভাবে চিন্তিত বোধ করছি": "anxiety_general" } },
+    "anxiety_panic": { "recommendation": "মনে হচ্ছে আপনি একটি প্যানিক অ্যাটাকের সম্মুখীন হতে পারেন। বসার জন্য একটি শান্ত জায়গা খোঁজার চেষ্টা করুন। আপনার শ্বাসের উপর মনোযোগ কেন্দ্রীভূত করুন: ৪ গণনার জন্য ধীরে ধীরে শ্বাস নিন, ৪ এর জন্য ধরে রাখুন এবং ৬ এর জন্য ধীরে ধীরে শ্বাস ছাড়ুন। নিজেকে মনে করিয়ে দিন যে এই অনুভূতিগুলি অস্থায়ী এবং কেটে যাবে। ৫-৪-৩-২-১ গ্রাউন্ডিং কৌশলটি সাহায্য করতে পারে: আপনি দেখতে পাচ্ছেন এমন ৫টি জিনিসের নাম বলুন, ৪টি যা আপনি স্পর্শ করতে পারেন, ৩টি যা আপনি শুনতে পারেন, ২টি যা আপনি গন্ধ নিতে পারেন এবং ১টি যা আপনি স্বাদ নিতে পারেন। এই অভিজ্ঞতাগুলি সম্পর্কে একজন ডাক্তার বা একজন মানসিক স্বাস্থ্য পেশাদারের সাথে কথা বলা খুব গুরুত্বপূর্ণ। এটি ডাক্তারি পরামর্শ নয়।" },
+    "anxiety_general": { "recommendation": "মানসিক চাপ এবং উদ্বেগের অনুভূতি সাধারণ। গভীর শ্বাস, মননশীলতা, নিয়মিত শারীরিক কার্যকলাপ এবং একজন বিশ্বস্ত ব্যক্তির সাথে আপনার অনুভূতি সম্পর্কে কথা বলার মতো অভ্যাসগুলি সাহায্য করতে পারে। যদি এই অনুভূতিগুলি স্থায়ী হয় এবং আপনার দৈনন্দিন জীবনে হস্তক্ষেপ করে, তবে একজন থেরাপিস্ট বা কাউন্সেলরের সাহায্য নেওয়া একটি খুব কার্যকর পদক্ষেপ। অনুগ্রহ করে একজন পেশাদারের সাথে কথা বলার কথা বিবেচনা করুন। এটি ডাক্তারি পরামর্শ নয়।" },
+    "cramps_start": { "recommendation": "মাসিকের ব্যথার জন্য, আপনার তলপেটে বা পিঠের নীচের অংশে একটি হিটিং প্যাড প্রয়োগ করলে আরাম পাওয়া যায়। ওভার-দ্য-কাউন্টার ব্যথা উপশমকারীগুলিও কার্যকর হতে পারে। হাঁটার মতো হালকা ব্যায়ামও সাহায্য করতে পারে। যদি ব্যথা গুরুতর হয় এবং আপনার দৈনন্দিন ক্রিয়াকলাপগুলিতে হস্তক্ষেপ করে, তবে ডাক্তারের সাথে পরামর্শ করা একটি ভাল ধারণা। এটি ডাক্তারি পরামর্শ নয়।" },
+    "periods_irregular": { "recommendation": "অনিয়মিত মাসিক মানসিক চাপ, ডায়েট, ব্যায়াম বা অন্তর্নিহিত স্বাস্থ্য পরিস্থিতি সহ অনেক কারণে হতে পারে। কিছু বৈচিত্র্য থাকা সাধারণ। তবে, যদি আপনার চক্র ধারাবাহিকভাবে অনিয়মিত হয় বা আপনার অন্যান্য উদ্বেগ থাকে, তবে সঠিক মূল্যায়নের জন্য একজন স্ত্রীরোগ বিশেষজ্ঞের সাথে পরামর্শ করা ভাল। এটি ডাক্তারি পরামর্শ নয়।" },
+    "eye_start": { "question": "আপনি কি চোখে ব্যথা, দৃষ্টিতে আকস্মিক পরিবর্তন অনুভব করছেন, বা আপনার চোখে কোনও রাসায়নিক ছিটে পড়েছে বা শারীরিক আঘাত লেগেছে?", "options": { "হ্যাঁ, এটি একটি জরুরি অবস্থা": "eye_emergency", "না, এটি হালকা জ্বালা বা লালভাব": "eye_mild" } },
+    "eye_emergency": { "recommendation": "গুরুতর ব্যথা, আকস্মিক দৃষ্টিশক্তি হ্রাস, একটি রাসায়নিক ছিটে, বা চোখে কোনও বস্তু থাকা সবই মেডিকেল ইমার্জেন্সি। অবিলম্বে নিকটস্থ জরুরি কক্ষে যান। আপনার চোখ ঘষবেন না বা কোনও আটকে থাকা বস্তু সরানোর চেষ্টা করবেন না।" },
+    "eye_mild": { "recommendation": "হালকা লালভাব বা জ্বালার জন্য, আপনি পরিষ্কার, হালকা গরম জল দিয়ে চোখ ধোয়ার চেষ্টা করতে পারেন বা ওভার-দ্য-কাউন্টার লুব্রিকেটিং আই ড্রপ (কৃত্রিম অশ্রু) ব্যবহার করতে পারেন। আপনার চোখ ঘষা এড়িয়ে চলুন। যদি একদিনের মধ্যে অবস্থার উন্নতি না হয় বা আরও খারাপ হয়, দয়া করে ডাক্তারের সাথে দেখা করুন। এটি ডাক্তারি পরামর্শ নয়।" }
+  },
+  
+  "pa": {
+    "start": {
+      "question": "ਸਤ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਤੁਹਾਡਾ ਔਫਲਾਈਨ ਸਿਹਤ ਸਹਾਇਕ ਹਾਂ। ਕਿਰਪਾ ਕਰਕੇ ਹੇਠਾਂ ਦਿੱਤੀ ਸੂਚੀ ਵਿੱਚੋਂ ਆਪਣੀ ਮੁੱਖ ਸਮੱਸਿਆ ਚੁਣੋ।",
+      "options": {
+        "ਬੁਖਾਰ (ਬਾਲਗ)": "fever_start",
+        "ਬੁਖਾਰ (ਬੱਚਾ)": "child_fever_start",
+        "ਖੰਘ ਅਤੇ ਜ਼ੁਕਾਮ": "cold_start",
+        "ਸਿਰ ਦਰਦ": "headache_start",
+        "ਚੱਕਰ ਆਉਣਾ / ਬੇਹੋਸ਼ੀ": "dizziness_start",
+        "ਥਕਾਵਟ / ਥਕਾਨ": "fatigue_start",
+        "ਪੇਟ ਅਤੇ ਪਾਚਨ ਸੰਬੰਧੀ ਸਮੱਸਿਆਵਾਂ": "stomach_pain_start",
+        "ਦਸਤ / ਉਲਟੀਆਂ": "diarrhea_start",
+        "ਡੀਹਾਈਡਰੇਸ਼ਨ": "dehydration_start",
+        "ਭੋਜਨ ਜ਼ਹਿਰ": "food_poisoning_start",
+        "ਕਬਜ਼": "constipation_start",
+        "ਬਦਹਜ਼ਮੀ / ਦਿਲ ਵਿੱਚ ਜਲਨ": "heartburn_start",
+        "ਦਰਦ (ਪਿੱਠ, ਗਰਦਨ, ਜੋੜ)": "pain_menu",
+        "ਕੰਨ, ਨੱਕ, ਗਲਾ": "ent_menu",
+        "ਪਿਸ਼ਾਬ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ": "uti_start",
+        "ਚਮੜੀ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ (ਧੱਫੜ, ਜਲਨ, ਡੰਗ)": "skin_menu",
+        "ਔਰਤਾਂ ਦੀ ਸਿਹਤ": "womens_health_menu",
+        "ਅੱਖਾਂ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ": "eye_start",
+        "ਸੌਣ ਵਿੱਚ ਮੁਸ਼ਕਲ": "insomnia_start",
+        "ਤਣਾਅ / ਚਿੰਤਾ": "anxiety_start"
+      }
+    },
+    "pain_menu": {
+      "question": "ਤੁਹਾਨੂੰ ਕਿਸ ਕਿਸਮ ਦਾ ਦਰਦ ਹੋ ਰਿਹਾ ਹੈ?",
+      "options": {
+        "ਪਿੱਠ ਦਰਦ": "back_pain_start",
+        "ਗਰਦਨ ਦਾ ਦਰਦ": "neck_pain_start",
+        "ਜੋੜਾਂ ਦਾ ਦਰਦ / ਮੋਚ": "sprain_start",
+        "ਮਾਸਪੇਸ਼ੀਆਂ ਵਿੱਚ ਕੜਵੱਲ": "muscle_cramp_start"
+      }
+    },
+    "ent_menu": {
+      "question": "ਤੁਹਾਡੇ ਕੰਨ, ਨੱਕ ਜਾਂ ਗਲੇ ਦਾ ਮੁੱਖ ਲੱਛਣ ਕੀ ਹੈ?",
+      "options": {
+        "ਕੰਨ ਦਰਦ": "earache_start",
+        "ਨੱਕ ਵਿੱਚੋਂ ਖੂਨ ਵਗਣਾ": "nosebleed_start",
+        "ਗਲੇ ਵਿੱਚ ਖਰਾਸ਼": "cold_throat",
+        "ਐਲਰਜੀ (ਛਿੱਕਾਂ/ਵਗਦਾ ਨੱਕ)": "allergies_start"
+      }
+    },
+    "skin_menu": {
+      "question": "ਤੁਹਾਨੂੰ ਕਿਸ ਕਿਸਮ ਦੀ ਚਮੜੀ ਦੀ ਸਮੱਸਿਆ ਹੋ ਰਹੀ ਹੈ?",
+      "options": {
+        "ਮਾਮੂਲੀ ਜ਼ਖ਼ਮ / ਕੱਟ": "wound_start",
+        "ਚਮੜੀ 'ਤੇ ਧੱਫੜ / ਖਾਰਸ਼": "rash_start",
+        "ਮਾਮੂਲੀ ਜਲਨ": "burn_start",
+        "ਕੀੜੇ ਦਾ ਡੰਗ / ਦੰਦੀ": "insect_bite_start",
+        "ਜਾਨਵਰ / ਮਨੁੱਖ ਦਾ ਦੰਦੀ": "animal_bite_start",
+        "ਸਨਬਰਨ": "sunburn_start"
+      }
+    },
+    "womens_health_menu": {
+      "question": "ਤੁਸੀਂ ਔਰਤਾਂ ਦੀ ਸਿਹਤ ਦੇ ਕਿਹੜੇ ਮੁੱਦੇ ਬਾਰੇ ਚਿੰਤਤ ਹੋ?",
+      "options": {
+        "ਮਾਹਵਾਰੀ ਦੇ ਕੜਵੱਲ": "cramps_start",
+        "ਅਨਿਯਮਿਤ ਮਾਹਵਾਰੀ": "periods_irregular"
+      }
+    },
+    "fever_start": {
+      "question": "ਮੈਂ ਸਮਝਦਾ ਹਾਂ ਕਿ ਤੁਹਾਨੂੰ ਬੁਖਾਰ ਹੈ। ਕੀ यह ਤੇਜ਼ ਹੈ (102°F / 39°C ਤੋਂ ਵੱਧ) ਜਾਂ ਹਲਕਾ?",
+      "options": {
+        "ਤੇਜ਼ ਬੁਖਾਰ": "fever_high",
+        "ਹਲਕਾ ਬੁਖਾਰ": "fever_low"
+      }
+    },
+    "fever_high": {
+      "recommendation": "ਤੇਜ਼ ਬੁਖਾਰ ਗੰਭੀਰ ਹੋ ਸਕਦਾ ਹੈ। ਤੁਰੰਤ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨ ਦੀ ਸਿਫਾਰਸ਼ ਕੀਤੀ ਜਾਂਦੀ ਹੈ। ਜਦੋਂ ਤੱਕ ਤੁਸੀਂ ਸਲਾਹ ਦਾ ਪ੍ਰਬੰਧ ਕਰਦੇ ਹੋ, ਤੁਸੀਂ ਆਰਾਮ ਲਈ ਮੱਥੇ 'ਤੇ ਗਿੱਲਾ ਕੱਪੜਾ ਵਰਤ ਸਕਦੇ ਹੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "fever_low": {
+      "question": "ਠੀਕ ਹੈ। ਕੀ ਤੁਹਾਨੂੰ ਸਿਰ ਦਰਦ ਜਾਂ ਸਰੀਰ ਵਿੱਚ ਦਰਦ ਵੀ ਹੈ?",
+      "options": {
+        "ਹਾਂ": "fever_low_aches_yes",
+        "ਨਹੀਂ": "fever_low_aches_no"
+      }
+    },
+    "fever_low_aches_yes": {
+      "question": "ਕੀ ਤੁਹਾਨੂੰ ਖੰਘ ਜਾਂ ਗਲੇ ਵਿੱਚ ਖਰਾਸ਼ ਵੀ ਹੈ?",
+      "options": {
+        "ਹਾਂ": "fever_flu_symptoms",
+        "ਨਹੀਂ": "fever_aches_no_cough"
+      }
+    },
+    "fever_flu_symptoms": {
+      "recommendation": "ਹਲਕਾ ਬੁਖਾਰ, ਦਰਦ, ਅਤੇ ਖੰਘ/ਗਲੇ ਵਿੱਚ ਖਰਾਸ਼ ਵਰਗੇ ਲੱਛਣ ਅਕਸਰ ਫਲੂ ਵਰਗੇ ਵਾਇਰਲ ਇਨਫੈਕਸ਼ਨ ਦਾ ਸੁਝਾਅ ਦਿੰਦੇ ਹਨ। ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਸੀਂ ਬਹੁਤ ਆਰਾਮ ਕਰੋ ਅਤੇ ਬਹੁਤ ਸਾਰੇ ਤਰਲ ਪਦਾਰਥ (ਪਾਣੀ, ਸੂਪ) ਪੀਓ। ਸਹੀ ਜਾਂਚ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਸਭ ਤੋਂ ਵਧੀਆ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "fever_aches_no_cough": {
+      "recommendation": "ਸਰੀਰ ਦੇ ਦਰਦ ਨਾਲ ਬੁਖਾਰ ਵਾਇਰਲ ਇਨਫੈਕਸ਼ਨ ਜਾਂ ਥਕਾਵਟ ਸਮੇਤ ਕਈ ਕਾਰਨਾਂ ਕਰਕੇ ਹੋ ਸਕਦਾ ਹੈ। ਆਰਾਮ ਅਤੇ ਹਾਈਡਰੇਸ਼ਨ ਮੁੱਖ ਹਨ। ਜੇਕਰ ਲੱਛਣ ਦੋ ਦਿਨਾਂ ਤੋਂ ਵੱਧ ਸਮੇਂ ਤੱਕ ਰਹਿੰਦੇ ਹਨ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਡਾਕਟਰ ਨੂੰ ਮਿਲੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "fever_low_aches_no": {
+      "recommendation": "ਹੋਰ ਵੱਡੇ ਲੱਛਣਾਂ ਤੋਂ ਬਿਨਾਂ ਹਲਕੇ ਬੁਖਾਰ ਦੀ ਨਿਗਰਾਨੀ ਕੀਤੀ ਜਾਣੀ ਚਾਹੀਦੀ ਹੈ। ਆਰਾਮ ਕਰੋ ਅਤੇ ਹਾਈਡਰੇਟਿਡ ਰਹੋ। ਜੇਕਰ ਬੁਖਾਰ 3 ਦਿਨਾਂ ਤੋਂ ਵੱਧ ਰਹਿੰਦਾ ਹੈ, ਤਾਂ ਡਾਕਟਰ ਨੂੰ ਮਿਲਣਾ ਜ਼ਰੂਰੀ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "child_fever_start": {
+      "question": "ਇੱਕ ਬੱਚੇ ਵਿੱਚ ਬੁਖਾਰ ਗੰਭੀਰ ਹੋ ਸਕਦਾ ਹੈ। ਬੱਚੇ ਦੀ ਉਮਰ ਕੀ ਹੈ?",
+      "options": {
+        "0-3 ਮਹੀਨੇ ਦਾ": "child_fever_infant",
+        "3 ਮਹੀਨੇ ਤੋਂ 3 ਸਾਲ": "child_fever_toddler",
+        "3 ਸਾਲ ਤੋਂ ਵੱਧ": "child_fever_older"
+      }
+    },
+    "child_fever_infant": {
+      "recommendation": "3 ਮਹੀਨੇ ਤੋਂ ਘੱਟ ਉਮਰ ਦੇ ਬੱਚੇ ਵਿੱਚ ਬੁਖਾਰ ਨੂੰ ਇੱਕ ਮੈਡੀਕਲ ਐਮਰਜੈਂਸੀ ਮੰਨਿਆ ਜਾਂਦਾ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਬੱਚੇ ਨੂੰ ਤੁਰੰਤ ਨਜ਼ਦੀਕੀ ਹਸਪਤਾਲ ਜਾਂ ਐਮਰਜੈਂਸੀ ਰੂਮ ਵਿੱਚ ਲੈ ਜਾਓ। ਡਾਕਟਰ ਦੀ ਸਿੱਧੀ ਨਿਗਰਾਨੀ ਤੋਂ ਬਿਨਾਂ ਕੋਈ ਵੀ ਦਵਾਈ ਨਾ ਦਿਓ।"
+    },
+    "child_fever_toddler": {
+      "question": "ਬੁਖਾਰ ਤੋਂ ਇਲਾਵਾ, ਕੀ ਬੱਚਾ ਅਸਧਾਰਨ ਤੌਰ 'ਤੇ ਨੀਂਦ ਵਿੱਚ ਹੈ, ਤਰਲ ਪੀਣ ਤੋਂ ਇਨਕਾਰ ਕਰ ਰਿਹਾ ਹੈ, ਸਾਹ ਲੈਣ ਵਿੱਚ ਮੁਸ਼ਕਲ ਆ ਰਹੀ ਹੈ, ਜਾਂ ਚਮੜੀ 'ਤੇ ਨਵਾਂ ਧੱਫੜ ਹੈ?",
+      "options": {
+        "ਹਾਂ, ਉਸਨੂੰ ਹੋਰ ਗੰਭੀਰ ਲੱਛਣ ਹਨ": "child_fever_serious",
+        "ਨਹੀਂ, ਸਿਰਫ਼ ਬੁਖਾਰ ਹੈ": "child_fever_monitor"
+      }
+    },
+    "child_fever_older": {
+      "recommendation": "3 ਸਾਲ ਤੋਂ ਵੱਧ ਉਮਰ ਦੇ ਬੱਚੇ ਲਈ, ਤੁਸੀਂ ਉਹਨਾਂ ਨੂੰ ਆਰਾਮਦਾਇਕ ਅਤੇ ਹਾਈਡਰੇਟਿਡ ਰੱਖਣ ਵਿੱਚ ਮਦਦ ਕਰ ਸਕਦੇ ਹੋ। ਹੋਰ ਲੱਛਣਾਂ ਲਈ ਨਿਗਰਾਨੀ ਕਰੋ। ਬੁਖਾਰ ਲਈ ਹਮੇਸ਼ਾ ਇੱਕ ਬਾਲ ਰੋਗ ਵਿਗਿਆਨੀ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਸਭ ਤੋਂ ਸੁਰੱਖਿਅਤ ਹੁੰਦਾ ਹੈ, ਖਾਸ ਕਰਕੇ ਜੇ यह ਤੇਜ਼ ਹੋਵੇ ਜਾਂ ਕੁਝ ਦਿਨਾਂ ਤੋਂ ਵੱਧ ਰਹੇ। ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕੀਤੇ ਬਿਨਾਂ ਕੋਈ ਵੀ ਦਵਾਈ ਨਾ ਦਿਓ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "child_fever_serious": {
+      "recommendation": "ਇਹ ਇੱਕ ਛੋਟੇ ਬੱਚੇ ਵਿੱਚ ਗੰਭੀਰ ਚੇਤਾਵਨੀ ਦੇ ਸੰਕੇਤ ਹਨ। ਕਿਰਪਾ ਕਰਕੇ ਤੁਰੰਤ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ ਜਾਂ ਐਮਰਜੈਂਸੀ ਰੂਮ ਵਿੱਚ ਜਾਓ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "child_fever_monitor": {
+      "recommendation": "ਡੀਹਾਈਡਰੇਸ਼ਨ ਤੋਂ ਬਚਣ ਲਈ ਇਹ ਯਕੀਨੀ ਬਣਾਉਣਾ ਮਹੱਤਵਪੂਰਨ ਹੈ ਕਿ ਬੱਚਾ ਬਹੁਤ ਸਾਰੇ ਤਰਲ ਪਦਾਰਥ ਪੀਵੇ। ਤੁਸੀਂ ਉਹਨਾਂ ਨੂੰ ਆਰਾਮ ਦੇਣ ਲਈ ਇੱਕ ਕੋਸੇ ਪਾਣੀ ਦੇ ਸਪੰਜ ਬਾਥ ਦੀ ਵਰਤੋਂ ਕਰ ਸਕਦੇ ਹੋ। ਇੱਕ ਛੋਟੇ ਬੱਚੇ ਵਿੱਚ ਕਿਸੇ ਵੀ ਬੁਖਾਰ ਲਈ ਹਮੇਸ਼ਾ ਇੱਕ ਬਾਲ ਰੋਗ ਵਿਗਿਆਨੀ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਸਭ ਤੋਂ ਵਧੀਆ ਹੁੰਦਾ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "cough_start": {
+      "question": "ਤੁਹਾਡੀ ਖੰਘ ਦੇ ਸੰਬੰਧ ਵਿੱਚ, ਕੀ ਇਹ ਸੁੱਕੀ ਖੰਘ ਹੈ ਜਾਂ ਬਲਗਮ ਵਾਲੀ ਗਿੱਲੀ ਖੰਘ?",
+      "options": {
+        "ਸੁੱਕੀ ਖੰਘ": "cough_dry",
+        "ਗਿੱਲੀ ਖੰਘ": "cough_wet"
+      }
+    },
+    "cough_dry": {
+      "recommendation": "ਸੁੱਕੀ ਖੰਘ ਲਈ, ਗਰਮ ਪਾਣੀ ਨਾਲ ਸ਼ਹਿਦ ਜਾਂ ਅਦਰਕ ਦੀ ਚਾਹ ਵਰਗੇ ਆਰਾਮਦਾਇਕ ਉਪਚਾਰਾਂ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਭਾਫ਼ ਲੈਣਾ ਵੀ ਮਦਦ ਕਰ ਸਕਦਾ ਹੈ। ਜੇਕਰ ਖੰਘ ਲਗਾਤਾਰ ਜਾਂ ਗੰਭੀਰ ਹੋਵੇ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "cough_wet": {
+      "recommendation": "ਗਿੱਲੀ ਖੰਘ ਲਈ, ਭਾਫ਼ ਲੈਣ ਨਾਲ ਬਲਗਮ ਨੂੰ ਢਿੱਲਾ ਕਰਨ ਵਿੱਚ ਮਦਦ ਮਿਲ ਸਕਦੀ ਹੈ। ਚੰਗੀ ਤਰ੍ਹਾਂ ਹਾਈਡਰੇਟਿਡ ਰਹੋ। ਕਾਰਨ ਨੂੰ ਸਮਝਣ ਲਈ ਡਾਕਟਰ ਨੂੰ ਮਿਲਣਾ ਮਹੱਤਵਪੂਰਨ ਹੈ, ਖਾਸ ਕਰਕੇ ਜੇਕਰ ਬਲਗਮ ਸਾਫ਼ ਨਹੀਂ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "cold_start": {
+      "question": "ਕੀ ਤੁਹਾਡੇ ਮੁੱਖ ਲੱਛਣ ਵਗਦਾ/ਬੰਦ ਨੱਕ ਅਤੇ ਛਿੱਕਾਂ ਹਨ, ਜਾਂ यह ਮੁੱਖ ਤੌਰ 'ਤੇ ਗਲੇ ਵਿੱਚ ਖਰਾਸ਼ ਹੈ?",
+      "options": {
+        "ਵਗਦਾ/ਬੰਦ ਨੱਕ": "allergies_start",
+        "ਗਲੇ ਵਿੱਚ ਖਰਾਸ਼": "cold_throat"
+      }
+    },
+    "cold_throat": {
+      "recommendation": "ਗਲੇ ਵਿੱਚ ਖਰਾਸ਼ ਲਈ, ਗਰਮ ਨਮਕ ਵਾਲੇ ਪਾਣੀ ਨਾਲ ਗਰਾਰੇ ਕਰਨ ਨਾਲ ਰਾਹਤ ਮਿਲ ਸਕਦੀ ਹੈ। ਸ਼ਹਿਦ ਵਾਲੀ ਚਾਹ ਵਰਗੇ ਗਰਮ ਪੀਣ ਵਾਲੇ ਪਦਾਰਥ ਪੀਓ। ਆਪਣੀ ਆਵਾਜ਼ 'ਤੇ ਜ਼ੋਰ ਦੇਣ ਤੋਂ ਬਚੋ। ਜੇਕਰ ਨਿਗਲਣ ਵਿੱਚ ਬਹੁਤ ਦਰਦ ਹੋਵੇ ਜਾਂ ਤੁਹਾਨੂੰ ਤੇਜ਼ ਬੁਖਾਰ ਹੋਵੇ, ਤਾਂ ਤੁਰੰਤ ਡਾਕਟਰ ਨੂੰ ਮਿਲੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "headache_start": {
+      "question": "ਕੀ ਤੁਹਾਡਾ ਸਿਰ ਦਰਦ ਗੰਭੀਰ ਅਤੇ ਅਚਾਨਕ ਹੈ (ਜਿਵੇਂ ਬਿਜਲੀ ਦਾ ਕੜਕਣਾ), ਜਾਂ यह ਇੱਕ ਹੋਰ ਆਮ, ਲਗਾਤਾਰ ਦਰਦ ਹੈ?",
+      "options": {
+        "ਗੰਭੀਰ ਅਤੇ ਅਚਾਨਕ": "headache_severe",
+        "ਆਮ ਦਰਦ": "headache_dull"
+      }
+    },
+    "headache_severe": {
+      "recommendation": "ਇੱਕ ਅਚਾਨਕ, ਗੰਭੀਰ 'ਥੰਡਰਕਲੈਪ' ਸਿਰ ਦਰਦ ਇੱਕ ਗੰਭੀਰ ਸਥਿਤੀ ਦਾ ਸੰਕੇਤ ਹੋ ਸਕਦਾ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਤੁਰੰਤ ਡਾਕਟਰ ਜਾਂ ਐਮਰਜੈਂਸੀ ਰੂਮ ਤੋਂ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਲਓ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "headache_dull": {
+      "question": "ਕੀ ਤੁਸੀਂ ਰੌਸ਼ਨੀ ਜਾਂ ਆਵਾਜ਼ ਪ੍ਰਤੀ ਸੰਵੇਦਨਸ਼ੀਲ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ, ਜਾਂ ਮਤਲੀ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ?",
+      "options": {
+        "ਹਾਂ": "headache_migraine",
+        "ਨਹੀਂ": "headache_tension"
+      }
+    },
+    "headache_migraine": {
+      "recommendation": "ਰੌਸ਼ਨੀ ਅਤੇ ਆਵਾਜ਼ ਪ੍ਰਤੀ ਸੰਵੇਦਨਸ਼ੀਲਤਾ ਦੇ ਨਾਲ ਸਿਰ ਦਰਦ ਮਾਈਗ੍ਰੇਨ ਹੋ ਸਕਦਾ ਹੈ। ਇੱਕ ਸ਼ਾਂਤ, ਹਨੇਰੇ ਕਮਰੇ ਵਿੱਚ ਆਰਾਮ ਕਰੋ। ਤੁਹਾਡੇ ਮੱਥੇ 'ਤੇ ਇੱਕ ਠੰਡਾ ਕੱਪੜਾ ਮਦਦ ਕਰ ਸਕਦਾ ਹੈ। ਸਹੀ ਨਿਦਾਨ ਅਤੇ ਇਲਾਜ ਯੋਜਨਾ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਬਹੁਤ ਮਹੱਤਵਪੂਰਨ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "headache_tension": {
+      "recommendation": "ਇਹ ਇੱਕ ਤਣਾਅ ਸਿਰ ਦਰਦ ਹੋ ਸਕਦਾ ਹੈ। ਗਰਦਨ ਦੀਆਂ ਹਲਕੀ ਖਿੱਚਾਂ, ਆਰਾਮ, ਅਤੇ यह ਯਕੀਨੀ ਬਣਾਉਣਾ ਕਿ ਤੁਸੀਂ ਹਾਈਡਰੇਟਿਡ ਹੋ, ਮਦਦ ਕਰ ਸਕਦਾ ਹੈ। ਜੇਕਰ ਸਿਰ ਦਰਦ ਅਕਸਰ ਜਾਂ ਬਹੁਤ ਦਰਦਨਾਕ ਹੁੰਦਾ ਹੈ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "dizziness_start": {
+      "question": "ਕੀ ਕੋਈ ਬੇਹੋਸ਼ ਹੋ ਗਿਆ ਹੈ, ਜਾਂ ਕੀ ਤੁਸੀਂ ਸਿਰਫ ਚੱਕਰ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ?",
+      "options": {
+        "ਕੋਈ ਬੇਹੋਸ਼ ਹੋ ਗਿਆ ਹੈ": "fainting_start",
+        "ਮੈਨੂੰ ਚੱਕਰ ਆ ਰਹੇ ਹਨ": "dizziness_feeling"
+      }
+    },
+    "fainting_start": {
+      "question": "ਕੀ ਵਿਅਕਤੀ ਹੁਣ ਹੋਸ਼ ਵਿੱਚ ਹੈ ਅਤੇ ਜਵਾਬ ਦੇ ਰਿਹਾ ਹੈ?",
+      "options": {
+        "ਹਾਂ, ਉਹ ਜਾਗ ਰਹੇ ਹਨ": "fainting_awake",
+        "ਨਹੀਂ, ਉਹ ਅਜੇ ਵੀ ਬੇਹੋਸ਼ ਹਨ": "fainting_unconscious"
+      }
+    },
+    "fainting_unconscious": {
+      "recommendation": "ਇਹ ਇੱਕ ਮੈਡੀਕਲ ਐਮਰਜੈਂਸੀ ਹੈ। ਤੁਰੰਤ ਇੱਕ ਐਂਬੂਲੈਂਸ ਲਈ ਕਾਲ ਕਰੋ। ਜਾਂਚ ਕਰੋ ਕਿ ਵਿਅਕਤੀ ਸਾਹ ਲੈ ਰਿਹਾ ਹੈ ਜਾਂ ਨਹੀਂ। ਜੇਕਰ ਤੁਸੀਂ ਸਿਖਲਾਈ ਪ੍ਰਾਪਤ ਹੋ, ਤਾਂ ਸੀਪੀਆਰ ਕਰਨ ਲਈ ਤਿਆਰ ਰਹੋ। ਉਹਨਾਂ ਨੂੰ ਖਾਣ ਜਾਂ ਪੀਣ ਲਈ ਕੁਝ ਵੀ ਨਾ ਦਿਓ।"
+    },
+    "fainting_awake": {
+      "recommendation": "ਵਿਅਕਤੀ ਨੂੰ ਉਹਨਾਂ ਦੀਆਂ ਲੱਤਾਂ ਨੂੰ ਥੋੜ੍ਹਾ ਉੱਚਾ ਕਰਕੇ ਲੇਟਾ ਦਿਓ। ਡਿੱਗਣ ਨਾਲ ਲੱਗੀਆਂ ਕਿਸੇ ਵੀ ਸੱਟ ਦੀ ਜਾਂਚ ਕਰੋ। ਉਹਨਾਂ ਨੂੰ ਬਹੁਤ ਜਲਦੀ ਉੱਠਣ ਨਾ ਦਿਓ। ਬੇਹੋਸ਼ੀ ਦਾ ਹਮੇਸ਼ਾ ਇੱਕ ਡਾਕਟਰ ਦੁਆਰਾ ਮੂਲ ਕਾਰਨ ਦਾ ਪਤਾ ਲਗਾਉਣ ਲਈ ਮੁਲਾਂਕਣ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "dizziness_feeling": {
+      "question": "ਕੀ ਅਜਿਹਾ ਮਹਿਸੂਸ ਹੁੰਦਾ ਹੈ ਕਿ ਕਮਰਾ ਤੁਹਾਡੇ ਆਲੇ-ਦੁਆਲੇ ਘੁੰਮ ਰਿਹਾ ਹੈ (ਵਰਟੀਗੋ), ਜਾਂ ਇਸ ਤਰ੍ਹਾਂ ਮਹਿਸੂਸ ਹੁੰਦਾ ਹੈ ਕਿ ਤੁਸੀਂ ਬੇਹੋਸ਼ ਅਤੇ ਹਲਕਾ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ?",
+      "options": {
+        "ਕਮਰਾ ਘੁੰਮ ਰਿਹਾ ਹੈ": "dizziness_vertigo",
+        "ਬੇਹੋਸ਼ ਮਹਿਸੂਸ ਹੋ ਰਿਹਾ ਹੈ": "dizziness_lightheaded"
+      }
+    },
+    "dizziness_vertigo": {
+      "recommendation": "ਵਰਟੀਗੋ ਦੇ ਕਈ ਕਾਰਨ ਹੋ ਸਕਦੇ ਹਨ। ਜਦੋਂ ਤੱਕ ਇਹ ਅਹਿਸਾਸ ਖਤਮ ਨਹੀਂ ਹੋ ਜਾਂਦਾ, ਇੱਕ ਸੁਰੱਖਿਅਤ ਥਾਂ 'ਤੇ ਬੈਠਣਾ ਜਾਂ ਲੇਟਣਾ ਸਭ ਤੋਂ ਵਧੀਆ ਹੈ। ਅਚਾਨਕ ਹਰਕਤਾਂ ਤੋਂ ਬਚੋ। ਮੂਲ ਕਾਰਨ ਦਾ ਪਤਾ ਲਗਾਉਣ ਲਈ ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ-ਮਸ਼ਵਰੇ ਦਾ ਸਮਾਂ ਤਹਿ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "dizziness_lightheaded": {
+      "recommendation": "ਹਲਕਾ ਮਹਿਸੂਸ ਕਰਨਾ ਡੀਹਾਈਡਰੇਸ਼ਨ ਜਾਂ ਘੱਟ ਬਲੱਡ ਸ਼ੂਗਰ ਕਾਰਨ ਹੋ ਸਕਦਾ ਹੈ। ਪਾਣੀ ਪੀਣ ਅਤੇ ਇੱਕ ਛੋਟਾ ਜਿਹਾ ਸਨੈਕ ਲੈਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਡਿੱਗਣ ਤੋਂ ਬਚਣ ਲਈ ਬੈਠੋ ਜਾਂ ਲੇਟ ਜਾਓ। ਜੇਕਰ ਇਹ ਭਾਵਨਾ ਬਣੀ ਰਹਿੰਦੀ ਹੈ ਜਾਂ ਅਕਸਰ ਹੁੰਦੀ ਹੈ, ਤਾਂ ਤੁਹਾਨੂੰ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "fatigue_start": {
+      "recommendation": "ਥਕਾਵਟ ਕਈ ਕਾਰਕਾਂ ਕਰਕੇ ਹੋ ਸਕਦੀ ਹੈ, ਜਿਸ ਵਿੱਚ ਨੀਂਦ ਦੀ ਕਮੀ, ਤਣਾਅ, ਮਾੜੀ ਖੁਰਾਕ, ਜਾਂ ਇੱਕ ਅੰਤਰੀਵ ਡਾਕਟਰੀ ਸਥਿਤੀ ਸ਼ਾਮਲ ਹੈ। ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਸੀਂ 7-9 ਘੰਟੇ ਦੀ ਨੀਂਦ ਲੈ ਰਹੇ ਹੋ, ਸੰਤੁਲਿਤ ਭੋਜਨ ਖਾ ਰਹੇ ਹੋ, ਅਤੇ ਹਾਈਡਰੇਟਿਡ ਰਹਿ ਰਹੇ ਹੋ। ਜੇਕਰ ਥਕਾਵਟ ਲਗਾਤਾਰ ਹੈ ਅਤੇ ਤੁਹਾਡੇ ਰੋਜ਼ਾਨਾ ਜੀਵਨ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਕਰਦੀ ਹੈ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਮਹੱਤਵਪੂਰਨ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "stomach_pain_start": {
+      "question": "ਕੀ ਦਰਦ ਤਿੱਖਾ ਅਤੇ ਇੱਕ ਥਾਂ 'ਤੇ ਸਥਾਨਿਤ ਹੈ, ਜਾਂ ਕੀ ਇਹ ਸਾਰੇ ਪਾਸੇ ਇੱਕ ਆਮ ਕੜਵੱਲ/ਬੇਅਰਾਮੀ ਹੈ?",
+      "options": {
+        "ਤਿੱਖਾ ਅਤੇ ਸਥਾਨਿਤ": "stomach_sharp",
+        "ਆਮ ਕੜਵੱਲ": "stomach_cramping"
+      }
+    },
+    "stomach_sharp": {
+      "recommendation": "ਤਿੱਖਾ, ਸਥਾਨਿਤ ਪੇਟ ਦਰਦ, ਖਾਸ ਕਰਕੇ ਜੇ यह ਗੰਭੀਰ ਹੋਵੇ ਜਾਂ ਹੇਠਲੇ ਸੱਜੇ ਪਾਸੇ ਹੋਵੇ, ਨੂੰ ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਬਿਨਾਂ ਦੇਰੀ ਕੀਤੇ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "stomach_cramping": {
+      "question": "ਕੀ ਕੜਵੱਲ ਇੱਕ ਖਾਸ ਭੋਜਨ ਖਾਣ ਦੇ ਕੁਝ ਘੰਟਿਆਂ ਦੇ ਅੰਦਰ ਸ਼ੁਰੂ ਹੋਈ ਸੀ?",
+      "options": {
+        "ਹਾਂ": "food_poisoning_start",
+        "ਨਹੀਂ": "stomach_indigestion"
+      }
+    },
+    "stomach_indigestion": {
+      "recommendation": "ਆਮ ਕੜਵੱਲ ਬਦਹਜ਼ਮੀ ਜਾਂ ਗੈਸ ਕਾਰਨ ਹੋ ਸਕਦੀ ਹੈ। ਗਰਮ ਪਾਣੀ ਜਾਂ ਪੁਦੀਨੇ ਦੀ ਚਾਹ ਪੀਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਹਲਕਾ, ਸਾਦਾ ਭੋਜਨ ਜਿਵੇਂ ਚਾਵਲ ਖਾਓ। ਜੇ ਦਰਦ ਗੰਭੀਰ ਹੈ ਜਾਂ ਕਈ ਘੰਟਿਆਂ ਤੱਕ ਬਣਿਆ ਰਹਿੰਦਾ ਹੈ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "food_poisoning_start": {
+      "recommendation": "ਭੋਜਨ ਜ਼ਹਿਰ ਦੇ ਲੱਛਣਾਂ ਵਿੱਚ ਅਕਸਰ ਮਤਲੀ, ਉਲਟੀਆਂ, ਦਸਤ, ਅਤੇ ਪੇਟ ਵਿੱਚ ਕੜਵੱਲ ਸ਼ਾਮਲ ਹੁੰਦੇ ਹਨ। ਸਭ ਤੋਂ ਮਹੱਤਵਪੂਰਨ ਗੱਲ ਹਾਈਡਰੇਟਿਡ ਰਹਿਣਾ ਹੈ। ਥੋੜ੍ਹੀ ਮਾਤਰਾ ਵਿੱਚ ਪਾਣੀ ਜਾਂ ਓਰਲ ਰੀਹਾਈਡਰੇਸ਼ਨ ਸਲਿਊਸ਼ਨ (ORS) ਵਾਰ-ਵਾਰ ਪੀਓ। ਆਪਣੇ ਪੇਟ ਨੂੰ ਆਰਾਮ ਦਿਓ ਅਤੇ ਫਿਰ ਹੌਲੀ-ਹੌਲੀ ਹਲਕੇ ਭੋਜਨ (BRAT ਖੁਰਾਕ: ਕੇਲੇ, ਚਾਵਲ, ਸੇਬ ਦੀ ਚਟਣੀ, ਟੋਸਟ) ਦੁਬਾਰਾ ਸ਼ੁਰੂ ਕਰੋ। ਜੇ ਤੁਹਾਨੂੰ ਤੇਜ਼ ਬੁਖਾਰ ਹੈ, ਖੂਨ ਦਿਖਾਈ ਦਿੰਦਾ ਹੈ, ਜਾਂ ਕੋਈ ਤਰਲ ਪਦਾਰਥ ਨਹੀਂ ਪੀ ਸਕਦੇ, ਤਾਂ ਤੁਹਾਨੂੰ ਡਾਕਟਰ ਨੂੰ ਮਿਲਣਾ ਚਾਹੀਦਾ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "diarrhea_start": {
+      "question": "ਕੀ ਤੁਸੀਂ ਡੀਹਾਈਡਰੇਸ਼ਨ ਦੇ ਲੱਛਣਾਂ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ (ਜਿਵੇਂ ਬਹੁਤ ਜ਼ਿਆਦਾ ਪਿਆਸ, ਬਹੁਤ ਸੁੱਕਾ ਮੂੰਹ, ਬਹੁਤ ਘੱਟ ਜਾਂ ਕੋਈ ਪਿਸ਼ਾਬ ਨਾ ਆਉਣਾ, ਜਾਂ ਚੱਕਰ ਆਉਣਾ)?",
+      "options": {
+        "ਹਾਂ, ਮੈਂ ਡੀਹਾਈਡਰੇਟਿਡ ਮਹਿਸੂਸ ਕਰ ਰਿਹਾ ਹਾਂ": "dehydration_start",
+        "ਨਹੀਂ, ਮੈਂ ਠੀਕ ਮਹਿਸੂਸ ਕਰ ਰਿਹਾ ਹਾਂ": "diarrhea_ok"
+      }
+    },
+    "diarrhea_ok": {
+      "recommendation": "ਦਸਤ ਦਾ ਪ੍ਰਬੰਧਨ ਕਰਨ ਲਈ, ORS ਅਤੇ ਪਾਣੀ ਵਰਗੇ ਤਰਲ ਪਦਾਰਥਾਂ ਨਾਲ ਹਾਈਡਰੇਟਿਡ ਰਹਿਣਾ ਮਹੱਤਵਪੂਰਨ ਹੈ। ਇੱਕ ਸਧਾਰਨ ਖੁਰਾਕ ਖਾਓ (BRAT ਖੁਰਾਕ: ਕੇਲੇ, ਚਾਵਲ, ਸੇਬ ਦੀ ਚਟਣੀ, ਟੋਸਟ)। ਜੇ ਇਹ 2 ਦਿਨਾਂ ਤੋਂ ਵੱਧ ਸਮੇਂ ਤੱਕ ਰਹਿੰਦਾ ਹੈ, ਜਾਂ ਜੇ ਤੁਸੀਂ ਖੂਨ ਦੇਖਦੇ ਹੋ, ਤਾਂ ਤੁਰੰਤ ਡਾਕਟਰ ਨੂੰ ਮਿਲੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "dehydration_start": {
+      "recommendation": "ਡੀਹਾਈਡਰੇਸ਼ਨ ਦਾ ਇਲਾਜ ਗੁਆਚੇ ਹੋਏ ਤਰਲ ਪਦਾਰਥਾਂ ਅਤੇ ਇਲੈਕਟ੍ਰੋਲਾਈਟਸ ਨੂੰ ਬਦਲ ਕੇ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ। ਜੇ ਉਪਲਬਧ ਹੋਵੇ ਤਾਂ ਇੱਕ ਓਰਲ ਰੀਹਾਈਡਰੇਸ਼ਨ ਸਲਿਊਸ਼ਨ (ORS) ਪੀਓ। ਨਾਰੀਅਲ ਪਾਣੀ ਅਤੇ ਸਾਫ ਬਰੋਥ ਵੀ ਚੰਗੇ ਹਨ। ਇੱਕ ਵਾਰ ਵਿੱਚ ਬਹੁਤ ਸਾਰਾ ਪੀਣ ਦੀ ਬਜਾਏ ਥੋੜ੍ਹੀ ਮਾਤਰਾ ਵਿੱਚ ਵਾਰ-ਵਾਰ ਪੀਓ। ਕੈਫੀਨ ਅਤੇ ਮਿੱਠੇ ਪੀਣ ਵਾਲੇ ਪਦਾਰਥਾਂ ਤੋਂ ਬਚੋ। ਜੇ ਤੁਹਾਨੂੰ ਗੰਭੀਰ ਡੀਹਾਈਡਰੇਸ਼ਨ ਦੇ ਲੱਛਣ ਹਨ (ਉਲਝਣ, ਬੇਹੋਸ਼ੀ, ਤਰਲ ਪਦਾਰਥ ਪੀਣ ਵਿੱਚ ਅਸਮਰੱਥ), ਤਾਂ ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਲਓ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "constipation_start": {
+      "question": "ਕੀ ਕਬਜ਼ ਦੇ ਨਾਲ ਗੰਭੀਰ ਪੇਟ ਦਰਦ, ਉਲਟੀਆਂ ਹੁੰਦੀਆਂ ਹਨ, ਜਾਂ ਕੀ ਤੁਸੀਂ 4-5 ਦਿਨਾਂ ਤੋਂ ਵੱਧ ਸਮੇਂ ਤੋਂ ਮਲ ਤਿਆਗ ਨਹੀਂ ਕੀਤਾ ਹੈ?",
+      "options": {
+        "ਹਾਂ, ਮੈਨੂੰ ਗੰਭੀਰ ਲੱਛਣ ਹਨ": "constipation_severe",
+        "ਨਹੀਂ, यह ਸਿਰਫ਼ ਹਲਕੀ ਬੇਅਰਾਮੀ ਹੈ": "constipation_mild"
+      }
+    },
+    "constipation_severe": {
+      "recommendation": "ਕਬਜ਼ ਦੇ ਨਾਲ ਗੰਭੀਰ ਲੱਛਣ ਇੱਕ ਰੁਕਾਵਟ ਵਰਗੀ ਵਧੇਰੇ ਗੰਭੀਰ ਸਮੱਸਿਆ ਦਾ ਸੰਕੇਤ ਦੇ ਸਕਦੇ ਹਨ। ਕਿਰਪਾ ਕਰਕੇ ਤੁਰੰਤ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "constipation_mild": {
+      "recommendation": "ਹਲਕੀ ਕਬਜ਼ ਲਈ, ਆਪਣੇ ਫਾਈਬਰ (ਫਲ, ਸਬਜ਼ੀਆਂ, ਸਾਬਤ ਅਨਾਜ) ਅਤੇ ਪਾਣੀ ਦੇ ਸੇਵਨ ਨੂੰ ਵਧਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਤੁਰਨ ਵਰਗੀ ਹਲਕੀ ਸਰੀਰਕ ਗਤੀਵਿਧੀ ਵੀ ਮਦਦ ਕਰ ਸਕਦੀ ਹੈ। ਓਵਰ-ਦੀ-ਕਾਊਂਟਰ ਲੈਕਸੇਟਿਵ ਕਦੇ-ਕਦਾਈਂ ਵਰਤੇ ਜਾ ਸਕਦੇ ਹਨ, ਪਰ ਜੇ ਸਮੱਸਿਆ ਬਣੀ ਰਹਿੰਦੀ ਹੈ ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਸਭ ਤੋਂ ਵਧੀਆ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "heartburn_start": {
+      "question": "ਕੀ ਤੁਸੀਂ ਆਪਣੀ ਛਾਤੀ ਵਿੱਚ ਜਲਨ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ, ਖਾਸ ਕਰਕੇ ਖਾਣਾ ਖਾਣ ਤੋਂ ਬਾਅਦ ਜਾਂ ਲੇਟਣ ਵੇਲੇ?",
+      "options": {
+        "ਹਾਂ, ਇਹੀ ਹੈ": "heartburn_yes",
+        "ਨਹੀਂ, ਇਹ ਉਹ ਨਹੀਂ ਹੈ": "heartburn_no"
+      }
+    },
+    "heartburn_yes": {
+      "recommendation": "ਇਹ ਦਿਲ ਵਿੱਚ ਜਲਨ ਜਾਂ ਐਸਿਡ ਰਿਫਲਕਸ ਵਰਗਾ ਲੱਗਦਾ ਹੈ। ਮਸਾਲੇਦਾਰ, ਚਰਬੀ ਵਾਲੇ, ਜਾਂ ਤੇਜ਼ਾਬੀ ਭੋਜਨਾਂ ਤੋਂ ਬਚਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਛੋਟੇ ਭੋਜਨ ਖਾਣਾ ਅਤੇ ਖਾਣਾ ਖਾਣ ਤੋਂ 2-3 ਘੰਟੇ ਬਾਅਦ ਨਾ ਲੇਟਣਾ ਮਦਦ ਕਰ ਸਕਦਾ ਹੈ। ਓਵਰ-ਦੀ-ਕਾਊਂਟਰ ਐਂਟਾਸਿਡ ਅਸਥਾਈ ਰਾਹਤ ਪ੍ਰਦਾਨ ਕਰ ਸਕਦੇ ਹਨ। ਜੇ यह ਅਕਸਰ ਹੁੰਦਾ ਹੈ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਜੇ ਤੁਹਾਨੂੰ ਛਾਤੀ ਵਿੱਚ ਗੰਭੀਰ ਦਰਦ ਹੈ, ਤਾਂ ਦਿਲ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਨੂੰ ਰੱਦ ਕਰਨ ਲਈ ਐਮਰਜੈਂਸੀ ਡਾਕਟਰੀ ਦੇਖਭਾਲ ਲਓ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "heartburn_no": {
+      "recommendation": "ਜੇ ਤੁਸੀਂ ਹੋਰ ਕਿਸਮ ਦੀ ਛਾਤੀ ਦੀ ਬੇਅਰਾਮੀ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ, ਤਾਂ ਕਿਸੇ ਵੀ ਗੰਭੀਰ ਸਥਿਤੀ ਨੂੰ ਰੱਦ ਕਰਨ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਬਹੁਤ ਮਹੱਤਵਪੂਰਨ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਲਾਹ ਲਓ।"
+    },
+    "back_pain_start": {
+      "question": "ਕੀ ਤੁਹਾਡੀ ਪਿੱਠ ਦਾ ਦਰਦ ਅਚਾਨਕ ਸੱਟ ਜਾਂ ਹਰਕਤ ਨਾਲ ਸ਼ੁਰੂ ਹੋਇਆ ਹੈ, ਜਾਂ ਕੀ यह ਹੌਲੀ-ਹੌਲੀ ਵਿਕਸਤ ਹੋਇਆ ਹੈ?",
+      "options": {
+        "ਅਚਾਨਕ ਸੱਟ": "back_pain_injury",
+        "ਹੌਲੀ-ਹੌਲੀ ਵਿਕਸਤ ਹੋਇਆ": "back_pain_gradual"
+      }
+    },
+    "back_pain_injury": {
+      "question": "ਕੀ ਤੁਸੀਂ ਆਪਣੀਆਂ ਲੱਤਾਂ ਵਿੱਚ ਕੋਈ ਸੁੰਨ ਹੋਣਾ, ਝਰਨਾਹਟ, ਜਾਂ ਕਮਜ਼ੋਰੀ ਮਹਿਸੂਸ ਕਰ ਰਹੇ ਹੋ?",
+      "options": {
+        "ਹਾਂ": "back_pain_nerve",
+        "ਨਹੀਂ": "back_pain_strain"
+      }
+    },
+    "back_pain_nerve": {
+      "recommendation": "ਪਿੱਠ ਦੇ ਦਰਦ ਨਾਲ ਜੁੜੀਆਂ ਲੱਤਾਂ ਵਿੱਚ ਸੁੰਨ ਹੋਣਾ ਜਾਂ ਕਮਜ਼ੋਰੀ ਗੰਭੀਰ ਹੋ ਸਕਦੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਕਿਸੇ ਵੀ ਨਸ-ਸੰਬੰਧੀ ਮੁੱਦਿਆਂ ਨੂੰ ਰੱਦ ਕਰਨ ਲਈ ਤੁਰੰਤ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "back_pain_strain": {
+      "recommendation": "ਇਹ ਇੱਕ ਮਾਸਪੇਸ਼ੀ ਖਿਚਾਅ ਹੋ ਸਕਦਾ ਹੈ। ਪਹਿਲੇ 24-48 ਘੰਟਿਆਂ ਲਈ ਇੱਕ ਠੰਡਾ ਪੈਕ ਲਗਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ, ਫਿਰ ਇੱਕ ਗਰਮ ਪੈਕ 'ਤੇ ਸਵਿਚ ਕਰੋ। ਹਲਕੀ ਖਿੱਚ ਮਦਦ ਕਰ ਸਕਦੀ ਹੈ, ਪਰ ਉਹਨਾਂ ਗਤੀਵਿਧੀਆਂ ਤੋਂ ਬਚੋ ਜੋ ਦਰਦ ਨੂੰ ਵਧਾਉਂਦੀਆਂ ਹਨ। ਜੇ ਦਰਦ ਗੰਭੀਰ ਹੈ ਜਾਂ ਕੁਝ ਦਿਨਾਂ ਵਿੱਚ ਸੁਧਾਰ ਨਹੀਂ ਹੁੰਦਾ, ਤਾਂ ਡਾਕਟਰ ਨੂੰ ਮਿਲੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "back_pain_gradual": {
+      "recommendation": "ਹੌਲੀ-ਹੌਲੀ ਪਿੱਠ ਦਾ ਦਰਦ ਅਕਸਰ ਆਸਣ ਜਾਂ ਮਾਸਪੇਸ਼ੀ ਖਿਚਾਅ ਨਾਲ ਸਬੰਧਤ ਹੁੰਦਾ ਹੈ। ਤੁਸੀਂ ਕਿਵੇਂ ਬੈਠਦੇ ਹੋ ਅਤੇ ਵਸਤੂਆਂ ਨੂੰ ਚੁੱਕਦੇ ਹੋ, ਇਸ ਬਾਰੇ ਸਾਵਧਾਨ ਰਹੋ। ਤੁਰਨ ਵਰਗੀਆਂ ਹਲਕੀਆਂ ਕਸਰਤਾਂ ਮਦਦ ਕਰ ਸਕਦੀਆਂ ਹਨ। ਜੇ ਦਰਦ ਲਗਾਤਾਰ ਜਾਂ ਵਧ ਰਿਹਾ ਹੈ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਸਭ ਤੋਂ ਵਧੀਆ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "neck_pain_start": {
+      "question": "ਕੀ ਗਰਦਨ ਦਾ ਦਰਦ ਸੱਟ ਤੋਂ ਬਾਅਦ ਸ਼ੁਰੂ ਹੋਇਆ (ਜਿਵੇਂ ਕਾਰ ਦੁਰਘਟਨਾ), ਜਾਂ ਕੀ ਇਹ ਇੱਕ ਸਖ਼ਤ ਗਰਦਨ ਹੈ ਜੋ ਆਪਣੇ ਆਪ ਵਿਕਸਤ ਹੋਈ ਹੈ?",
+      "options": {
+        "ਸੱਟ ਤੋਂ ਬਾਅਦ": "neck_pain_injury",
+        "ਸਖ਼ਤ ਗਰਦਨ": "neck_pain_stiff"
+      }
+    },
+    "neck_pain_injury": {
+      "recommendation": "ਸੱਟ ਤੋਂ ਬਾਅਦ ਗਰਦਨ ਦੇ ਦਰਦ ਦਾ ਹਮੇਸ਼ਾ ਇੱਕ ਡਾਕਟਰੀ ਪੇਸ਼ੇਵਰ ਦੁਆਰਾ ਮੁਲਾਂਕਣ ਕੀਤਾ ਜਾਣਾ ਚਾਹੀਦਾ ਹੈ ਤਾਂ ਜੋ ਗੰਭੀਰ ਮੁੱਦਿਆਂ ਨੂੰ ਰੱਦ ਕੀਤਾ ਜਾ ਸਕੇ। ਕਿਰਪਾ ਕਰਕੇ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ, ਖਾਸ ਕਰਕੇ ਜੇ ਦਰਦ ਗੰਭੀਰ ਹੋਵੇ ਜਾਂ ਤੁਹਾਡੀਆਂ ਬਾਹਾਂ ਵਿੱਚ ਸੁੰਨ ਹੋਣਾ/ਝਰਨਾਹਟ ਹੋਵੇ।"
+    },
+    "neck_pain_stiff": {
+      "recommendation": "ਇੱਕ ਸਖ਼ਤ ਗਰਦਨ ਅਕਸਰ ਆਸਣ ਕਾਰਨ ਹੁੰਦੀ ਹੈ, ਖਾਸ ਕਰਕੇ ਸਕਰੀਨਾਂ ਦੀ ਵਰਤੋਂ ਕਰਨ ਨਾਲ, ਜਾਂ ਇੱਕ ਅਜੀਬ ਸਥਿਤੀ ਵਿੱਚ ਸੌਣ ਨਾਲ। ਗਰਦਨ ਦੀਆਂ ਹਲਕੀ ਖਿੱਚਾਂ (ਉਹਨਾਂ ਨੂੰ ਮਜਬੂਰ ਨਾ ਕਰੋ) ਅਤੇ ਇੱਕ ਗਰਮ ਕੰਪਰੈੱਸ ਲਗਾਉਣਾ ਮਦਦ ਕਰ ਸਕਦਾ ਹੈ। ਜੇ ਦਰਦ ਗੰਭੀਰ ਹੈ ਜਾਂ ਸੁਧਾਰ ਨਹੀਂ ਹੁੰਦਾ, ਤਾਂ ਡਾਕਟਰ ਨੂੰ ਮਿਲੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "sprain_start": {
+      "question": "ਕੀ ਪ੍ਰਭਾਵਿਤ ਜੋੜ (ਜਿਵੇਂ ਗਿੱਟਾ, ਗੁੱਟ) ਬੁਰੀ ਤਰ੍ਹਾਂ ਸੁੱਜਿਆ ਹੋਇਆ ਹੈ, ਵਿਗੜਿਆ ਹੋਇਆ ਹੈ, ਜਾਂ ਕੀ ਤੁਸੀਂ ਇਸ 'ਤੇ ਕੋਈ ਭਾਰ ਜਾਂ ਦਬਾਅ ਪਾਉਣ ਵਿੱਚ ਪੂਰੀ ਤਰ੍ਹਾਂ ਅਸਮਰੱਥ ਹੋ?",
+      "options": {
+        "ਹਾਂ, ਇਹ ਬਹੁਤ ਬੁਰਾ ਲੱਗਦਾ ਹੈ": "sprain_severe",
+        "ਨਹੀਂ, यह ਦਰਦਨਾਕ ਹੈ ਪਰ ਮੈਂ ਇਸਨੂੰ ਥੋੜ੍ਹਾ ਹਿਲਾ ਸਕਦਾ ਹਾਂ": "sprain_mild"
+      }
+    },
+    "sprain_severe": {
+      "recommendation": "ਗੰਭੀਰ ਦਰਦ, ਵਿਗਾੜ, ਜਾਂ ਭਾਰ ਚੁੱਕਣ ਵਿੱਚ ਅਸਮਰੱਥਤਾ ਇੱਕ ਫ੍ਰੈਕਚਰ ਜਾਂ ਗੰਭੀਰ ਮੋਚ ਦਾ ਸੰਕੇਤ ਦੇ ਸਕਦੀ ਹੈ। ਇੱਕ ਐਕਸ-ਰੇ ਅਤੇ ਸਹੀ ਇਲਾਜ ਲਈ ਇੱਕ ਕਲੀਨਿਕ ਜਾਂ ਹਸਪਤਾਲ ਵਿੱਚ ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਲੈਣੀ ਜ਼ਰੂਰੀ ਹੈ।"
+    },
+    "sprain_mild": {
+      "recommendation": "ਹਲਕੀ ਮੋਚ ਲਈ, R.I.C.E. ਸਿਧਾਂਤ ਦੀ ਪਾਲਣਾ ਕਰੋ: ਜੋੜ ਨੂੰ ਆਰਾਮ ਦਿਓ, ਇੱਕ ਵਾਰ ਵਿੱਚ 20 ਮਿੰਟ ਲਈ ਬਰਫ਼ ਲਗਾਓ, ਕੰਪਰੈਸ਼ਨ ਲਈ ਇੱਕ ਪੱਟੀ ਦੀ ਵਰਤੋਂ ਕਰੋ, ਅਤੇ ਇਸਨੂੰ ਉੱਚਾ ਰੱਖੋ। ਜੇ ਦਰਦ ਅਤੇ ਸੋਜ 2-3 ਦਿਨਾਂ ਵਿੱਚ ਸੁਧਾਰ ਨਹੀਂ ਹੁੰਦੀ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "muscle_cramp_start": {
+      "recommendation": "ਮਾਸਪੇਸ਼ੀਆਂ ਵਿੱਚ ਕੜਵੱਲ ਲਈ, ਪ੍ਰਭਾਵਿਤ ਮਾਸਪੇਸ਼ੀ ਨੂੰ ਹੌਲੀ-ਹੌਲੀ ਖਿੱਚੋ ਅਤੇ ਮਾਲਸ਼ ਕਰੋ। ਗਰਮੀ ਲਗਾਉਣ ਨਾਲ ਮਾਸਪੇਸ਼ੀ ਨੂੰ ਆਰਾਮ ਮਿਲ ਸਕਦਾ ਹੈ। ਡੀਹਾਈਡਰੇਸ਼ਨ ਅਤੇ ਖਣਿਜ ਅਸੰਤੁਲਨ ਕੜਵੱਲ ਦਾ ਕਾਰਨ ਬਣ ਸਕਦੇ ਹਨ, ਇਸ ਲਈ यह ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਸੀਂ ਕਾਫ਼ੀ ਪਾਣੀ ਪੀ ਰਹੇ ਹੋ ਅਤੇ ਇੱਕ ਸੰਤੁਲਿਤ ਖੁਰਾਕ ਲੈ ਰਹੇ ਹੋ। ਜੇ ਕੜਵੱਲ ਬਹੁਤ ਵਾਰ ਜਾਂ ਗੰਭੀਰ ਹੁੰਦੇ ਹਨ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "earache_start": {
+      "question": "ਕੀ ਕੰਨ ਦਰਦ ਦੇ ਨਾਲ ਬੁਖਾਰ ਜਾਂ ਕੰਨ ਵਿੱਚੋਂ ਕੋਈ ਡਿਸਚਾਰਜ (ਤਰਲ) ਆ ਰਿਹਾ ਹੈ?",
+      "options": {
+        "ਹਾਂ": "earache_infection",
+        "ਨਹੀਂ": "earache_simple"
+      }
+    },
+    "earache_infection": {
+      "recommendation": "ਬੁਖਾਰ ਜਾਂ ਡਿਸਚਾਰਜ ਦੇ ਨਾਲ ਕੰਨ ਦਰਦ ਅਕਸਰ ਕੰਨ ਦੀ ਲਾਗ ਦਾ ਸੰਕੇਤ ਦਿੰਦਾ ਹੈ, ਜਿਸ ਲਈ ਐਂਟੀਬਾਇਓਟਿਕਸ ਦੀ ਲੋੜ ਹੋ ਸਕਦੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਸਹੀ ਨਿਦਾਨ ਅਤੇ ਨੁਸਖ਼ੇ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "earache_simple": {
+      "recommendation": "ਤੁਸੀਂ ਰਾਹਤ ਲਈ ਕੰਨ ਦੇ ਬਾਹਰ ਗਰਮ ਕੰਪਰੈੱਸ ਲਗਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰ ਸਕਦੇ ਹੋ। ਆਪਣੇ ਕੰਨ ਨਹਿਰ ਦੇ ਅੰਦਰ ਕੁਝ ਵੀ ਨਾ ਪਾਓ। ਜੇ ਦਰਦ ਗੰਭੀਰ ਹੈ ਜਾਂ ਇੱਕ ਦਿਨ ਤੋਂ ਵੱਧ ਰਹਿੰਦਾ ਹੈ, ਤਾਂ ਡਾਕਟਰ ਨੂੰ ਮਿਲਣਾ ਮਹੱਤਵਪੂਰਨ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "uti_start": {
+      "question": "ਕੀ ਤੁਸੀਂ ਪਿਸ਼ਾਬ ਕਰਨ ਵੇਲੇ ਜਲਨ ਜਾਂ ਦਰਦਨਾਕ ਸਨਸਨੀ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ?",
+      "options": {
+        "ਹਾਂ": "uti_burning",
+        "ਨਹੀਂ": "uti_no"
+      }
+    },
+    "uti_burning": {
+      "question": "ਕੀ ਇਸਦੇ ਨਾਲ ਵਾਰ-ਵਾਰ ਪਿਸ਼ਾਬ ਕਰਨ ਦੀ ਇੱਛਾ ਹੁੰਦੀ ਹੈ, ਜਾਂ ਕੀ ਤੁਸੀਂ ਆਪਣੇ ਪਿਸ਼ਾਬ ਵਿੱਚ ਖੂਨ ਦੇਖਿਆ ਹੈ?",
+      "options": {
+        "ਹਾਂ": "uti_confirm",
+        "ਨਹੀਂ": "uti_possible"
+      }
+    },
+    "uti_confirm": {
+      "recommendation": "ਇਹ ਪਿਸ਼ਾਬ ਨਾਲੀ ਦੀ ਲਾਗ (UTI) ਦੇ ਮਜ਼ਬੂਤ ਸੰਕੇਤ ਹਨ, ਜਿਸ ਲਈ ਆਮ ਤੌਰ 'ਤੇ ਐਂਟੀਬਾਇਓਟਿਕਸ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਨਿਦਾਨ ਅਤੇ ਇਲਾਜ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਜ਼ਰੂਰੀ ਹੈ। ਇਸ ਦੌਰਾਨ, ਸਿਸਟਮ ਨੂੰ ਫਲੱਸ਼ ਕਰਨ ਵਿੱਚ ਮਦਦ ਕਰਨ ਲਈ ਬਹੁਤ ਸਾਰਾ ਪਾਣੀ ਪੀਓ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "uti_possible": {
+      "recommendation": "ਪਿਸ਼ਾਬ ਕਰਨ ਵੇਲੇ ਜਲਨ ਦੀ ਭਾਵਨਾ UTI ਜਾਂ ਹੋਰ ਜਲਣ ਦਾ ਸੰਕੇਤ ਹੋ ਸਕਦੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਬਹੁਤ ਸਾਰਾ ਪਾਣੀ ਪੀਓ। ਜੇ ਲੱਛਣ ਇੱਕ ਦਿਨ ਤੋਂ ਵੱਧ ਸਮੇਂ ਤੱਕ ਬਣਿਆ ਰਹਿੰਦਾ ਹੈ, ਤਾਂ ਡਾਕਟਰ ਨੂੰ ਮਿਲਣਾ ਮਹੱਤਵਪੂਰਨ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "uti_no": {
+      "recommendation": "ਜੇ ਤੁਹਾਨੂੰ ਜਲਨ ਦੀ ਭਾਵਨਾ ਤੋਂ ਬਿਨਾਂ ਹੋਰ ਪਿਸ਼ਾਬ ਸੰਬੰਧੀ ਸਮੱਸਿਆਵਾਂ ਹਨ, ਤਾਂ ਕਾਰਨ ਨੂੰ ਸਮਝਣ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਸਭ ਤੋਂ ਵਧੀਆ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਆਪਣੇ ਲੱਛਣਾਂ ਦੀ ਨਿਗਰਾਨੀ ਕਰੋ ਅਤੇ ਡਾਕਟਰੀ ਸਲਾਹ ਲਓ।"
+    },
+    "wound_start": {
+      "question": "ਕੀ ਜ਼ਖ਼ਮ ਵਿੱਚੋਂ ਬਹੁਤ ਜ਼ਿਆਦਾ ਖੂਨ ਵਹਿ ਰਿਹਾ ਹੈ ਅਤੇ 5-10 ਮਿੰਟ ਲਈ ਦਬਾਅ ਪਾਉਣ ਤੋਂ ਬਾਅਦ ਖੂਨ ਵਗਣਾ ਬੰਦ ਨਹੀਂ ਹੁੰਦਾ?",
+      "options": {
+        "ਹਾਂ, ਬਹੁਤ ਖੂਨ ਵਹਿ ਰਿਹਾ ਹੈ": "wound_bleeding",
+        "ਨਹੀਂ, ਖੂਨ ਵਗਣਾ ਮਾਮੂਲੀ ਹੈ ਜਾਂ ਬੰਦ ਹੋ ਗਿਆ ਹੈ": "wound_minor"
+      }
+    },
+    "wound_bleeding": {
+      "recommendation": "ਬੇਕਾਬੂ ਖੂਨ ਵਗਣ ਲਈ ਤੁਰੰਤ ਐਮਰਜੈਂਸੀ ਡਾਕਟਰੀ ਦੇਖਭਾਲ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਇੱਕ ਸਾਫ਼ ਕੱਪੜੇ ਨਾਲ ਜ਼ਖ਼ਮ 'ਤੇ ਮਜ਼ਬੂਤ, ਸਿੱਧਾ ਦਬਾਅ ਪਾਉਣਾ ਜਾਰੀ ਰੱਖੋ ਅਤੇ ਤੁਰੰਤ ਨਜ਼ਦੀਕੀ ਹਸਪਤਾਲ ਜਾਂ ਕਲੀਨਿਕ ਜਾਓ।"
+    },
+    "wound_minor": {
+      "recommendation": "ਇੱਕ ਮਾਮੂਲੀ ਜ਼ਖ਼ਮ ਲਈ, ਪਹਿਲਾਂ ਇਸਨੂੰ ਸਾਫ਼ ਪਾਣੀ ਅਤੇ ਹਲਕੇ ਸਾਬਣ ਨਾਲ ਹੌਲੀ-ਹੌਲੀ ਸਾਫ਼ ਕਰੋ। ਇੱਕ ਐਂਟੀਸੈਪਟਿਕ ਮਲਮ ਲਗਾਓ ਅਤੇ ਇਸਨੂੰ ਇੱਕ ਸਾਫ਼ ਪੱਟੀ ਨਾਲ ਢੱਕੋ। ਲਾਲੀ, ਸੋਜ, ਜਾਂ ਪਸ ਵਰਗੇ ਲਾਗ ਦੇ ਸੰਕੇਤਾਂ ਲਈ ਦੇਖੋ। ਜੇ ਜ਼ਖ਼ਮ ਡੂੰਘਾ ਹੈ ਜਾਂ ਜੰਗਾਲ ਵਾਲੀ ਵਸਤੂ ਤੋਂ ਹੈ, ਤਾਂ ਟੈਟਨਸ ਦੇ ਟੀਕੇ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "rash_start": {
+      "question": "ਕੀ ਧੱਫੜ ਦੇ ਨਾਲ ਸਾਹ ਲੈਣ ਵਿੱਚ ਮੁਸ਼ਕਲ, ਚਿਹਰੇ ਜਾਂ ਬੁੱਲ੍ਹਾਂ ਦੀ ਸੋਜ, ਜਾਂ ਚੱਕਰ ਆਉਣਾ ਹੈ?",
+      "options": {
+        "ਹਾਂ": "rash_allergic_reaction",
+        "ਨਹੀਂ": "rash_simple"
+      }
+    },
+    "rash_allergic_reaction": {
+      "recommendation": "ਇਹ ਇੱਕ ਗੰਭੀਰ ਐਲਰਜੀ ਵਾਲੀ ਪ੍ਰਤੀਕ੍ਰਿਆ (ਐਨਾਫਾਈਲੈਕਸਿਸ) ਦੇ ਸੰਕੇਤ ਹਨ ਅਤੇ ਇੱਕ ਮੈਡੀਕਲ ਐਮਰਜੈਂਸੀ ਹਨ। ਕਿਰਪਾ ਕਰਕੇ ਬਿਨਾਂ ਕਿਸੇ ਦੇਰੀ ਦੇ ਨਜ਼ਦੀਕੀ ਹਸਪਤਾਲ ਜਾਂ ਕਲੀਨਿਕ ਤੋਂ ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਲਓ।"
+    },
+    "rash_simple": {
+      "recommendation": "ਇੱਕ ਸਧਾਰਨ ਚਮੜੀ ਦੇ ਧੱਫੜ ਲਈ, ਖੇਤਰ ਨੂੰ ਸਾਫ਼ ਅਤੇ ਸੁੱਕਾ ਰੱਖੋ। ਇਸ ਨੂੰ ਖੁਰਕਣ ਤੋਂ ਬਚੋ। ਇੱਕ ਠੰਡਾ ਕੰਪਰੈੱਸ ਜਾਂ ਕੈਲਾਮਾਈਨ ਲੋਸ਼ਨ ਲਗਾਉਣ ਨਾਲ ਖਾਰਸ਼ ਨੂੰ ਸ਼ਾਂਤ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ। ਜੇ ਧੱਫੜ ਫੈਲਦਾ ਹੈ, ਦਰਦਨਾਕ ਹੈ, ਜਾਂ ਸੁਧਾਰ ਨਹੀਂ ਹੁੰਦਾ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਨਿਦਾਨ ਲਈ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "burn_start": {
+      "question": "ਕੀ ਜਲਨ ਤੁਹਾਡੀ ਹਥੇਲੀ ਤੋਂ ਵੱਡੀ ਹੈ, ਜਾਂ ਕੀ यह ਚਿਹਰੇ, ਹੱਥਾਂ, ਪੈਰਾਂ ਜਾਂ ਜੋੜਾਂ 'ਤੇ ਹੈ?",
+      "options": {
+        "ਹਾਂ": "burn_major",
+        "ਨਹੀਂ": "burn_minor"
+      }
+    },
+    "burn_major": {
+      "recommendation": "ਉਸ ਆਕਾਰ ਜਾਂ ਸਥਾਨ ਦੀ ਜਲਨ ਨੂੰ ਗੰਭੀਰ ਮੰਨਿਆ ਜਾਂਦਾ ਹੈ ਅਤੇ ਇਸਨੂੰ ਤੁਰੰਤ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਨਜ਼ਦੀਕੀ ਕਲੀਨਿਕ ਜਾਂ ਹਸਪਤਾਲ ਜਾਓ। ਆਪਣੇ ਆਪ ਕੋਈ ਕਰੀਮ ਜਾਂ ਮਲਮ ਨਾ ਲਗਾਓ। यह ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "burn_minor": {
+      "recommendation": "ਇੱਕ ਮਾਮੂਲੀ ਜਲਨ ਲਈ, ਤੁਰੰਤ 10-15 ਮਿੰਟ ਲਈ ਖੇਤਰ 'ਤੇ ਠੰਡਾ (ਠੰਡਾ ਨਹੀਂ) ਪਾਣੀ ਚਲਾਓ। ਬਰਫ਼ ਦੀ ਵਰਤੋਂ ਨਾ ਕਰੋ। ਬਣਨ ਵਾਲੇ ਕਿਸੇ ਵੀ ਛਾਲੇ ਨੂੰ ਨਾ ਤੋੜੋ। ਤੁਸੀਂ ਇਸਨੂੰ ਇੱਕ ਨਿਰਜੀਵ, ਨਾਨ-ਸਟਿੱਕ ਪੱਟੀ ਨਾਲ ਢਿੱਲੀ ਤਰ੍ਹਾਂ ਢੱਕ ਸਕਦੇ ਹੋ। ਜੇ ਦਰਦ ਗੰਭੀਰ ਹੈ ਜਾਂ यह ਸੰਕਰਮਿਤ ਲੱਗਦਾ ਹੈ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਡਾਕਟਰ ਨੂੰ ਮਿਲੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "insect_bite_start": {
+      "question": "ਕੀ ਤੁਸੀਂ ਦੰਦੀ ਦੇ ਖੇਤਰ ਤੋਂ ਪਰੇ ਲੱਛਣਾਂ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ, ਜਿਵੇਂ ਸਾਹ ਲੈਣ ਵਿੱਚ ਮੁਸ਼ਕਲ, ਵਿਆਪਕ ਧੱਫੜ, ਚਿਹਰੇ ਦੀ ਸੋਜ, ਜਾਂ ਬੇਹੋਸ਼ੀ ਮਹਿਸੂਸ ਕਰਨਾ?",
+      "options": {
+        "ਹਾਂ, ਮੈਨੂੰ ਗੰਭੀਰ ਲੱਛਣ ਹਨ": "insect_bite_severe",
+        "ਨਹੀਂ, यह ਸਿਰਫ਼ ਇੱਕ ਸਥਾਨਕ ਪ੍ਰਤੀਕ੍ਰਿਆ ਹੈ": "insect_bite_local"
+      }
+    },
+    "insect_bite_severe": {
+      "recommendation": "ਇਹ ਇੱਕ ਗੰਭੀਰ ਐਲਰਜੀ ਵਾਲੀ ਪ੍ਰਤੀਕ੍ਰਿਆ ਦੇ ਸੰਕੇਤ ਹਨ ਅਤੇ ਇਸਨੂੰ ਤੁਰੰਤ ਐਮਰਜੈਂਸੀ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਦੀ ਲੋੜ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਬਿਨਾਂ ਦੇਰੀ ਕੀਤੇ ਨਜ਼ਦੀਕੀ ਹਸਪਤਾਲ ਜਾਓ ਜਾਂ ਐਂਬੂਲੈਂਸ ਲਈ ਕਾਲ ਕਰੋ।"
+    },
+    "insect_bite_local": {
+      "recommendation": "ਇੱਕ ਸਥਾਨਕ ਪ੍ਰਤੀਕ੍ਰਿਆ ਲਈ, ਖੇਤਰ ਨੂੰ ਸਾਬਣ ਅਤੇ ਪਾਣੀ ਨਾਲ ਧੋਵੋ। ਸੋਜ ਅਤੇ ਖਾਰਸ਼ ਨੂੰ ਘਟਾਉਣ ਲਈ ਇੱਕ ਠੰਡਾ ਕੰਪਰੈੱਸ ਲਗਾਓ। ਇੱਕ ਓਵਰ-ਦੀ-ਕਾਊਂਟਰ ਹਾਈਡ੍ਰੋਕਾਰਟੀਸੋਨ ਕਰੀਮ ਜਾਂ ਐਂਟੀਹਿਸਟਾਮਾਈਨ ਮਦਦ ਕਰ ਸਕਦੀ ਹੈ। ਖੁਰਕਣ ਤੋਂ ਬਚੋ। ਜੇ ਇੱਕ ਡੰਗ ਦਿਖਾਈ ਦਿੰਦਾ ਹੈ, ਤਾਂ ਇਸਨੂੰ ਇੱਕ ਸਮਤਲ ਕਿਨਾਰੇ ਨਾਲ ਹੌਲੀ-ਹੌਲੀ ਖੁਰਚੋ। ਜੇ ਸੋਜ ਗੰਭੀਰ ਹੈ ਜਾਂ ਤੁਸੀਂ ਲਾਗ ਦੇ ਸੰਕੇਤ ਦੇਖਦੇ ਹੋ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। यह ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "animal_bite_start": {
+      "question": "ਕੀ ਦੰਦੀ ਨਾਲ ਚਮੜੀ ਫਟ ਗਈ ਸੀ?",
+      "options": {
+        "ਹਾਂ": "animal_bite_broken_skin",
+        "ਨਹੀਂ": "animal_bite_no_break"
+      }
+    },
+    "animal_bite_no_break": {
+      "recommendation": "ਜੇ ਚਮੜੀ ਨਹੀਂ ਫਟੀ ਸੀ, ਤਾਂ ਖੇਤਰ ਨੂੰ ਸਾਬਣ ਅਤੇ ਪਾਣੀ ਨਾਲ ਚੰਗੀ ਤਰ੍ਹਾਂ ਧੋਵੋ। ਤੁਹਾਨੂੰ ਅਜੇ ਵੀ ਲਾਲੀ ਜਾਂ ਸੋਜ ਲਈ ਇਸ ਦੀ ਨਿਗਰਾਨੀ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ। ਲਾਗ ਦਾ ਖ਼ਤਰਾ ਘੱਟ ਹੈ, ਪਰ ਸਾਵਧਾਨ ਰਹਿਣਾ ਚੰਗਾ ਹੈ।"
+    },
+    "animal_bite_broken_skin": {
+      "recommendation": "ਕੋਈ ਵੀ ਦੰਦੀ ਜੋ ਚਮੜੀ ਨੂੰ ਤੋੜ ਦਿੰਦੀ ਹੈ, ਭਾਵੇਂ ਉਹ ਪਾਲਤੂ ਜਾਨਵਰ ਤੋਂ ਹੋਵੇ ਜਾਂ ਅਵਾਰਾ ਜਾਨਵਰ ਤੋਂ, ਲਾਗ ਅਤੇ ਰੇਬੀਜ਼ ਦੇ ਉੱਚ ਖਤਰੇ ਕਾਰਨ ਡਾਕਟਰੀ ਸਹਾਇਤਾ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਜ਼ਖ਼ਮ ਨੂੰ ਕਈ ਮਿੰਟਾਂ ਤੱਕ ਸਾਬਣ ਅਤੇ ਪਾਣੀ ਨਾਲ ਚੰਗੀ ਤਰ੍ਹਾਂ ਧੋਵੋ, ਫਿਰ ਤੁਰੰਤ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "sunburn_start": {
+      "recommendation": "ਸਨਬਰਨ ਲਈ, ਤੁਰੰਤ ਧੁੱਪ ਤੋਂ ਬਾਹਰ ਨਿਕਲੋ। ਇੱਕ ਠੰਡਾ ਕੰਪਰੈੱਸ ਲਗਾਓ ਜਾਂ ਠੰਡੇ ਪਾਣੀ ਨਾਲ ਨਹਾਓ। ਐਲੋਵੇਰਾ ਵਾਲੇ ਇੱਕ ਆਰਾਮਦਾਇਕ ਮੋਇਸਚਰਾਈਜ਼ਰ ਦੀ ਵਰਤੋਂ ਕਰੋ। ਡੀਹਾਈਡਰੇਸ਼ਨ ਨੂੰ ਰੋਕਣ ਲਈ ਵਾਧੂ ਪਾਣੀ ਪੀਓ। ਕੋਈ ਵੀ ਛਾਲੇ ਨਾ ਤੋੜੋ। ਗੰਭੀਰ, ਛਾਲੇ ਵਾਲੇ ਸਨਬਰਨ ਲਈ, ਤੁਹਾਨੂੰ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨੀ ਚਾਹੀਦੀ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "nosebleed_start": {
+      "question": "ਕੀ ਨੱਕ ਵਿੱਚੋਂ ਖੂਨ ਵਗਣਾ ਸਿਰ 'ਤੇ ਇੱਕ ਮਹੱਤਵਪੂਰਨ ਸੱਟ ਦਾ ਨਤੀਜਾ ਹੈ, ਜਾਂ ਕੀ यह ਆਪਣੇ ਆਪ ਸ਼ੁਰੂ ਹੋਇਆ ਸੀ?",
+      "options": {
+        "ਸਿਰ ਦੀ ਸੱਟ ਦਾ ਨਤੀਜਾ": "nosebleed_injury",
+        "ਆਪਣੇ ਆਪ ਸ਼ੁਰੂ ਹੋਇਆ": "nosebleed_spontaneous"
+      }
+    },
+    "nosebleed_injury": {
+      "recommendation": "ਸਿਰ ਦੀ ਸੱਟ ਤੋਂ ਬਾਅਦ ਨੱਕ ਵਿੱਚੋਂ ਖੂਨ ਵਗਣ ਲਈ ਹੋਰ ਗੰਭੀਰ ਮੁੱਦਿਆਂ ਨੂੰ ਰੱਦ ਕਰਨ ਲਈ ਤੁਰੰਤ ਡਾਕਟਰੀ ਮੁਲਾਂਕਣ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਐਮਰਜੈਂਸੀ ਰੂਮ ਵਿੱਚ ਜਾਓ।"
+    },
+    "nosebleed_spontaneous": {
+      "recommendation": "ਨੱਕ ਵਿੱਚੋਂ ਖੂਨ ਵਗਣ ਨੂੰ ਰੋਕਣ ਲਈ, ਬੈਠੋ ਅਤੇ ਥੋੜ੍ਹਾ ਅੱਗੇ ਝੁਕੋ, ਪਿੱਛੇ ਨਹੀਂ। ਆਪਣੇ ਮੂੰਹ ਰਾਹੀਂ ਸਾਹ ਲੈਂਦੇ ਹੋਏ 10-15 ਮਿੰਟ ਲਈ ਆਪਣੀ ਨੱਕ ਦੇ ਨਰਮ ਹਿੱਸੇ ਨੂੰ ਮਜ਼ਬੂਤੀ ਨਾਲ ਚੂੰਢੀ ਮਾਰੋ। ਤੁਹਾਡੀ ਨੱਕ ਦੇ ਪੁਲ 'ਤੇ ਇੱਕ ਆਈਸ ਪੈਕ ਵੀ ਮਦਦ ਕਰ ਸਕਦਾ ਹੈ। ਜੇ ਖੂਨ ਵਗਣਾ ਬਹੁਤ ਜ਼ਿਆਦਾ ਹੈ ਜਾਂ 20 ਮਿੰਟਾਂ ਬਾਅਦ ਨਹੀਂ ਰੁਕਦਾ, ਤਾਂ ਤੁਹਾਨੂੰ ਡਾਕਟਰ ਨੂੰ ਮਿਲਣਾ ਚਾਹੀਦਾ ਹੈ। यह ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "allergies_start": {
+      "recommendation": "ਮੌਸਮੀ ਐਲਰਜੀਆਂ (ਜਿਵੇਂ ਛਿੱਕਾਂ, ਖਾਰਸ਼ ਵਾਲੀਆਂ ਅੱਖਾਂ, ਵਗਦਾ ਨੱਕ) ਲਈ, ਓਵਰ-ਦੀ-ਕਾਊਂਟਰ ਐਂਟੀਹਿਸਟਾਮਾਈਨ ਪ੍ਰਭਾਵਸ਼ਾਲੀ ਹੋ ਸਕਦੇ ਹਨ। ਜੇ ਸੰਭਵ ਹੋਵੇ ਤਾਂ ਆਪਣੇ ਟਰਿਗਰਾਂ ਦੀ ਪਛਾਣ ਕਰਨ ਅਤੇ ਉਹਨਾਂ ਤੋਂ ਬਚਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਇੱਕ ਸਲਾਈਨ ਨੱਕ ਦੀ ਧੁਆਈ ਤੁਹਾਡੇ ਨੱਕ ਦੇ ਰਸਤਿਆਂ ਵਿੱਚੋਂ ਪਰਾਗ ਨੂੰ ਸਾਫ਼ ਕਰਨ ਵਿੱਚ ਮਦਦ ਕਰ ਸਕਦੀ ਹੈ। ਜੇ ਲੱਛਣ ਗੰਭੀਰ ਹਨ ਜਾਂ ਤੁਹਾਡੇ ਸਾਹ ਨੂੰ ਪ੍ਰਭਾਵਿਤ ਕਰਦੇ ਹਨ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰੋ। यह ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "insomnia_start": {
+      "recommendation": "ਨੀਂਦ ਨੂੰ ਬਿਹਤਰ ਬਣਾਉਣ ਲਈ, ਇੱਕ ਨਿਯਮਤ ਨੀਂਦ ਦਾ ਸਮਾਂ-ਸਾਰਣੀ ਸਥਾਪਤ ਕਰਨ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ, ਇੱਥੋਂ ਤੱਕ ਕਿ ਹਫਤੇ ਦੇ ਅੰਤ ਵਿੱਚ ਵੀ। ਯਕੀਨੀ ਬਣਾਓ ਕਿ ਤੁਹਾਡਾ ਬੈੱਡਰੂਮ ਹਨੇਰਾ, ਸ਼ਾਂਤ ਅਤੇ ਠੰਡਾ ਹੈ। ਸ਼ਾਮ ਨੂੰ ਦੇਰ ਨਾਲ ਕੈਫੀਨ ਅਤੇ ਭਾਰੀ ਭੋਜਨ ਤੋਂ ਬਚੋ। ਸੌਣ ਤੋਂ ਘੱਟੋ-ਘੱਟ ਇੱਕ ਘੰਟਾ ਪਹਿਲਾਂ ਸਕਰੀਨਾਂ (ਫੋਨ, ਟੀਵੀ) ਦੀ ਵਰਤੋਂ ਕਰਨ ਤੋਂ ਬਚੋ। ਜੇ ਤੁਹਾਨੂੰ ਲਗਾਤਾਰ ਸੌਣ ਵਿੱਚ ਮੁਸ਼ਕਲ ਆਉਂਦੀ ਹੈ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਗੱਲ ਕਰਨਾ ਇੱਕ ਚੰਗਾ ਵਿਚਾਰ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "anxiety_start": {
+      "question": "ਕੀ ਤੁਸੀਂ ਵਰਤਮਾਨ ਵਿੱਚ ਸਰੀਰਕ ਲੱਛਣਾਂ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ ਜਿਵੇਂ ਕਿ ਦਿਲ ਦੀ ਧੜਕਣ ਤੇਜ਼ ਹੋਣਾ, ਸਾਹ ਚੜ੍ਹਨਾ, ਛਾਤੀ ਵਿੱਚ ਜਕੜਨ, ਜਾਂ ਕੰਬਣੀ?",
+      "options": {
+        "ਹਾਂ, ਹੁਣੇ": "anxiety_panic",
+        "ਨਹੀਂ, ਮੈਂ ਆਮ ਤੌਰ 'ਤੇ ਵਧੇਰੇ ਚਿੰਤਤ ਮਹਿਸੂਸ ਕਰਦਾ ਹਾਂ": "anxiety_general"
+      }
+    },
+    "anxiety_panic": {
+      "recommendation": "ਅਜਿਹਾ ਲਗਦਾ ਹੈ ਕਿ ਤੁਸੀਂ ਇੱਕ ਪੈਨਿਕ ਅਟੈਕ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ ਸਕਦੇ ਹੋ। ਬੈਠਣ ਲਈ ਇੱਕ ਸ਼ਾਂਤ ਜਗ੍ਹਾ ਲੱਭਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ। ਆਪਣੇ ਸਾਹ 'ਤੇ ਧਿਆਨ ਕੇਂਦਰਤ ਕਰੋ: 4 ਗਿਣਤੀ ਲਈ ਹੌਲੀ-ਹੌਲੀ ਸਾਹ ਲਓ, 4 ਲਈ ਰੋਕੋ, ਅਤੇ 6 ਲਈ ਹੌਲੀ-ਹੌਲੀ ਸਾਹ ਛੱਡੋ। ਆਪਣੇ ਆਪ ਨੂੰ ਯਾਦ ਦਿਵਾਓ ਕਿ ਇਹ ਭਾਵਨਾਵਾਂ ਅਸਥਾਈ ਹਨ ਅਤੇ ਲੰਘ ਜਾਣਗੀਆਂ। 5-4-3-2-1 ਗਰਾਉਂਡਿੰਗ ਤਕਨੀਕ ਮਦਦ ਕਰ ਸਕਦੀ ਹੈ: 5 ਚੀਜ਼ਾਂ ਦੇ ਨਾਮ ਦੱਸੋ ਜੋ ਤੁਸੀਂ ਦੇਖ ਸਕਦੇ ਹੋ, 4 ਜਿਨ੍ਹਾਂ ਨੂੰ ਤੁਸੀਂ ਛੂਹ ਸਕਦੇ ਹੋ, 3 ਜੋ ਤੁਸੀਂ ਸੁਣ ਸਕਦੇ ਹੋ, 2 ਜਿਨ੍ਹਾਂ ਨੂੰ ਤੁਸੀਂ ਸੁੰਘ ਸਕਦੇ ਹੋ, ਅਤੇ 1 ਜਿਸਦਾ ਤੁਸੀਂ ਸਵਾਦ ਲੈ ਸਕਦੇ ਹੋ। ਇਹਨਾਂ ਅਨੁਭਵਾਂ ਬਾਰੇ ਡਾਕਟਰ ਜਾਂ ਮਾਨਸਿਕ ਸਿਹਤ ਪੇਸ਼ੇਵਰ ਨਾਲ ਗੱਲ ਕਰਨਾ ਬਹੁਤ ਮਹੱਤਵਪੂਰਨ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "anxiety_general": {
+      "recommendation": "ਤਣਾਅ ਅਤੇ ਚਿੰਤਾ ਦੀਆਂ ਭਾਵਨਾਵਾਂ ਆਮ ਹਨ। ਡੂੰਘੇ ਸਾਹ ਲੈਣਾ, ਮਾਈਂਡਫੁਲਨੈੱਸ, ਨਿਯਮਤ ਸਰੀਰਕ ਗਤੀਵਿਧੀ, ਅਤੇ ਕਿਸੇ ਭਰੋਸੇਯੋਗ ਵਿਅਕਤੀ ਨਾਲ ਆਪਣੀਆਂ ਭਾਵਨਾਵਾਂ ਬਾਰੇ ਗੱਲ ਕਰਨਾ ਵਰਗੇ ਅਭਿਆਸ ਮਦਦ ਕਰ ਸਕਦੇ ਹਨ। ਜੇ ਇਹ ਭਾਵਨਾਵਾਂ ਲਗਾਤਾਰ ਹਨ ਅਤੇ ਤੁਹਾਡੇ ਰੋਜ਼ਾਨਾ ਜੀਵਨ ਵਿੱਚ ਦਖਲ ਦਿੰਦੀਆਂ ਹਨ, ਤਾਂ ਇੱਕ ਥੈਰੇਪਿਸਟ ਜਾਂ ਸਲਾਹਕਾਰ ਤੋਂ ਮਦਦ ਲੈਣਾ ਇੱਕ ਬਹੁਤ ਪ੍ਰਭਾਵਸ਼ਾਲੀ ਕਦਮ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਪੇਸ਼ੇਵਰ ਨਾਲ ਗੱਲ ਕਰਨ 'ਤੇ ਵਿਚਾਰ ਕਰੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "cramps_start": {
+      "recommendation": "ਮਾਹਵਾਰੀ ਦੇ ਕੜਵੱਲ ਲਈ, ਆਪਣੇ ਪੇਟ ਜਾਂ ਪਿੱਠ ਦੇ ਹੇਠਲੇ ਹਿੱਸੇ 'ਤੇ ਇੱਕ ਹੀਟਿੰਗ ਪੈਡ ਲਗਾਉਣ ਨਾਲ ਰਾਹਤ ਮਿਲ ਸਕਦੀ ਹੈ। ਓਵਰ-ਦੀ-ਕਾਊਂਟਰ ਦਰਦ ਨਿਵਾਰਕ ਵੀ ਪ੍ਰਭਾਵਸ਼ਾਲੀ ਹੋ ਸਕਦੇ ਹਨ। ਤੁਰਨ ਵਰਗੀ ਹਲਕੀ ਕਸਰਤ ਵੀ ਮਦਦ ਕਰ ਸਕਦੀ ਹੈ। ਜੇ ਦਰਦ ਗੰਭੀਰ ਹੈ ਅਤੇ ਤੁਹਾਡੀਆਂ ਰੋਜ਼ਾਨਾ ਦੀਆਂ ਗਤੀਵਿਧੀਆਂ ਵਿੱਚ ਦਖਲ ਦਿੰਦਾ ਹੈ, ਤਾਂ ਡਾਕਟਰ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਇੱਕ ਚੰਗਾ ਵਿਚਾਰ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "periods_irregular": {
+      "recommendation": "ਅਨਿਯਮਿਤ ਮਾਹਵਾਰੀ ਕਈ ਕਾਰਕਾਂ ਕਰਕੇ ਹੋ ਸਕਦੀ ਹੈ, ਜਿਸ ਵਿੱਚ ਤਣਾਅ, ਖੁਰਾਕ, ਕਸਰਤ, ਜਾਂ ਅੰਤਰੀਵ ਸਿਹਤ ਸਥਿਤੀਆਂ ਸ਼ਾਮਲ ਹਨ। ਕੁਝ ਪਰਿਵਰਤਨ ਹੋਣਾ ਆਮ ਗੱਲ ਹੈ। ਹਾਲਾਂਕਿ, ਜੇ ਤੁਹਾਡਾ ਚੱਕਰ ਲਗਾਤਾਰ ਅਨਿਯਮਿਤ ਹੈ ਜਾਂ ਤੁਹਾਨੂੰ ਹੋਰ ਚਿੰਤਾਵਾਂ ਹਨ, ਤਾਂ ਸਹੀ ਮੁਲਾਂਕਣ ਲਈ ਇੱਕ ਗਾਇਨੀਕੋਲੋਜਿਸਟ ਨਾਲ ਸਲਾਹ ਕਰਨਾ ਸਭ ਤੋਂ ਵਧੀਆ ਹੈ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    },
+    "eye_start": {
+      "question": "ਕੀ ਤੁਸੀਂ ਅੱਖਾਂ ਵਿੱਚ ਦਰਦ, ਦ੍ਰਿਸ਼ਟੀ ਵਿੱਚ ਅਚਾਨਕ ਤਬਦੀਲੀ ਦਾ ਅਨੁਭਵ ਕਰ ਰਹੇ ਹੋ, ਜਾਂ ਕੀ ਤੁਹਾਡੀ ਅੱਖ ਵਿੱਚ ਕੋਈ ਰਸਾਇਣਕ ਛਿੱਟਾ ਪਿਆ ਹੈ ਜਾਂ ਸਰੀਰਕ ਸੱਟ ਲੱਗੀ ਹੈ?",
+      "options": {
+        "ਹਾਂ, ਇਹ ਇੱਕ ਐਮਰਜੈਂਸੀ ਸਥਿਤੀ ਹੈ": "eye_emergency",
+        "ਨਹੀਂ, यह ਹਲਕੀ ਜਲਣ ਜਾਂ ਲਾਲੀ ਹੈ": "eye_mild"
+      }
+    },
+    "eye_emergency": {
+      "recommendation": "ਗੰਭੀਰ ਦਰਦ, ਅਚਾਨਕ ਦ੍ਰਿਸ਼ਟੀ ਦਾ ਨੁਕਸਾਨ, ਇੱਕ ਰਸਾਇਣਕ ਛਿੱਟਾ, ਜਾਂ ਅੱਖ ਵਿੱਚ ਕੋਈ ਵਸਤੂ ਸਭ ਮੈਡੀਕਲ ਐਮਰਜੈਂਸੀ ਹਨ। ਤੁਰੰਤ ਨਜ਼ਦੀਕੀ ਐਮਰਜੈਂਸੀ ਰੂਮ ਵਿੱਚ ਜਾਓ। ਆਪਣੀ ਅੱਖ ਨੂੰ ਨਾ ਰਗੜੋ ਜਾਂ ਫਸੀ ਹੋਈ ਵਸਤੂ ਨੂੰ ਹਟਾਉਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਨਾ ਕਰੋ।"
+    },
+    "eye_mild": {
+      "recommendation": "ਹਲਕੀ ਲਾਲੀ ਜਾਂ ਜਲਣ ਲਈ, ਤੁਸੀਂ ਅੱਖ ਨੂੰ ਸਾਫ਼, ਕੋਸੇ ਪਾਣੀ ਨਾਲ ਧੋਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰ ਸਕਦੇ ਹੋ ਜਾਂ ਓਵਰ-ਦੀ-ਕਾਊਂਟਰ ਲੁਬਰੀਕੇਟਿੰਗ ਆਈ ਡ੍ਰੌਪਸ (ਨਕਲੀ ਹੰਝੂ) ਦੀ ਵਰਤੋਂ ਕਰ ਸਕਦੇ ਹੋ। ਆਪਣੀਆਂ ਅੱਖਾਂ ਨੂੰ ਰਗੜਨ ਤੋਂ ਬਚੋ। ਜੇ ਸਥਿਤੀ ਇੱਕ ਦਿਨ ਵਿੱਚ ਸੁਧਾਰ ਨਹੀਂ ਹੁੰਦੀ ਜਾਂ ਵਿਗੜ ਜਾਂਦੀ ਹੈ, ਤਾਂ ਕਿਰਪਾ ਕਰਕੇ ਡਾਕਟਰ ਨੂੰ ਮਿਲੋ। ਇਹ ਡਾਕਟਰੀ ਸਲਾਹ ਨਹੀਂ ਹੈ।"
+    }
+  }
+}

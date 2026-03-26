@@ -1,0 +1,59 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500&display=swap');
+
+/* MODERN & MINIMALISTIC THEME */
+:root {
+  --primary-color: #4F46E5;
+  --secondary-color: #6366F1;
+  --accent-color: #38BDF8;
+  --background-color: #F9FAFB;
+  --card-background: #FFFFFF;
+  --text-color: #1F2937;
+  --subtle-text-color: #6B7280;
+  --border-color: #E5E7EB;
+  --error-color: #EF4444;
+  --success-color: #22C55E;
+  --font-family: 'Inter', sans-serif;
+  --border-radius: 1rem;
+  --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* GENERAL BUTTON STYLES */
+.btn { 
+  display: block; width: 100%; padding: 0.85rem 1rem; border: none; border-radius: 0.75rem; 
+  font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease; 
+}
+.btn:active { transform: translateY(1px); }
+.btn-primary { background-color: var(--primary-color); color: white; transition: background-color 0.2s ease, box-shadow 0.2s ease; }
+.btn-primary:hover { background-color: var(--secondary-color); box-shadow: 0 0 15px 5px rgba(79, 70, 229, 0.4); }
+.btn-secondary { background-color: var(--background-color); color: var(--text-color); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: #F3F4F6; }
+.btn-secondary.active { background-color: var(--secondary-color); color: white; border-color: var(--secondary-color); }
+
+/* KEYFRAMES */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleUpFadeIn { from { opacity: 0; transform: scale(0.8) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }

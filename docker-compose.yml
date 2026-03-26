@@ -1,0 +1,55 @@
+services:
+  backend:
+    build: ./backend
+    image: koushikgupta26/telemedicine-backend:latest
+    container_name: telemedicine-backend
+    ports:
+      - "5001:5000"
+    env_file:
+      - ./backend/.env
+    environment:
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=telemedicine_db
+    depends_on:
+      - db
+    restart: always
+    volumes:
+      - ./backend/uploads:/app/uploads # Persist uploads
+    networks:
+      - telemedicine-network
+
+  frontend:
+    build: ./frontend
+    image: koushikgupta26/telemedicine-frontend:latest
+    container_name: telemedicine-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - telemedicine-network
+
+  db:
+    image: mysql:8.0
+    container_name: telemedicine-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: telemedicine_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql # Load initial data
+    networks:
+      - telemedicine-network
+
+networks:
+  telemedicine-network:
+    driver: bridge
+
+volumes:
+  db_data:

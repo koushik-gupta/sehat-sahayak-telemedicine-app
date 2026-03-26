@@ -1,0 +1,30 @@
+.splash-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, var(--primary-color) 0%, var(--accent-color) 100%);
+}
+
+.splash-screen::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("/splash_bg");
+  background-repeat: repeat;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+.splash-logo { position: relative; z-index: 2; display: flex; justify-content: center; align-items: center; animation: scaleUpFadeIn 1.5s ease-in-out; }
+.splash-logo-image { width: 160px; height: 160px; position: relative; z-index: 2; }
+.ripple { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 160px; height: 160px; background-color: rgba(255,255,255,0.1); border-radius: 50%; animation: ripple 2s infinite ease-out; z-index: 1; }
+@keyframes ripple { 0% { transform: translate(-50%, -50%) scale(0.8); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
+
+.splash-subtext { margin-top: 1.5rem; animation: fadeIn 2s ease-in-out; color: white; position: relative; z-index: 2; }
+.splash-subtext p { font-size: 1.1rem; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.regional-text { margin-top: 0.5rem; font-size: 1.1rem; color: rgba(255,255,255,0.8); font-family: 'Noto Sans Bengali','Noto Sans Gurmukhi','Noto Sans Devanagari',var(--font-family); }

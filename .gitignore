@@ -1,0 +1,62 @@
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+.tools/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Node / frontend build output
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+frontend/dev-dist/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+frontend/debug_error.log
+
+# Local runtime and generated assets
+backend/uploads/
+frontend/cert/
+frontend/localhost+2.pem
+frontend/localhost+2-key.pem
+frontend/structure.txt
+telemedicine_project_full.zip
+telemedicine_db_dump.sql
+run-landing-page-jsx.js
+*_dump.sql
+Dump*.sql
+
+# Coverage and temporary caches
+coverage/
+.cache/
+tmp/
+temp/

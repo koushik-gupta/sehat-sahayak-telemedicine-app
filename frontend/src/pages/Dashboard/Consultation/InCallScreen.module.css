@@ -1,0 +1,10 @@
+/* src/pages/Dashboard/Consultation/InCallScreen.module.css */
+.inCallScreen {
+  width: 100vw;
+  height: 100vh;
+  background-color: #202124;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Prevent scrolling */
+}

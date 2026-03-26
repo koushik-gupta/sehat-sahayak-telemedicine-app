@@ -1,0 +1,184 @@
+/* src/pages/Dashboard/Emergency/EmergencyScreen.css */
+:root {
+    --emergency-red: #d32f2f;
+    --emergency-red-dark: #b71c1c;
+    --emergency-text: #333;
+    --emergency-bg: #f4f6f8;
+    --emergency-card-bg: #ffffff;
+    --gov-blue: #0b63b7;
+    --pvt-green: #1b7a3a;
+}
+
+.emergency-container {
+    padding: 1rem;
+    background-color: var(--emergency-bg);
+    min-height: calc(100vh - 120px); /* Adjust for your top/bottom bars */
+}
+
+.emergency-header {
+    text-align: center;
+    color: var(--emergency-red-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.search-area {
+    background-color: var(--emergency-card-bg);
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+}
+
+.search-bar {
+    display: flex;
+    width: 100%;
+    margin-bottom: 0.75rem;
+}
+
+.search-input {
+    flex-grow: 1;
+    padding: 0.85rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--emergency-red);
+}
+
+.search-button {
+    padding: 0 1.25rem;
+    font-weight: 700;
+    background-color: var(--emergency-red);
+    color: white;
+    border: 2px solid var(--emergency-red);
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.search-button:disabled {
+    background-color: #fca5a5; /* Lighter red when disabled */
+    cursor: not-allowed;
+}
+
+.location-button {
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: 700;
+    background-color: #f1f1f1;
+    color: var(--emergency-text);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.location-button:disabled {
+    background-color: #e5e5e5;
+    cursor: not-allowed;
+}
+
+.results-area {
+    margin-top: 1rem;
+}
+
+.status-message {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+    background-color: var(--emergency-card-bg);
+    border-radius: 12px;
+}
+
+.hospital-card {
+    background: var(--emergency-card-bg);
+    padding: 1rem;
+    border-left: 6px solid var(--emergency-red);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.hospital-card h3 {
+    margin: 0 0 0.4rem 0;
+    color: var(--emergency-red-dark);
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.hospital-type {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+.hospital-type.gov { color: var(--gov-blue); }
+.hospital-type.pvt { color: var(--pvt-green); }
+
+.hospital-address {
+    color: #555;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.hospital-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid #eee;
+}
+
+.distance-info .value {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--emergency-text);
+}
+
+.open-map-link {
+    background: var(--emergency-red);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.open-map-link:hover {
+    background-color: var(--emergency-red-dark);
+}
+
+/* Add these styles to EmergencyScreen.css */
+
+.call-link {
+    background-color: #22c55e; /* A green call button */
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+.call-link:hover {
+    background-color: #16a34a;
+}
+.call-fallback {
+    color: #666;
+    font-size: 0.9rem;
+}
+.call-fallback a {
+    color: var(--emergency-red);
+    font-weight: 700;
+    text-decoration: none;
+}
+.hospital-meta {
+    gap: 0.5rem; /* Add some space between meta items */
+    flex-wrap: wrap;
+}

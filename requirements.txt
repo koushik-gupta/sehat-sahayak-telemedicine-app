@@ -1,0 +1,18 @@
+# ==========================================
+# BACKEND DEPENDENCIES (Python)
+# Install using: pip install -r requirements.txt
+# Location: Root directory (or ./backend)
+# ==========================================
+Flask
+Flask-Cors
+mysql-connector-python
+passlib
+Flask-JWT-Extended
+python-dotenv
+requests
+flask-sock
+twilio
+google-generativeai
+deep-translator
+groq
+reportlab

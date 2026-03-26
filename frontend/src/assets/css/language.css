@@ -1,0 +1,24 @@
+.language-selection-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  min-height: 100vh; padding-top: 2rem; padding-bottom: 2rem; text-align: center;
+}
+.language-banner { width: 100%; max-width: 400px; margin-bottom: 2rem; }
+.language-content { width: 100%; max-width: 500px; padding: 0 1rem; }
+.language-selection-header { font-size: 2rem; font-weight: 700; color: var(--primary-color); margin-bottom: 2rem; }
+.language-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; margin: 0 auto 2rem; }
+
+.language-card {
+  background-color: var(--card-background); border: 2px solid var(--border-color);
+  border-radius: var(--border-radius); padding: 1rem; cursor: pointer;
+  transition: all 0.2s ease-in-out; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0.5rem;
+}
+.language-card:hover { animation: bounce 0.5s ease; }
+.language-card.active { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(79,70,229,0.3); transform: scale(1.05); }
+.language-script-icon { font-size: 2rem; color: var(--primary-color); font-weight: bold; font-family: 'Noto Sans Bengali','Noto Sans Gurmukhi','Noto Sans Devanagari',var(--font-family); }
+.language-card .native-name { font-size: 1.25rem; font-weight: 600; font-family: 'Noto Sans Bengali','Noto Sans Gurmukhi','Noto Sans Devanagari',var(--font-family); }
+.language-card .english-name { font-size: 0.85rem; color: var(--subtle-text-color); }
+@keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);} }
+
+.language-selection-screen .btn { max-width: 500px; margin: 0 auto; }
+.btn:disabled { background-color: #D1D5DB; cursor: not-allowed; }

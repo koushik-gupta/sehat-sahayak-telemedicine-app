@@ -1,0 +1,195 @@
+/* --- CONSULTATION FLOW STYLES --- */
+.consult-flow-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 2rem;
+}
+
+.doctor-profile-card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2rem;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.doctor-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  border: 4px solid var(--border-color);
+}
+
+.doctor-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.doctor-specialty {
+  color: var(--subtle-text-color);
+  margin-bottom: 1.5rem;
+}
+
+.doctor-info {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.info-item span {
+  font-size: 0.8rem;
+  color: var(--subtle-text-color);
+}
+
+.languages-spoken {
+  font-size: 0.9rem;
+  color: var(--subtle-text-color);
+  margin-bottom: 2rem;
+}
+
+.in-call-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  z-index: 2000;
+}
+
+.video-main {
+  flex-grow: 1;
+  position: relative;
+}
+
+.video-self {
+  position: absolute;
+  bottom: 100px;
+  right: 20px;
+  width: 120px;
+  height: 160px;
+  border: 2px solid white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+.video-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.call-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  backdrop-filter: blur(10px);
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.control-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.control-btn.end-call {
+  background-color: #EF4444;
+}
+.control-btn.end-call:hover {
+  background-color: #DC2626;
+}
+
+.post-call-card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.success-icon {
+  color: var(--success-color);
+  margin-bottom: 1rem;
+}
+.success-icon svg {
+  width: 50px;
+  height: 50px;
+}
+
+.post-call-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-call-card p {
+  color: var(--subtle-text-color);
+  margin-bottom: 1.5rem;
+}
+
+.medicines-list {
+  background-color: var(--background-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.medicines-list h4 {
+  margin-bottom: 0.5rem;
+}
+
+.medicines-list ul {
+  list-style: none;
+}
+
+.medicines-list li {
+  padding: 0.25rem 0;
+}

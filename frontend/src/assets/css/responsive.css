@@ -1,0 +1,22 @@
+/* --- RESPONSIVE STYLES --- */
+@media (max-width: 768px) {
+  .container { padding: 0 1rem; }
+  .auth-card { padding: 2rem; }
+  .main-content { padding: 1rem; padding-bottom: 90px; }
+}
+
+@media (max-width: 480px) {
+  .auth-header-illustration { display: none; }
+  .auth-section { padding-top: 2rem; }
+  .auth-card { padding: 1.5rem; margin-top: 0; }
+  .role-selector { flex-direction: column; }
+  .language-grid { grid-template-columns: 1fr; }
+  .greeting { font-size: 1.1rem; }
+  .home-card-grid { grid-template-columns: 1fr; }
+  .video-self { width: 90px; height: 120px; right: 10px; bottom: 90px; }
+  .call-controls { gap: 1rem; padding: 0.75rem 1.5rem; }
+  .record-card { flex-direction: column; align-items: stretch; }
+  .chat-header { padding: 0.75rem 1rem; }
+  .chat-window { padding: 1rem; }
+  .chat-input-area { padding: 1rem; }
+}
