@@ -19,6 +19,8 @@ def _get_list_env(name, default=""):
 
 BACKEND_DIR = os.path.dirname(os.path.dirname(__file__))
 DEFAULT_UPLOAD_FOLDER = os.path.join(BACKEND_DIR, 'uploads')
+DEFAULT_DB_PATH = os.path.join(BACKEND_DIR, 'data', 'telemedicine.sqlite3')
+DEFAULT_SQLITE_SEED_PATH = os.path.join(BACKEND_DIR, 'seed', 'telemedicine.seed.sqlite3')
 
 class Config:
     """Base configuration."""
@@ -28,21 +30,15 @@ class Config:
     PUBLIC_BACKEND_URL = os.environ.get('PUBLIC_BACKEND_URL', '').rstrip('/')
     CORS_ORIGINS = _get_list_env('CORS_ORIGINS', 'http://localhost:5173,http://127.0.0.1:5173')
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', DEFAULT_UPLOAD_FOLDER)
+    DB_PATH = os.environ.get('DB_PATH', DEFAULT_DB_PATH)
+    SQLITE_SEED_PATH = os.environ.get('SQLITE_SEED_PATH', DEFAULT_SQLITE_SEED_PATH)
     SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'swasthyasetu_session')
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SECURE = _get_bool_env('SESSION_COOKIE_SECURE', False)
     SESSION_COOKIE_SAMESITE = os.environ.get('SESSION_COOKIE_SAMESITE', 'Lax')
     PREFERRED_URL_SCHEME = 'https' if SESSION_COOKIE_SECURE else 'http'
     
-    # --- MySQL Database Configuration ---
-    # Load from environment variables.
-    # Create a .env file in your root directory to store these values.
-    # Example .env file:
-    # DB_HOST=localhost
-    # DB_USER=your_mysql_user
-    # DB_PASSWORD=your_mysql_password
-    # DB_NAME=telemedicine_db
-    
+    # Legacy MySQL settings are kept only to avoid breaking old local env files.
     DB_HOST = os.environ.get('DB_HOST')
     DB_USER = os.environ.get('DB_USER')
     DB_PASSWORD = os.environ.get('DB_PASSWORD')

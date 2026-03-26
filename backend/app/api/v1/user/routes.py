@@ -241,7 +241,7 @@ def update_profile():
             weight = clean_val(request.form.get('weight'))
             height = clean_val(request.form.get('height'))
             
-            # Use ON DUPLICATE KEY UPDATE logic or check existence
+            # Update if the patient row exists; otherwise create it.
             cursor.execute("SELECT id FROM patients WHERE user_id = %s", (user_id,))
             if cursor.fetchone():
                 print("DEBUG: Updating existing patient record")

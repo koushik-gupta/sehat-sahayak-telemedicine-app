@@ -1,6 +1,5 @@
 Flask
 Flask-Cors
-mysql-connector-python
 passlib
 Flask-JWT-Extended
 python-dotenv

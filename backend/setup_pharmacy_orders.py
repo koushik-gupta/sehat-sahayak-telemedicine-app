@@ -24,11 +24,11 @@ def setup_pharmacy_tables():
         print("Creating 'pharmacy_orders' table...")
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS pharmacy_orders (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            pharmacy_id INT NOT NULL,
-            patient_id INT NOT NULL,
-            total_amount DECIMAL(10, 2) NOT NULL,
-            status ENUM('pending', 'accepted', 'rejected', 'completed') DEFAULT 'pending',
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            pharmacy_id INTEGER NOT NULL,
+            patient_id INTEGER NOT NULL,
+            total_amount REAL NOT NULL,
+            status TEXT DEFAULT 'pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (pharmacy_id) REFERENCES pharmacies(id) ON DELETE CASCADE,
             FOREIGN KEY (patient_id) REFERENCES users(id) ON DELETE CASCADE
@@ -39,11 +39,11 @@ def setup_pharmacy_tables():
         print("Creating 'pharmacy_order_items' table...")
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS pharmacy_order_items (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            order_id INT NOT NULL,
-            medicine_name VARCHAR(255) NOT NULL,
-            quantity INT NOT NULL,
-            price_per_unit DECIMAL(10, 2) NOT NULL,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            order_id INTEGER NOT NULL,
+            medicine_name TEXT NOT NULL,
+            quantity INTEGER NOT NULL,
+            price_per_unit REAL NOT NULL,
             FOREIGN KEY (order_id) REFERENCES pharmacy_orders(id) ON DELETE CASCADE
         )
         """)

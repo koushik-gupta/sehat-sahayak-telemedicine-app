@@ -21,6 +21,19 @@ from reportlab.lib.styles import getSampleStyleSheet
 
 appointment_bp = Blueprint('appointment_bp', __name__, url_prefix='/api/v1/appointment')
 
+
+def _parse_datetime(value):
+    if isinstance(value, datetime):
+        return value
+    if not value:
+        return None
+
+    text = str(value).replace('T', ' ')
+    try:
+        return datetime.fromisoformat(text)
+    except ValueError:
+        return None
+
 # --- Doctor & Appointment Management ---
 
 @appointment_bp.route('/doctors', methods=['GET'])
@@ -81,21 +94,24 @@ def book_appointment(current_user):
         cursor = conn.cursor(dictionary=True)
 
         # --- INSTANT BOOKING & QUEUE LOGIC ---
+        now = datetime.now()
+        today_str = now.strftime("%Y-%m-%d")
+
         # 1. Find the last scheduled appointment for this doctor today.
         cursor.execute(
-            "SELECT appointment_datetime FROM appointments WHERE doctor_id = %s AND DATE(appointment_datetime) = CURDATE() ORDER BY appointment_datetime DESC LIMIT 1",
-            (doctor_id,)
+            "SELECT appointment_datetime FROM appointments WHERE doctor_id = %s AND DATE(appointment_datetime) = %s ORDER BY appointment_datetime DESC LIMIT 1",
+            (doctor_id, today_str)
         )
         last_appointment = cursor.fetchone()
 
         # 2. Calculate the new appointment time.
-        now = datetime.now()
         start_time = now
+        last_appointment_time = _parse_datetime(last_appointment['appointment_datetime']) if last_appointment else None
         
         # If the last appointment is still in the future (meaning a queue has formed),
         # add 10 minutes to the last appointment's time.
-        if last_appointment and last_appointment['appointment_datetime'] > now:
-            start_time = last_appointment['appointment_datetime'] + timedelta(minutes=10)
+        if last_appointment_time and last_appointment_time > now:
+            start_time = last_appointment_time + timedelta(minutes=10)
         
         # If the last appointment is in the past or doesn't exist, the queue starts now.
         appointment_datetime_obj = start_time
@@ -158,7 +174,8 @@ def get_my_appointments(current_user):
         cursor.execute(query, (current_user['id'],))
         appointments = cursor.fetchall()
         for apt in appointments:
-            apt['appointment_datetime'] = apt['appointment_datetime'].isoformat()
+            parsed_datetime = _parse_datetime(apt.get('appointment_datetime'))
+            apt['appointment_datetime'] = parsed_datetime.isoformat() if parsed_datetime else apt.get('appointment_datetime')
         return jsonify(appointments), 200
     except Exception as e:
         print(f"Error fetching appointments: {e}")

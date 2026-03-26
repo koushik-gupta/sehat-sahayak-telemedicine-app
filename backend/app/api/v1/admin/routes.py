@@ -26,15 +26,12 @@ def get_pending_approvals():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        # Disable ONLY_FULL_GROUP_BY for this session to allow the query
-        cursor.execute("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));")
-
         query = """
             SELECT 
                 u.id, u.full_name, u.email, u.mobile, u.aadhar_number, u.role, u.status,
                 d.registration_number, dp.qualification, d.specialization,
                 p.license_number, p.address,
-                GROUP_CONCAT(docs.file_url SEPARATOR '|||') as document_urls
+                GROUP_CONCAT(docs.file_url, '|||') as document_urls
             FROM users u
             LEFT JOIN doctors d ON u.id = d.user_id
             LEFT JOIN doctor_profiles dp ON u.id = dp.user_id
@@ -116,15 +113,12 @@ def get_users_details():
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
-        # Disable ONLY_FULL_GROUP_BY for this session
-        cursor.execute("SET sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));")
-
         query = """
             SELECT 
                 u.id, u.full_name, u.email, u.mobile, u.aadhar_number, u.role, u.status, u.created_at,
                 d.registration_number, dp.qualification, d.specialization,
                 p.license_number, p.address,
-                GROUP_CONCAT(docs.file_url SEPARATOR '|||') as document_urls
+                GROUP_CONCAT(docs.file_url, '|||') as document_urls
             FROM users u
             LEFT JOIN doctors d ON u.id = d.user_id
             LEFT JOIN doctor_profiles dp ON u.id = dp.user_id

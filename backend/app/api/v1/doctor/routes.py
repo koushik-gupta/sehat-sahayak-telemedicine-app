@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.db_utils import get_db_connection
 from app.api.v1.auth.utils import login_required
+from datetime import datetime
 import os
 from werkzeug.utils import secure_filename
 from app.file_utils import build_public_upload_url, get_upload_folder, relative_upload_url
@@ -11,6 +12,17 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def _format_datetime(value, fmt):
+    if not value:
+        return value
+
+    text = str(value).replace('T', ' ')
+    try:
+        return datetime.fromisoformat(text).strftime(fmt)
+    except ValueError:
+        return str(value)
 
 # --- NEW: Endpoint for a doctor to upload their profile picture ---
 @doctor_bp.route('/upload-picture', methods=['POST'])
@@ -45,7 +57,7 @@ def upload_profile_picture(current_user):
         cursor = conn.cursor()
         try:
             # Ensure a doctor_profile row exists before updating
-            cursor.execute("INSERT INTO doctor_profiles (user_id) VALUES (%s) ON DUPLICATE KEY UPDATE user_id=user_id", (current_user['id'],))
+            cursor.execute("INSERT OR IGNORE INTO doctor_profiles (user_id) VALUES (%s)", (current_user['id'],))
             
             cursor.execute(
                 "UPDATE doctor_profiles SET profile_pic_url = %s WHERE user_id = %s",
@@ -115,9 +127,14 @@ def update_doctor_profile(current_user):
         profile_query = """
         INSERT INTO doctor_profiles (user_id, qualification, specialty, experience, about, languages, fee, hospital)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-        ON DUPLICATE KEY UPDATE
-            qualification = VALUES(qualification), specialty = VALUES(specialty), experience = VALUES(experience),
-            about = VALUES(about), languages = VALUES(languages), fee = VALUES(fee), hospital = VALUES(hospital);
+        ON CONFLICT(user_id) DO UPDATE SET
+            qualification = excluded.qualification,
+            specialty = excluded.specialty,
+            experience = excluded.experience,
+            about = excluded.about,
+            languages = excluded.languages,
+            fee = excluded.fee,
+            hospital = excluded.hospital;
         """
         profile_values = (
             current_user['id'], data.get('qualification'), data.get('specialty'), data.get('experience'),
@@ -172,7 +189,7 @@ def get_recent_patients(current_user):
                 u.id, 
                 u.full_name as name,
                 'Follow-up' as type, -- Placeholder, logic can be improved
-                DATE_FORMAT(a.appointment_datetime, '%Y-%m-%d %H:%i') as date,
+                a.appointment_datetime as date,
                 'Active' as status,
                 (SELECT notes FROM appointments WHERE patient_id = u.id AND doctor_id = %s ORDER BY appointment_datetime DESC LIMIT 1) as details
             FROM appointments a
@@ -189,6 +206,8 @@ def get_recent_patients(current_user):
              # Just for demo purposes if DB is empty, preserving the structure
              # In production, just return []
              pass
+        for patient in patients:
+            patient['date'] = _format_datetime(patient.get('date'), '%Y-%m-%d %H:%M')
 
         return jsonify(patients), 200
     except Exception as e:
@@ -266,20 +285,25 @@ def get_availability(current_user):
     cursor = conn.cursor(dictionary=True)
     try:
         # Cursor dictionary=True returns values as they are converted by connector
-        # For TIME columns, mysql-connector often returns timedelta. logic needs handling.
+        # SQLite stores TIME values as strings, so normalize the shape before responding.
         # Safest is to handle query with CAST or process in python.
         
         cursor.execute("""
             SELECT 
                 doctor_id, 
                 day_of_week, 
-                CAST(start_time AS CHAR) as start_time, 
-                CAST(end_time AS CHAR) as end_time, 
+                start_time,
+                end_time,
                 is_available 
             FROM doctor_availability 
             WHERE doctor_id = %s
         """, (current_user['id'],))
         schedule = cursor.fetchall()
+        for slot in schedule:
+            if slot.get('start_time'):
+                slot['start_time'] = str(slot['start_time'])[:8]
+            if slot.get('end_time'):
+                slot['end_time'] = str(slot['end_time'])[:8]
         return jsonify(schedule), 200
     except Exception as e:
         print(f"Error fetching availability: {e}")
@@ -346,8 +370,8 @@ def handle_prescriptions(current_user):
                 SELECT 
                     p.id, 
                     u.full_name as patient, 
-                    DATE_FORMAT(p.created_at, '%b %d, %Y') as date,
-                    (SELECT GROUP_CONCAT(CONCAT(medicine_name, ' ', dosage) SEPARATOR ', ') 
+                    p.created_at as created_at,
+                    (SELECT GROUP_CONCAT(medicine_name || ' ' || dosage, ', ') 
                      FROM prescription_items WHERE prescription_id = p.id) as meds,
                     p.notes
                 FROM prescriptions p
@@ -357,6 +381,9 @@ def handle_prescriptions(current_user):
             """
             cursor.execute(query, (current_user['id'],))
             prescriptions = cursor.fetchall()
+            for prescription in prescriptions:
+                prescription['date'] = _format_datetime(prescription.get('created_at'), '%b %d, %Y')
+                prescription.pop('created_at', None)
             return jsonify(prescriptions), 200
         except Exception as e:
             print(f"Error fetching prescriptions: {e}")
@@ -421,7 +448,8 @@ def get_doctor_stats(current_user):
         # 2. Appointments this month
         cursor.execute("""
             SELECT COUNT(*) as count FROM appointments 
-            WHERE doctor_id = %s AND MONTH(appointment_datetime) = MONTH(CURRENT_DATE())
+            WHERE doctor_id = %s
+              AND strftime('%Y-%m', appointment_datetime) = strftime('%Y-%m', 'now', 'localtime')
         """, (current_user['id'],))
         result_month = cursor.fetchone()
         appointments_month = result_month['count'] if result_month else 0
@@ -444,17 +472,21 @@ def get_doctor_stats(current_user):
         # --- Chart Data ---
         
         # 4. Appointment Trends (Last 6 months)
-        # Real logic: Group by Month
-        # 4. Appointment Trends (Last 6 months)
-        # Using MIN(appointment_datetime) to be compatible with ONLY_FULL_GROUP_BY
         cursor.execute("""
-            SELECT DATE_FORMAT(MIN(appointment_datetime), '%b') as label, COUNT(*) as value
+            SELECT strftime('%Y-%m', appointment_datetime) as period, COUNT(*) as value
             FROM appointments
-            WHERE doctor_id = %s AND appointment_datetime >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
-            GROUP BY YEAR(appointment_datetime), MONTH(appointment_datetime)
-            ORDER BY MIN(appointment_datetime) ASC
+            WHERE doctor_id = %s AND appointment_datetime >= datetime('now', '-6 months')
+            GROUP BY strftime('%Y-%m', appointment_datetime)
+            ORDER BY period ASC
         """, (current_user['id'],))
-        trends_data = cursor.fetchall()
+        trends_rows = cursor.fetchall()
+        trends_data = [
+            {
+                'label': _format_datetime(f"{row['period']}-01 00:00:00", '%b'),
+                'value': row['value']
+            }
+            for row in trends_rows
+        ]
         
         # If no data (or very little), provide mock data for the demo accounts
         # We can detect demo accounts by email or just if data is empty

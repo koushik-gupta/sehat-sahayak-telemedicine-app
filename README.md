@@ -1,24 +1,33 @@
-# SehatSahayak Telemedicine Platform
+# SwasthyaSetu Telemedicine Platform
 
-SwasthyaSetu is a role-based telemedicine platform with a React frontend, a Flask backend, and a MySQL database. The project includes patient, doctor, pharmacy, and admin workflows, plus video consultation, health record uploads, OTP-based auth flows, nearby hospital lookup, pharmacy inventory search, and AI-assisted symptom support.
+SwasthyaSetu is a role-based telemedicine platform with a React frontend, a Flask backend, and a bundled SQLite demo database. The app supports patient, doctor, pharmacy, and admin workflows, along with video consultation, document uploads, OTP-based flows, nearby medicine and hospital search, and AI-assisted symptom support.
+
+## What Changed
+
+This repository now uses SQLite by default instead of MySQL.
+
+- No MySQL server or Workbench setup is required
+- The backend creates `backend/data/telemedicine.sqlite3` automatically on first boot
+- The first runtime database is copied from `backend/seed/telemedicine.seed.sqlite3`
+- Existing Render and Vercel deployment-safe configuration is preserved
 
 ## Highlights
 
 - Multi-role experience for `patient`, `doctor`, `pharmacy`, and `admin`
 - React + Vite frontend with PWA support
-- Flask API with session-based authentication and WebSocket signaling
-- MySQL schema and demo seed data included under `database/`
-- Docker Compose setup for full local stack
-- Manual development mode for separate frontend and backend workflows
-- Demo accounts for quick testing
+- Flask API with session-based auth and WebSocket signaling
+- SQLite seed database bundled with the repo
+- Docker Compose setup for local full-stack runs
+- Local dev workflow for running frontend and backend separately
+- Demo accounts included for testing
 
 ## Tech Stack
 
 - Frontend: React 19, Vite 7, Tailwind CSS, Framer Motion, Lucide icons
-- Backend: Flask, Flask-CORS, Flask-Sock, Passlib, MySQL Connector
-- AI and integrations: Groq, Google Maps APIs, Deep Translator, Twilio, SMTP mail
-- Database: MySQL 8
-- Deployment/runtime: Docker, Nginx
+- Backend: Flask, Flask-CORS, Flask-Sock, Passlib
+- Database: SQLite
+- Integrations: Groq, Google Maps APIs, Deep Translator, Twilio, SMTP mail
+- Deployment/runtime: Docker, Nginx, Render, Vercel
 
 ## Repository Structure
 
@@ -30,6 +39,10 @@ SwasthyaSetu is a role-based telemedicine platform with a React frontend, a Flas
 |   |   |-- config.py
 |   |   |-- db_utils.py
 |   |   `-- sockets.py
+|   |-- scripts/
+|   |   `-- build_sqlite_seed.py
+|   |-- seed/
+|   |   `-- telemedicine.seed.sqlite3
 |   |-- .env.example
 |   |-- requirements.txt
 |   `-- run.py
@@ -48,7 +61,7 @@ SwasthyaSetu is a role-based telemedicine platform with a React frontend, a Flas
 `-- README.md
 ```
 
-## Main Product Areas
+## Product Areas
 
 ### Patient
 
@@ -58,7 +71,7 @@ SwasthyaSetu is a role-based telemedicine platform with a React frontend, a Flas
 - AI symptom checker
 - Health record and document upload
 - Nearby medicine search
-- Nearby hospital search with Google Maps APIs
+- Nearby hospital search
 - Profile updates
 
 ### Doctor
@@ -75,7 +88,7 @@ SwasthyaSetu is a role-based telemedicine platform with a React frontend, a Flas
 
 - Login and approval workflow
 - Pharmacy profile management
-- Stock creation, update, and removal
+- Stock management
 - Medicine search and nearby stock lookup
 - Order intake and dashboard tools
 - Document upload for verification
@@ -84,58 +97,68 @@ SwasthyaSetu is a role-based telemedicine platform with a React frontend, a Flas
 
 - Review pending doctor and pharmacy submissions
 - Approve or reject applicants
-- Browse user lists by role and status
+- Browse users by role and status
 
 ## Prerequisites
 
-Choose one of the following setups:
+Choose one of these setups:
 
 - Docker Desktop
 - Or local runtimes:
   - Node.js 18+
   - npm 9+
   - Python 3.9+
-  - MySQL 8
+
+No separate database server is required for the default setup.
 
 ## Environment Setup
 
 The backend reads environment variables from `backend/.env`.
 
 1. Copy `backend/.env.example` to `backend/.env`
-2. Replace placeholder values with your own credentials
+2. Fill in the secrets and optional API keys you want to use
 
-Important environment variables:
+Important variables:
 
 - `SECRET_KEY`: Flask session secret
-- `JWT_SECRET_KEY`: JWT secret used by some auth utilities
-- `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`: MySQL connection settings
-- `MAIL_*`: SMTP settings for OTP and approval emails
-- `TWILIO_*`: Optional SMS notifications
-- `GROQ_API_KEY`: Required for chatbot responses
-- `GOOGLE_MAPS_API_KEY`: Required for nearby hospital lookup
-- `GOOGLE_API_KEY`: Reserved for Google AI-related features
+- `JWT_SECRET_KEY`: JWT secret
+- `DB_PATH`: runtime SQLite database file
+- `SQLITE_SEED_PATH`: tracked seed database copied on first boot
+- `PUBLIC_BACKEND_URL`: public backend URL for production-generated media links
+- `CORS_ORIGINS`: allowed frontend origins, comma-separated
+- `SESSION_COOKIE_SECURE`: should be `true` in production HTTPS deployments
+- `SESSION_COOKIE_SAMESITE`: use `None` for split-domain Vercel + Render deployments
+- `UPLOAD_FOLDER`: persistent upload folder path
+- `MAIL_*`: SMTP settings for OTP and approval email
+- `TWILIO_*`: optional SMS notifications
+- `GROQ_API_KEY`: required for chatbot responses
+- `GOOGLE_MAPS_API_KEY`: required for nearby hospital lookup
 
-For Docker Compose, the default database settings are:
+Local defaults if you leave the SQLite values blank:
 
 ```env
-DB_HOST=db
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=telemedicine_db
+DB_PATH=backend/data/telemedicine.sqlite3
+SQLITE_SEED_PATH=backend/seed/telemedicine.seed.sqlite3
 ```
 
-For a fully local backend + MySQL run, `DB_HOST` is usually `127.0.0.1` or `localhost`.
+Docker / Render example:
+
+```env
+DB_PATH=/app/data/telemedicine.sqlite3
+SQLITE_SEED_PATH=/app/seed/telemedicine.seed.sqlite3
+UPLOAD_FOLDER=/app/uploads
+```
 
 ## Quick Start With Docker
 
-This is the easiest way to run the whole app.
+This is the easiest way to run the whole app locally.
 
 ```powershell
 cd "c:\Users\Asus\Desktop\important\telemedicine-app2(eita thik korte hobe)"
 docker compose up --build
 ```
 
-If your machine uses the older Compose command:
+If your machine still uses the older Compose command:
 
 ```powershell
 docker-compose up --build
@@ -145,18 +168,15 @@ Services exposed by Docker:
 
 - Frontend: `http://localhost`
 - Backend API: `http://localhost:5001`
-- MySQL: `localhost:3307`
+
+Persisted local folders:
+
+- `backend/data/` for the SQLite database
+- `backend/uploads/` for uploaded files
 
 ## Local Development Without Docker
 
-### 1. Start MySQL
-
-Create a MySQL database named `telemedicine_db` and import one of:
-
-- `database/init.sql` for the current dump and demo data
-- `database/full_schema.sql` for the consolidated schema reference
-
-### 2. Start the backend
+### 1. Start the backend
 
 ```powershell
 cd backend
@@ -164,11 +184,15 @@ pip install -r requirements.txt
 python run.py
 ```
 
+On first boot the backend will create:
+
+- `backend/data/telemedicine.sqlite3`
+
 Backend runs on:
 
 - `http://127.0.0.1:5000`
 
-### 3. Start the frontend
+### 2. Start the frontend
 
 ```powershell
 cd frontend
@@ -188,7 +212,7 @@ The Vite dev server proxies:
 
 ## Demo Accounts
 
-Confirmed seeded demo accounts:
+Core demo accounts:
 
 | Role | Email | Password | Notes |
 |---|---|---|---|
@@ -196,13 +220,13 @@ Confirmed seeded demo accounts:
 | Doctor | `doctor@test.com` | `password123` | Approved |
 | Pharmacy | `pharma@test.com` | `password123` | Approved |
 | Admin | `admin@test.com` | `password123` | Active |
+
+Additional seed accounts:
+
+| Role | Email | Password | Notes |
+|---|---|---|---|
 | Doctor | `pending_doc@test.com` | `password123` | Pending admin approval |
 | Pharmacy | `pending_pharma@test.com` | `password123` | Pending admin approval |
-
-Notes:
-
-- Pending accounts are useful for testing the approval flow.
-- Additional seed rows exist in the SQL dump, but not all of them have verified public demo credentials.
 
 ## Backend Route Overview
 
@@ -217,70 +241,99 @@ Main route groups under `backend/app/api/v1/`:
 - `pharmacy`: profile, stock, search, nearby stock, orders
 - `chatbot`: AI assistant with doctor and medicine lookup tools
 
-Uploaded files are served from:
+Uploaded files are served from `/uploads/<filename>`.
 
-- `/uploads/<filename>`
+WebSocket signaling for video consultation is exposed through `/signal`.
 
-WebSocket signaling for video consultation is exposed through:
+## SQLite Seed Database
 
-- `/signal`
+The tracked demo database lives at:
 
-## Database Notes
+- `backend/seed/telemedicine.seed.sqlite3`
 
-The `database/` folder contains:
+The runtime database is created at:
 
-- `init.sql`: the current schema dump plus demo data
-- `full_schema.sql`: a consolidated schema reference
-- `schema_enhancements.sql`: additional schema and seed enhancements
+- `backend/data/telemedicine.sqlite3` locally
+- `/app/data/telemedicine.sqlite3` in Docker or Render if you set `DB_PATH`
 
-The application uses MySQL tables for:
+If you want to rebuild the seed from SQL, use:
 
-- users and auth state
-- doctors, doctor profiles, and availability
-- patients and health records
-- pharmacies, stock, and orders
-- appointments and prescriptions
-- uploaded documents
+```powershell
+python backend\scripts\build_sqlite_seed.py
+```
+
+This uses `database/init.sql` by default.
+
+If you want to rebuild from your private local MySQL dump instead, use:
+
+```powershell
+python backend\scripts\build_sqlite_seed.py --source telemedicine_db_dump.sql
+```
+
+Do not commit private dumps that contain real personal data.
+
+## Deployment Notes
+
+### Recommended hosting layout
+
+- Frontend: Vercel
+- Backend: Render Web Service
+- Database file: Render persistent disk mounted into the backend
+- Uploads: Render persistent disk or another persistent storage path
+
+### Render backend settings
+
+Recommended environment variables:
+
+```env
+DB_PATH=/app/data/telemedicine.sqlite3
+SQLITE_SEED_PATH=/app/seed/telemedicine.seed.sqlite3
+UPLOAD_FOLDER=/app/uploads
+PUBLIC_BACKEND_URL=https://your-backend.onrender.com
+CORS_ORIGINS=https://your-frontend.vercel.app
+SESSION_COOKIE_SECURE=true
+SESSION_COOKIE_SAMESITE=None
+```
+
+Recommended disks:
+
+- Mount one persistent disk at `/app/data`
+- Mount one persistent disk at `/app/uploads`
+
+### Vercel frontend settings
+
+Set:
+
+```env
+VITE_API_BASE_URL=https://your-backend.onrender.com
+VITE_WS_BASE_URL=wss://your-backend.onrender.com
+```
 
 ## Files That Should Not Be Committed
 
-The root `.gitignore` now excludes the main local-only or generated files:
+The root `.gitignore` and backend `.gitignore` exclude the main local-only or generated files:
 
 - `backend/.env`
+- `backend/data/`
 - `backend/uploads/`
 - `frontend/node_modules/`
 - `frontend/dist/`
-- `frontend/dev-dist/`
 - local TLS certs and debug logs
-- the bundled project zip
-- Python caches and editor folders
+- `.tools/`
+- editor folders
+- `telemedicine_db_dump.sql`
 
-Before pushing, make sure you do not manually force-add ignored files.
-
-## Recommended GitHub Push Flow
-
-Once you are happy with the project state:
-
-```powershell
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin <your-github-repo-url>
-git push -u origin main
-```
-
-If you already created the GitHub repo first, replace `<your-github-repo-url>` with the repository clone URL.
+Before pushing, do not manually force-add ignored files.
 
 ## Troubleshooting
 
-### Login works locally but not through Docker
+### The app starts but demo users cannot log in
 
-The frontend should call relative `/api/...` paths. This repository now uses that pattern for login as well.
+Delete `backend/data/telemedicine.sqlite3` and start the backend again so it re-copies the latest seed.
 
-### Doctor or pharmacy users cannot log in after admin approval
+### Doctor or pharmacy users cannot log in after approval
 
-The backend now treats both `active` and `approved` as valid statuses for doctor and pharmacy access.
+The backend accepts both `active` and `approved` for doctor and pharmacy access.
 
 ### Nearby hospitals fail
 
@@ -292,23 +345,26 @@ Set `GROQ_API_KEY` in `backend/.env`.
 
 ### OTP mail fails
 
-Configure the `MAIL_*` SMTP values correctly.
+Configure the `MAIL_*` values correctly.
 
-### SMS fails
+### Uploaded files disappear after deployment
 
-Set the Twilio credentials or leave SMS features unused.
+Your backend storage is ephemeral. Mount a persistent disk for `/app/uploads`.
 
-## Validation Checklist Before Pushing
+### Data resets after deployment
+
+Your backend storage is ephemeral. Mount a persistent disk for `/app/data`.
+
+## Validation Checklist
 
 - Copy `backend/.env.example` to `backend/.env`
-- Confirm Docker or local database credentials are correct
 - Make sure `backend/.env` is not staged
-- Do not commit `backend/uploads/` or local certificates
-- Run the frontend lint/build checks
-- Run a backend syntax check
-- Verify at least one account can log in for each workflow you want to demo
+- Do not commit `backend/data/`, `backend/uploads/`, or local certificates
+- Run `python -m compileall backend`
+- Run `npm run build` inside `frontend`
+- Verify the four main demo accounts can log in
 
-## Additional Notes
+## Notes
 
-- `Friend_Guide.md` remains as a lightweight setup note for non-technical collaborators.
-- `frontend/README.md` from the Vite starter is not the main project documentation. Use this root README as the canonical guide.
+- `Friend_Guide.md` is a lighter quick-start for non-technical collaborators.
+- `frontend/README.md` from the Vite starter is not the main documentation. Use this root README as the primary guide.

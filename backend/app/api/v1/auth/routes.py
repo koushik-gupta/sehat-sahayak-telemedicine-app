@@ -28,6 +28,19 @@ def _normalize_user_media(user):
 
     return user
 
+
+def _parse_datetime(value):
+    if isinstance(value, datetime):
+        return value
+    if not value:
+        return None
+
+    text = str(value).replace('T', ' ')
+    try:
+        return datetime.fromisoformat(text)
+    except ValueError:
+        return None
+
 @auth_bp.route('/register', methods=['POST'])
 def register_user():
     # This function is correct and remains unchanged.
@@ -235,7 +248,8 @@ def send_otp():
             }
         else:
             query = "UPDATE users SET otp = %s, otp_expires_at = %s WHERE " + ("email = %s" if email else "mobile = %s")
-            values = (otp_code, datetime.utcnow() + timedelta(minutes=10), email if email else mobile)
+            expires_at = (datetime.utcnow() + timedelta(minutes=10)).strftime("%Y-%m-%d %H:%M:%S")
+            values = (otp_code, expires_at, email if email else mobile)
             cursor.execute(query, values)
             if cursor.rowcount == 0: return jsonify({"error": "No account found"}), 404
             conn.commit()
@@ -303,7 +317,8 @@ def verify_otp():
             user = cursor.fetchone()
             if not user: return jsonify({"error": "User not found"}), 404
             if user['otp'] != otp_from_user: return jsonify({"error": "Invalid OTP code"}), 401
-            if user['otp_expires_at'] < datetime.utcnow(): return jsonify({"error": "OTP has expired."}), 410
+            otp_expires_at = _parse_datetime(user.get('otp_expires_at'))
+            if not otp_expires_at or otp_expires_at < datetime.utcnow(): return jsonify({"error": "OTP has expired."}), 410
             session['password_reset_allowed_for'] = identifier
             return jsonify({"message": "Verification successful. You can now reset your password."}), 200
     except Exception as e:

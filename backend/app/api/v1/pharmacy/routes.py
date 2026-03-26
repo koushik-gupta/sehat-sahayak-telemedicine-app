@@ -21,8 +21,8 @@ def get_pharmacy_profile(current_user):
             SELECT u.id, u.full_name, u.email, u.mobile, p.id as pharmacy_id, p.address,
                    p.license_number, p.home_delivery,
                    p.chain_name, p.district, p.state,
-                   TIME_FORMAT(p.opening_time, '%H:%i') as opening_time, 
-                   TIME_FORMAT(p.closing_time, '%H:%i') as closing_time
+                   p.opening_time,
+                   p.closing_time
             FROM users u LEFT JOIN pharmacies p ON u.id = p.user_id WHERE u.id = %s
         """, (user_id,))
         pharmacy_profile = cursor.fetchone()
@@ -31,6 +31,10 @@ def get_pharmacy_profile(current_user):
         # Convert 1/0 to boolean
         if 'home_delivery' in pharmacy_profile:
              pharmacy_profile['home_delivery'] = bool(pharmacy_profile['home_delivery'])
+        if pharmacy_profile.get('opening_time'):
+             pharmacy_profile['opening_time'] = str(pharmacy_profile['opening_time'])[:5]
+        if pharmacy_profile.get('closing_time'):
+             pharmacy_profile['closing_time'] = str(pharmacy_profile['closing_time'])[:5]
 
         # Fetch Stock with IDs for granular updates
         cursor.execute("""
@@ -153,9 +157,9 @@ def delete_stock_item(current_user, stock_id):
     cursor = conn.cursor()
     try:
         cursor.execute("""
-            DELETE ps FROM pharmacy_stock ps
-            JOIN pharmacies p ON ps.pharmacy_id = p.id
-            WHERE ps.id = %s AND p.user_id = %s
+            DELETE FROM pharmacy_stock
+            WHERE id = %s
+              AND pharmacy_id IN (SELECT id FROM pharmacies WHERE user_id = %s)
         """, (stock_id, current_user['id']))
         
         if cursor.rowcount == 0:
@@ -394,7 +398,7 @@ def place_order(current_user):
                 # Decrease quantity, ensure non-negative
                 cursor.execute("""
                     UPDATE pharmacy_stock 
-                    SET quantity = GREATEST(quantity - %s, 0)
+                    SET quantity = MAX(quantity - %s, 0)
                     WHERE pharmacy_id = %s AND medicine_id = %s
                 """, (qty, pharmacy_id, med_id))
 

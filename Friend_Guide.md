@@ -1,102 +1,115 @@
-# Friend's Guide to Running SwasthyaSetu 🏥
+# Friend's Guide to Running SwasthyaSetu
 
-Hello! If you are reading this, you are about to run the Telemedicine App. Follow these steps exactly to get everything running on your laptop.
+This guide is for someone who just wants the project running locally with the least setup possible.
 
 ## 1. Install Prerequisites
 
-1.  **Download & Install Docker Desktop**:
-    - Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop).
-    - Download and install it for Windows/Mac/Linux.
-    - **Start Docker Desktop** and wait for the whale icon to stop animating.
+1. Install Docker Desktop from [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+2. Start Docker Desktop and wait until it is fully running
 
 ## 2. Get the Code
 
-You should have received the entire project folder (e.g., as a zip file or a GitHub link).
-1.  **Download and Unzip** the project to a location on your laptop.
-2.  Open that folder. You should see folders like `backend`, `frontend`, `database`, and a file named `docker-compose.yml`.
+1. Download the project folder or clone it from GitHub
+2. Open the project folder
+3. Make sure you can see `backend`, `frontend`, and `docker-compose.yml`
 
-## 3. Configure the `.env` File
+## 3. Create the Backend `.env`
 
-1.  Go to the `backend` folder.
-2.  Look for a file named `.env.example`.
-3.  **Copy** this file and rename the copy to `.env`.
-4.  Open the new `.env` file and fill in the details.
+1. Open the `backend` folder
+2. Copy `.env.example`
+3. Rename the copy to `.env`
+4. Fill in the values you actually want to use
 
-Here is what it should look like (mostly default, but add your API keys):
+The app now uses SQLite by default, so you do not need MySQL or MySQL Workbench.
+
+Minimal example:
 
 ```ini
-# Database (DO NOT CHANGE THESE! They assume you are running in Docker)
-DB_HOST=db
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=telemedicine_db
+SECRET_KEY=change_this_to_a_long_random_secret
+JWT_SECRET_KEY=change_this_to_a_second_long_random_secret
 
-# Security (Change these to something random)
-SECRET_KEY=change_this_to_random_secret
-JWT_SECRET_KEY=change_this_to_random_jwt_key
-
-# Email (For sending notifications)
 MAIL_SERVER=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USERNAME=your_email@gmail.com
 MAIL_PASSWORD=your_app_password
 MAIL_DEFAULT_SENDER=your_email@gmail.com
 
-# Twilio (For SMS - Optional)
-TWILIO_ACCOUNT_SID=your_sid_here
-TWILIO_AUTH_TOKEN=your_token_here
-TWILIO_PHONE_NUMBER=your_twilio_number
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_PHONE_NUMBER=
 
-# AI (For features like Chatbot)
-GOOGLE_API_KEY=your_google_api_key
-GROQ_API_KEY=your_groq_api_key_here
+GOOGLE_API_KEY=
+GROQ_API_KEY=
+GOOGLE_MAPS_API_KEY=
 ```
 
-## 4. Run the App!
+You can leave `DB_PATH` and `SQLITE_SEED_PATH` empty unless you want custom locations.
 
-1.  Open **Command Prompt** (cmd) or PowerShell.
-2.  Navigate to your folder:
-    ```powershell
-    cd path\to\telemedicine
-    ```
-3.  Run this command:
-    ```powershell
-    docker-compose up --build
-    ```
-    *(Note: The first time you run this, it will download about 500MB+ of data. Be patient!)*
+## 4. Run the App
 
-## 5. Access the App
+1. Open PowerShell or Command Prompt
+2. Go to the project folder
 
-Once you see logs like "Running on http://0.0.0.0:5000" and "ready for connections", open your browser:
+```powershell
+cd path\to\telemedicine
+```
 
-- **Frontend (Website)**: [http://localhost](http://localhost)
-- **Backend (API)**: [http://localhost:5001](http://localhost:5001)
+3. Start everything
+
+```powershell
+docker compose up --build
+```
+
+If your Docker still uses the old Compose command:
+
+```powershell
+docker-compose up --build
+```
+
+On first boot, the backend will automatically create the SQLite database from the bundled demo seed.
+
+## 5. Open the App
+
+After the containers finish starting:
+
+- Frontend: [http://localhost](http://localhost)
+- Backend: [http://localhost:5001](http://localhost:5001)
+
+## 6. Demo Login Accounts
+
+- Patient: `patient@test.com` / `password123`
+- Doctor: `doctor@test.com` / `password123`
+- Pharmacy: `pharma@test.com` / `password123`
+- Admin: `admin@test.com` / `password123`
 
 ## Troubleshooting
 
-- **Port Error**: If you see "Bind for 0.0.0.0:3307 failed", make sure no other Docker container is using port 3307.
-- **Database Error**: If the app says "Can't connect to MySQL server", wait a minute. The database takes a little longer to start than the app.
-- **Stopping**: Press `Ctrl+C` in the terminal to stop. To remove everything, run `docker-compose down`.
+### The app starts but login fails
 
-## Common Questions
+Delete the local runtime database and restart:
 
-**Q: Do I need to install MySQL Workbench or create a database manually?**
-A: **No!** Docker does this automatically. It creates the database and imports all the data for you when you run `docker-compose up`. You don't need to do anything.
+```powershell
+Remove-Item -Force .\backend\data\telemedicine.sqlite3
+docker compose up --build
+```
 
-**Q: The app says "Failed to fetch" or "Database not found". What do I do?**
-A: This happens if the Database takes longer to start than the Backend.
-**Fix:**
-1.  Wait 10 seconds.
-2.  Refresh the page.
-3.  If it still fails, run this command to reset everything (WARNING: Deletes current data):
-    ```powershell
-    docker-compose down -v
-    docker-compose up --build
-    ```
-**Q: I still see errors or the app behaves weirdly?**
-A: Since this is a PWA (Progressive Web App), the browser might be caching an old, broken version.
-**Fix:**
-1.  Open the app in an **Incognito / Private Window**.
-2.  Or clear your browser cache (Application -> Clear Storage -> Clear Site Data).
+### Uploaded files disappear
 
+The uploads are stored in `backend/uploads`. Do not delete that folder if you want to keep uploaded files.
 
+### The browser still shows an old broken version
+
+Because this is a PWA, try one of these:
+
+1. Open the app in an incognito/private window
+2. Clear browser site data
+
+### I want to stop the app
+
+Press `Ctrl+C` in the terminal.
+
+To remove the containers:
+
+```powershell
+docker compose down
+```
