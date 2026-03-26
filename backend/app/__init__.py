@@ -5,6 +5,7 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
 from .config import Config
+from .db_utils import initialize_database
 from .sockets import sock # Import the sock instance from our new sockets.py file
 
 def create_app(config_class=Config):
@@ -28,6 +29,9 @@ def create_app(config_class=Config):
     )
     sock.init_app(app) # Initialize Flask-Sock to enable WebSocket routes
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+    with app.app_context():
+        initialize_database()
     
     # --- Import and Register All API Blueprints ---
     from .api.v1.auth.routes import auth_bp

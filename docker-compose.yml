@@ -10,6 +10,7 @@ services:
     environment:
       - DB_PATH=/app/data/telemedicine.sqlite3
       - SQLITE_SEED_PATH=/app/seed/telemedicine.seed.sqlite3
+      - SQLITE_SCHEMA_PATH=/app/seed/telemedicine.schema.sql
     restart: always
     volumes:
       - ./backend/uploads:/app/uploads

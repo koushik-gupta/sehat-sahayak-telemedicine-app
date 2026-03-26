@@ -137,8 +137,9 @@ Important variables:
 Local defaults if you leave the SQLite values blank:
 
 ```env
-DB_PATH=backend/data/telemedicine.sqlite3
-SQLITE_SEED_PATH=backend/seed/telemedicine.seed.sqlite3
+DB_PATH=data/telemedicine.sqlite3
+SQLITE_SEED_PATH=seed/telemedicine.seed.sqlite3
+SQLITE_SCHEMA_PATH=seed/telemedicine.schema.sql
 ```
 
 Docker / Render example:

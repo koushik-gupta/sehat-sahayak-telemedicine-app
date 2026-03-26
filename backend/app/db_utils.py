@@ -1,11 +1,36 @@
 # app/db_utils.py
 
-import os
 import shutil
 import sqlite3
+from datetime import datetime, timezone
 from pathlib import Path
 
 from flask import current_app
+
+
+REQUIRED_TABLES = frozenset(
+    {
+        "appointments",
+        "doctor_availability",
+        "doctor_profiles",
+        "doctors",
+        "documents",
+        "health_records",
+        "medicines",
+        "patients",
+        "pharmacies",
+        "pharmacy_order_items",
+        "pharmacy_orders",
+        "pharmacy_stock",
+        "prescription_items",
+        "prescriptions",
+        "users",
+    }
+)
+
+
+class DatabaseInitializationError(RuntimeError):
+    """Raised when the SQLite database cannot be initialized safely."""
 
 
 class SQLiteCursorWrapper:
@@ -22,12 +47,7 @@ class SQLiteCursorWrapper:
         return self._cursor.rowcount
 
     def execute(self, query, params=None):
-        cleaned_query = query.strip()
-
-        # MySQL-specific session tweak used by older queries. Safe to ignore in SQLite.
-        if cleaned_query.upper().startswith("SET SQL_MODE="):
-            return self
-
+        # Normalize the existing query placeholder style used across the codebase.
         sqlite_query = query.replace("%s", "?")
         self._cursor.execute(sqlite_query, params or ())
         return self
@@ -74,36 +94,120 @@ class SQLiteConnectionWrapper:
         return not self._closed
 
 
-def _ensure_sqlite_database():
+def _connect_sqlite(db_path):
+    conn = sqlite3.connect(db_path, timeout=30)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA foreign_keys = ON")
+    return conn
+
+
+def _backup_database_file(db_path, reason):
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    backup_path = db_path.with_name(f"{db_path.stem}.{reason}.{timestamp}{db_path.suffix}")
+    shutil.move(str(db_path), str(backup_path))
+    current_app.logger.warning("Backed up SQLite database from %s to %s", db_path, backup_path)
+    return backup_path
+
+
+def _validate_database_file(db_path):
+    with sqlite3.connect(db_path, timeout=30) as conn:
+        quick_check = conn.execute("PRAGMA quick_check(1)").fetchone()
+        if not quick_check or quick_check[0] != "ok":
+            raise DatabaseInitializationError(f"SQLite quick_check failed for {db_path}")
+
+        existing_tables = {
+            row[0]
+            for row in conn.execute(
+                "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
+            ).fetchall()
+        }
+
+    missing_tables = REQUIRED_TABLES - existing_tables
+    if missing_tables:
+        raise DatabaseInitializationError(
+            f"SQLite database at {db_path} is missing required tables: {', '.join(sorted(missing_tables))}"
+        )
+
+
+def _initialize_from_seed(db_path, seed_path):
+    shutil.copy2(seed_path, db_path)
+
+
+def _initialize_from_schema(db_path, schema_path):
+    if not schema_path.exists():
+        raise DatabaseInitializationError(f"SQLite schema file not found at {schema_path}")
+
+    schema_sql = schema_path.read_text(encoding="utf-8").strip()
+    if not schema_sql:
+        raise DatabaseInitializationError(f"SQLite schema file at {schema_path} is empty")
+
+    with sqlite3.connect(db_path, timeout=30) as conn:
+        conn.execute("PRAGMA foreign_keys = OFF")
+        conn.executescript(schema_sql)
+        conn.commit()
+        conn.execute("PRAGMA foreign_keys = ON")
+
+
+def initialize_database():
+    """
+    Ensures the SQLite database is ready during app startup.
+    Preference order:
+    1. Reuse the existing validated runtime database
+    2. Copy the tracked seed database
+    3. Build a clean database from the bundled schema script
+    """
     db_path = Path(current_app.config["DB_PATH"])
+    seed_path = Path(current_app.config["SQLITE_SEED_PATH"])
+    schema_path = Path(current_app.config["SQLITE_SCHEMA_PATH"])
+
     db_path.parent.mkdir(parents=True, exist_ok=True)
 
     if db_path.exists():
-        return
+        try:
+            _validate_database_file(db_path)
+            current_app.logger.info("SQLite database ready at %s", db_path)
+            return
+        except (DatabaseInitializationError, sqlite3.DatabaseError, OSError) as exc:
+            current_app.logger.warning("Existing SQLite database at %s is unusable: %s", db_path, exc)
+            _backup_database_file(db_path, "invalid")
 
-    seed_path = Path(current_app.config["SQLITE_SEED_PATH"])
     if seed_path.exists():
-        shutil.copy2(seed_path, db_path)
-        return
+        try:
+            _initialize_from_seed(db_path, seed_path)
+            _validate_database_file(db_path)
+            current_app.logger.info("Initialized SQLite database at %s from seed %s", db_path, seed_path)
+            return
+        except (DatabaseInitializationError, sqlite3.DatabaseError, OSError) as exc:
+            current_app.logger.warning("Failed to initialize SQLite database from seed %s: %s", seed_path, exc)
+            if db_path.exists():
+                _backup_database_file(db_path, "seed_failed")
+    else:
+        current_app.logger.warning(
+            "SQLite seed database not found at %s. Falling back to schema initialization.",
+            seed_path,
+        )
 
-    current_app.logger.warning(
-        "SQLite seed database not found at %s. Creating an empty database at %s.",
-        seed_path,
-        db_path,
-    )
-    sqlite3.connect(db_path).close()
+    try:
+        _initialize_from_schema(db_path, schema_path)
+        _validate_database_file(db_path)
+        current_app.logger.info("Initialized SQLite database at %s from schema %s", db_path, schema_path)
+    except (DatabaseInitializationError, sqlite3.DatabaseError, OSError) as exc:
+        if db_path.exists():
+            _backup_database_file(db_path, "schema_failed")
+        raise DatabaseInitializationError(
+            f"Unable to initialize the SQLite database at {db_path}: {exc}"
+        ) from exc
 
 
 def get_db_connection():
-    """
-    Establishes and returns a connection to the SQLite database.
-    The app copies the tracked seed DB into the runtime path on first use.
-    """
+    """Establish and return a connection to the initialized SQLite database."""
     try:
-        _ensure_sqlite_database()
-        conn = sqlite3.connect(current_app.config["DB_PATH"])
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA foreign_keys = ON")
+        db_path = Path(current_app.config["DB_PATH"])
+        if not db_path.exists():
+            current_app.logger.warning("SQLite database file missing at %s. Reinitializing.", db_path)
+            initialize_database()
+
+        conn = _connect_sqlite(current_app.config["DB_PATH"])
         return SQLiteConnectionWrapper(conn)
     except Exception as e:
         current_app.logger.error(f"Error connecting to SQLite database: {e}")
