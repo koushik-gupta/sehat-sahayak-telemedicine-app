@@ -64,6 +64,10 @@ def create_app(config_class=Config):
     # ==============================================================================
 
     # --- Route to Serve Uploaded Files ---
+    @app.route('/healthz')
+    def health():
+        return "OK", 200
+
     @app.route('/uploads/<path:filename>')
     def serve_upload(filename):
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
