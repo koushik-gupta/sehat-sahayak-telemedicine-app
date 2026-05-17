@@ -90,12 +90,14 @@ def get_approved_doctors():
             SELECT 
                 u.id,
                 u.full_name as name,
-                d.specialization as specialty,
+                COALESCE(dp.specialty, d.specialization) as specialty,
+                dp.qualification,
                 dp.experience,
+                dp.about,
                 dp.languages,
                 dp.fee,
-                dp.hospital,
-                '/images/doc1.png' as pic,
+                COALESCE(dp.hospital, d.clinic_name) as hospital,
+                dp.profile_pic_url as image,
                 '4.5' as rating
             FROM users u
             JOIN doctors d ON u.id = d.user_id
@@ -104,6 +106,13 @@ def get_approved_doctors():
         """
         cursor.execute(query)
         doctors = cursor.fetchall()
+        for doctor in doctors:
+            doctor['image'] = doctor.get('image') or '/images/doc1.png'
+            languages = doctor.get('languages')
+            if languages:
+                doctor['languages'] = [lang.strip() for lang in str(languages).split(',') if lang.strip()]
+            else:
+                doctor['languages'] = []
         return jsonify(doctors), 200
     except Exception as e:
         print(f"Error in get_approved_doctors: {e}")

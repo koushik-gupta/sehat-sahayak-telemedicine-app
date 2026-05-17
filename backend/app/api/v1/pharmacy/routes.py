@@ -210,16 +210,38 @@ def search_medicines_simple():
         search_term_lower = medicine_name.lower().strip()
         
         query = """
-            SELECT u.full_name AS name, p.address, p.district, p.state, ps.quantity, ps.price
+            SELECT p.id AS pharmacy_id,
+                   COALESCE(NULLIF(p.chain_name, ''), u.full_name) AS name,
+                   p.chain_name,
+                   p.address,
+                   p.district,
+                   p.state,
+                   p.home_delivery,
+                   p.opening_time,
+                   p.closing_time,
+                   m.id AS medicine_id,
+                   m.name AS medicine_name,
+                   ps.quantity,
+                   ps.price
             FROM pharmacies p
             JOIN users u ON p.user_id = u.id
             JOIN pharmacy_stock ps ON p.id = ps.pharmacy_id
             JOIN medicines m ON ps.medicine_id = m.id
-            WHERE LOWER(m.name) = %s AND ps.quantity > 0
+            WHERE LOWER(m.name) LIKE %s AND ps.quantity > 0
+            ORDER BY p.home_delivery DESC, ps.price ASC, ps.quantity DESC
         """
         
-        cursor.execute(query, (search_term_lower,))
+        cursor.execute(query, (f"%{search_term_lower}%",))
         pharmacies = cursor.fetchall()
+
+        for pharmacy in pharmacies:
+            pharmacy['home_delivery'] = bool(pharmacy.get('home_delivery'))
+            if pharmacy.get('opening_time'):
+                pharmacy['opening_time'] = str(pharmacy['opening_time'])[:5]
+            if pharmacy.get('closing_time'):
+                pharmacy['closing_time'] = str(pharmacy['closing_time'])[:5]
+            if pharmacy.get('price') is not None:
+                pharmacy['price'] = float(pharmacy['price'])
         
         return jsonify(pharmacies), 200
         
@@ -346,8 +368,8 @@ def place_order(current_user):
     pharmacy_name = data.get('pharmacy_name')
     items = data.get('items', [])
 
-    if not pharmacy_name or not items:
-        return jsonify({"error": "Missing pharmacy name or items"}), 400
+    if not items:
+        return jsonify({"error": "Missing order items"}), 400
 
     conn = get_db_connection()
     if not conn: return jsonify({"error": "Database connection failed"}), 500
@@ -360,14 +382,73 @@ def place_order(current_user):
         # 2. Find Pharmacy ID by Name (Assuming unique names for simplicity or pass ID from frontend)
         pharmacy_id = data.get('pharmacy_id')
         if not pharmacy_id:
-             cursor.execute("SELECT id FROM pharmacies WHERE chain_name = %s LIMIT 1", (pharmacy_name,)) # Fallback
+             cursor.execute("""
+                 SELECT p.id
+                 FROM pharmacies p
+                 JOIN users u ON p.user_id = u.id
+                 WHERE p.chain_name = %s OR u.full_name = %s
+                 LIMIT 1
+             """, (pharmacy_name, pharmacy_name))
              pharmacy_record = cursor.fetchone()
              if not pharmacy_record:
                  return jsonify({"error": f"Pharmacy '{pharmacy_name}' not found"}), 404
              pharmacy_id = pharmacy_record['id']
 
-        # 3. Calculate Total & Prepare Order
-        total_amount = sum(float(item.get('price', 0)) * int(item.get('quantity', 1)) for item in items)
+        cursor.execute("""
+            SELECT p.id,
+                   COALESCE(NULLIF(p.chain_name, ''), u.full_name) AS pharmacy_name
+            FROM pharmacies p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.id = %s
+        """, (pharmacy_id,))
+        pharmacy_record = cursor.fetchone()
+        if not pharmacy_record:
+            return jsonify({"error": "Pharmacy not found"}), 404
+
+        normalized_items = []
+        total_amount = 0.0
+
+        for item in items:
+            qty = int(item.get('quantity', 1))
+            if qty <= 0:
+                return jsonify({"error": "Quantity must be at least 1"}), 400
+
+            medicine_id = item.get('medicine_id')
+            medicine_name = (item.get('medicineName') or item.get('medicine_name') or "").strip().lower()
+
+            if medicine_id:
+                cursor.execute("""
+                    SELECT ps.quantity, ps.price, m.id AS medicine_id, m.name AS medicine_name
+                    FROM pharmacy_stock ps
+                    JOIN medicines m ON ps.medicine_id = m.id
+                    WHERE ps.pharmacy_id = %s AND ps.medicine_id = %s
+                """, (pharmacy_id, medicine_id))
+            else:
+                cursor.execute("""
+                    SELECT ps.quantity, ps.price, m.id AS medicine_id, m.name AS medicine_name
+                    FROM pharmacy_stock ps
+                    JOIN medicines m ON ps.medicine_id = m.id
+                    WHERE ps.pharmacy_id = %s AND LOWER(m.name) = %s
+                """, (pharmacy_id, medicine_name))
+
+            stock_row = cursor.fetchone()
+            if not stock_row:
+                return jsonify({"error": f"'{item.get('medicineName') or item.get('medicine_name')}' is not available at this pharmacy"}), 400
+
+            available_qty = int(stock_row.get('quantity') or 0)
+            if available_qty < qty:
+                return jsonify({
+                    "error": f"Only {available_qty} unit(s) available for {stock_row['medicine_name'].capitalize()}"
+                }), 400
+
+            unit_price = float(stock_row.get('price') or 0)
+            normalized_items.append({
+                "medicine_id": stock_row['medicine_id'],
+                "medicine_name": stock_row['medicine_name'].capitalize(),
+                "quantity": qty,
+                "price": unit_price,
+            })
+            total_amount += unit_price * qty
         
         # 4. Create Order
         cursor.execute("""
@@ -377,38 +458,89 @@ def place_order(current_user):
         order_id = cursor.lastrowid
 
         # 5. Process Items & Update Stock
-        for item in items:
-            med_name = item.get('medicineName')
-            qty = int(item.get('quantity', 1))
-            price = float(item.get('price', 0))
-
+        for item in normalized_items:
             # Insert Order Item
             cursor.execute("""
                 INSERT INTO pharmacy_order_items (order_id, medicine_name, quantity, price_per_unit)
                 VALUES (%s, %s, %s, %s)
-            """, (order_id, med_name, qty, price))
+            """, (order_id, item['medicine_name'], item['quantity'], item['price']))
 
             # Deduct Stock
-            # We need to find the medicine_id for this name first
-            cursor.execute("SELECT id FROM medicines WHERE name = %s", (med_name,))
-            med_record = cursor.fetchone()
-            
-            if med_record:
-                med_id = med_record['id']
-                # Decrease quantity, ensure non-negative
-                cursor.execute("""
-                    UPDATE pharmacy_stock 
-                    SET quantity = MAX(quantity - %s, 0)
-                    WHERE pharmacy_id = %s AND medicine_id = %s
-                """, (qty, pharmacy_id, med_id))
+            cursor.execute("""
+                UPDATE pharmacy_stock
+                SET quantity = quantity - %s
+                WHERE pharmacy_id = %s AND medicine_id = %s
+            """, (item['quantity'], pharmacy_id, item['medicine_id']))
 
         conn.commit()
-        return jsonify({"message": "Order placed successfully!", "order_id": order_id}), 201
+        return jsonify({
+            "message": "Order placed successfully!",
+            "order_id": order_id,
+            "pharmacy_id": pharmacy_id,
+            "pharmacy_name": pharmacy_record['pharmacy_name'],
+            "status": "pending",
+            "total_amount": round(total_amount, 2)
+        }), 201
 
     except Exception as e:
         conn.rollback()
         print(f"Error placing order: {e}")
         return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@pharmacy_bp.route('/patient-orders', methods=['GET'])
+@login_required
+def get_patient_orders(current_user):
+    if current_user.get('role') != 'patient':
+        return jsonify({"error": "Only patients can view pharmacy orders"}), 403
+
+    conn = get_db_connection()
+    if not conn:
+        return jsonify({"error": "Database connection failed"}), 500
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("""
+            SELECT po.id,
+                   po.pharmacy_id,
+                   po.total_amount,
+                   po.status,
+                   po.created_at,
+                   COALESCE(NULLIF(p.chain_name, ''), u.full_name) AS pharmacy_name
+            FROM pharmacy_orders po
+            JOIN pharmacies p ON po.pharmacy_id = p.id
+            JOIN users u ON p.user_id = u.id
+            WHERE po.patient_id = %s
+            ORDER BY po.created_at DESC, po.id DESC
+            LIMIT 12
+        """, (current_user['id'],))
+        orders = cursor.fetchall()
+
+        for order in orders:
+            cursor.execute("""
+                SELECT medicine_name, quantity, price_per_unit
+                FROM pharmacy_order_items
+                WHERE order_id = %s
+                ORDER BY id ASC
+            """, (order['id'],))
+            items = cursor.fetchall()
+            order['items'] = [
+                {
+                    "medicine_name": item['medicine_name'],
+                    "quantity": item['quantity'],
+                    "price_per_unit": float(item['price_per_unit']) if item['price_per_unit'] is not None else 0,
+                }
+                for item in items
+            ]
+            order['total_amount'] = float(order['total_amount']) if order['total_amount'] is not None else 0
+
+        return jsonify(orders), 200
+    except Exception as e:
+        print(f"Error fetching patient pharmacy orders: {e}")
+        return jsonify({"error": "An internal error occurred"}), 500
     finally:
         cursor.close()
         conn.close()

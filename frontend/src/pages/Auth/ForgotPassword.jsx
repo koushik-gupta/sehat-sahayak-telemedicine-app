@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
 import AuthLayout from "../../components/AuthLayout";
+import { getUiCopy } from "../../i18n/uiCopy";
 
-function ForgotPassword({ t, onBackToLogin }) {
+function ForgotPassword({ t, language, onLanguageChange, onBackToLogin }) {
+  const ui = getUiCopy(language).auth;
+  const roleLabels = {
+    patient: t.patient || "Patient",
+    doctor: t.doctor || "Doctor",
+    pharmacy: t.pharmacy || "Pharmacy",
+    admin: t.admin || "Admin",
+  };
   const [role, setRole] = useState("patient");
   const [method, setMethod] = useState("email");
   const [email, setEmail] = useState("");
@@ -33,7 +41,7 @@ function ForgotPassword({ t, onBackToLogin }) {
 
     const identifier = method === 'email' ? email : mobile;
     if (!identifier) {
-      setError(`Please provide your ${method}.`);
+      setError(ui.enterYourMethod);
       setIsSendingOtp(false);
       return;
     }
@@ -47,7 +55,7 @@ function ForgotPassword({ t, onBackToLogin }) {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Failed to send OTP.');
 
-      setSuccessMessage("Code sent! Check backend terminal.");
+      setSuccessMessage(ui.codeSent);
       setOtpSent(true); // Show OTP input
     } catch (err) {
       setError(err.message);
@@ -60,7 +68,7 @@ function ForgotPassword({ t, onBackToLogin }) {
     setError("");
     setSuccessMessage("");
     if (!otp) {
-      setError("Please enter the OTP.");
+      setError(ui.pleaseEnterOtp);
       return;
     }
     setIsVerifying(true);
@@ -85,7 +93,7 @@ function ForgotPassword({ t, onBackToLogin }) {
   const handleResetPassword = async () => {
     setError("");
     if (!newPassword || newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError(ui.passwordsDoNotMatch);
       return;
     }
 
@@ -109,9 +117,12 @@ function ForgotPassword({ t, onBackToLogin }) {
 
   return (
     <AuthLayout
-      title={step === "reset" ? "Reset Password" : (t.forgotPassword || "Forgot Password")}
-      subtitle={step === "reset" ? "Enter your new password" : "Recover your account access"}
+      title={step === "reset" ? ui.resetPassword : (t.forgotPassword || "Forgot Password")}
+      subtitle={step === "reset" ? ui.enterNewPassword : ui.recoverAccountAccess}
       onBack={onBackToLogin}
+      backLabel={ui.backToHome}
+      language={language}
+      onLanguageChange={onLanguageChange}
     >
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
@@ -133,7 +144,7 @@ function ForgotPassword({ t, onBackToLogin }) {
                     : 'text-slate-500 hover:text-slate-700'
                     }`}
                 >
-                  {r}
+                  {roleLabels[r] || r}
                 </button>
               ))}
             </div>
@@ -143,11 +154,11 @@ function ForgotPassword({ t, onBackToLogin }) {
               <div className="flex gap-4 px-2">
                 <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-600">
                   <input type="radio" checked={method === "email"} onChange={() => setMethod("email")} className="w-4 h-4 text-blue-600" />
-                  Email
+                  {t.email || "Email"}
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-600">
                   <input type="radio" checked={method === "mobile"} onChange={() => setMethod("mobile")} className="w-4 h-4 text-blue-600" />
-                  Mobile
+                  {t.mobile || "Mobile"}
                 </label>
               </div>
             )}
@@ -184,14 +195,14 @@ function ForgotPassword({ t, onBackToLogin }) {
                 disabled={isSendingOtp}
                 className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors disabled:opacity-50"
               >
-                {isSendingOtp ? 'Sending...' : (otpSent ? "Resend Verification Code" : (t.sendOtp || "Send Verification Code"))}
+                {isSendingOtp ? ui.sending : (otpSent ? ui.resendVerificationCode : (t.sendOtp || ui.sendVerificationCode))}
               </button>
 
               {otpSent && (
                 <div className="animate-in slide-in-from-top-2 fade-in duration-500 space-y-4">
                   <div className="relative py-2">
                     <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
-                    <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-slate-400">Verify OTP</span></div>
+                    <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-2 text-slate-400">{ui.enterOtp}</span></div>
                   </div>
 
                   <div className="space-y-1">
@@ -200,7 +211,7 @@ function ForgotPassword({ t, onBackToLogin }) {
                       type="text"
                       value={otp}
                       onChange={(e) => setOtp(e.target.value)}
-                      placeholder="Enter 6-digit code"
+                      placeholder={ui.verificationCode}
                       className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 outline-none text-center font-mono text-lg tracking-widest transition-all"
                     />
                   </div>
@@ -211,7 +222,7 @@ function ForgotPassword({ t, onBackToLogin }) {
                     disabled={isVerifying}
                     className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5 transition-all"
                   >
-                    {isVerifying ? 'Verifying...' : (t.verify || "Verify & Proceed")}
+                    {isVerifying ? ui.verifying : (t.verify || ui.verifyProceed)}
                   </button>
                 </div>
               )}
@@ -222,7 +233,7 @@ function ForgotPassword({ t, onBackToLogin }) {
         {step === "reset" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700">{t.newPassword || "New Password"}</label>
+              <label className="text-sm font-bold text-slate-700">{t.newPassword || ui.newPassword}</label>
               <input
                 type="password"
                 value={newPassword}
@@ -232,7 +243,7 @@ function ForgotPassword({ t, onBackToLogin }) {
               />
             </div>
             <div className="space-y-1">
-              <label className="text-sm font-bold text-slate-700">{t.confirmPassword || "Confirm Password"}</label>
+              <label className="text-sm font-bold text-slate-700">{t.confirmPassword || ui.confirmPassword}</label>
               <input
                 type="password"
                 value={confirmPassword}
@@ -247,7 +258,7 @@ function ForgotPassword({ t, onBackToLogin }) {
               disabled={isResetting}
               className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5 transition-all"
             >
-              {isResetting ? 'Resetting...' : (t.resetPassword || "Reset Password")}
+              {isResetting ? ui.resetting : (t.resetPassword || ui.resetPassword)}
             </button>
           </div>
         )}
@@ -257,8 +268,8 @@ function ForgotPassword({ t, onBackToLogin }) {
             <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
             </div>
-            <h3 className="text-xl font-bold text-slate-800">Password Reset!</h3>
-            <p className="text-slate-500">{t.passwordResetSuccess || "Your password has been successfully updated."}</p>
+            <h3 className="text-xl font-bold text-slate-800">{ui.passwordReset}</h3>
+            <p className="text-slate-500">{t.passwordResetSuccess || ui.passwordResetSuccess}</p>
             <button
               type="button"
               onClick={onBackToLogin}

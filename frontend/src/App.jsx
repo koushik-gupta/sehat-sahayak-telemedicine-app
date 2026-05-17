@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { translations } from "./translations";
-import SplashScreen from "./components/SplashScreen";
-import LanguageSelection from "./components/LanguageSelection";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
@@ -16,11 +14,26 @@ import DocumentUpload from "./pages/PharmacyDashboard/DocumentUpload";
 import DoctorDocumentUpload from "./pages/DoctorDashboard/DoctorDocumentUpload";
 import LandingPage from "./components/LandingPage"; // Import Landing Page
 
+const LANGUAGE_STORAGE_KEY = "sehat-sahayak-language";
+
 function App() {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState(() => {
+    if (typeof window === "undefined") {
+      return "en";
+    }
+
+    return window.localStorage.getItem(LANGUAGE_STORAGE_KEY) || "en";
+  });
   const [stage, setStage] = useState("landing");
   const [user, setUser] = useState(null);
   const t = translations[language];
+
+  const handleLanguageChange = (nextLanguage) => {
+    setLanguage(nextLanguage);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, nextLanguage);
+    }
+  };
 
   // Define refreshUser BEFORE useEffect to avoid hoisting issues
   const refreshUser = async () => {
@@ -69,13 +82,12 @@ function App() {
 
   return (
     <>
-      {stage === "splash" && <SplashScreen onFinish={() => setStage("language")} />}
-      {stage === "language" && <LanguageSelection t={t} onLanguageSelect={(lang) => { setLanguage(lang); setStage("landing"); }} />}
-
       {/* Landing Page is now the main entry point */}
       {stage === "landing" && (
         <LandingPage
           t={t}
+          language={language}
+          onLanguageChange={handleLanguageChange}
           onLoginClick={() => setStage("login")}
           onRegisterClick={() => setStage("register")}
         />
@@ -84,6 +96,8 @@ function App() {
       {stage === "login" && (
         <Login
           t={t}
+          language={language}
+          onLanguageChange={handleLanguageChange}
           onLogin={handleAuthSuccess}
           onSwitchToRegister={() => setStage("register")}
           onForgotPassword={() => setStage("forgot")}
@@ -94,13 +108,22 @@ function App() {
       {stage === "register" && (
         <Register
           t={t}
+          language={language}
+          onLanguageChange={handleLanguageChange}
           onRegister={handleAuthSuccess}
           onSwitchToLogin={() => setStage("login")}
           onBack={() => setStage("landing")} // Allow backing out to landing
         />
       )}
 
-      {stage === "forgot" && <ForgotPassword t={t} onBackToLogin={() => setStage("login")} />}
+      {stage === "forgot" && (
+        <ForgotPassword
+          t={t}
+          language={language}
+          onLanguageChange={handleLanguageChange}
+          onBackToLogin={() => setStage("login")}
+        />
+      )}
 
       {stage === "dashboard" && user && (
         <>
@@ -110,7 +133,16 @@ function App() {
                 : <DocumentUpload user={user} onLogout={handleLogout} onUploadComplete={handleDocumentSubmission} />
           )}
           {user.role === "doctor" && (
-            (user.status === 'active' || user.status === 'approved') ? <DoctorDashboard user={user} onLogout={handleLogout} t={t} />
+            (user.status === 'active' || user.status === 'approved') ? (
+              <DoctorDashboard
+                user={user}
+                onLogout={handleLogout}
+                t={t}
+                language={language}
+                onLanguageChange={handleLanguageChange}
+                refreshUser={refreshUser}
+              />
+            )
               : user.status === 'pending_admin_approval' ? <PendingApproval user={user} onLogout={handleLogout} />
                 : <DoctorDocumentUpload user={user} onLogout={handleLogout} onUploadComplete={handleDocumentSubmission} />
           )}
@@ -124,6 +156,7 @@ function App() {
               t={t}
               userName={user.full_name || "Guest"}
               language={language}
+              onLanguageChange={handleLanguageChange}
               refreshUser={refreshUser}
             />
           )}

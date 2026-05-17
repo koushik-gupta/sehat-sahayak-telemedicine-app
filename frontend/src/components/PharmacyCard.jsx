@@ -1,78 +1,162 @@
-import React, { useState } from 'react';
-import { MapPin, Navigation, Package, Plus, Minus } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import {
+  Bike,
+  Clock3,
+  MapPin,
+  Navigation,
+  Package,
+  Plus,
+  Minus,
+  ShoppingCart,
+} from "lucide-react";
+import { useDashboardTheme } from "../pages/Dashboard/DashboardThemeContext";
 
-const PharmacyCard = ({ pharmacy, onAddToCart, medicineName }) => {
-  const { name, address, quantity, price } = pharmacy; // price is now passed from parent
+const PharmacyCard = ({ pharmacy, onAddToCart, cartQuantity = 0 }) => {
+  const { isDark } = useDashboardTheme();
+  const {
+    name,
+    address,
+    district,
+    state,
+    quantity,
+    price,
+    medicine_name: medicineName,
+    home_delivery: homeDelivery,
+    opening_time: openingTime,
+    closing_time: closingTime,
+  } = pharmacy;
+
   const [count, setCount] = useState(1);
 
+  useEffect(() => {
+    setCount((prev) => {
+      if (quantity <= 0) {
+        return 0;
+      }
+
+      return Math.min(Math.max(prev, 1), quantity);
+    });
+  }, [quantity]);
+
   const increment = () => {
-    if (count < quantity) setCount(prev => prev + 1);
+    if (count < quantity) {
+      setCount((prev) => prev + 1);
+    }
   };
 
   const decrement = () => {
-    if (count > 1) setCount(prev => prev - 1);
+    if (count > 1) {
+      setCount((prev) => prev - 1);
+    }
   };
 
-  // Create a Google Maps URL for directions
   const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address || name)}`;
+  const stockLevel = Math.min(100, Math.max(12, quantity * 10));
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all group h-full flex flex-col relative overflow-hidden">
-      <div className="mb-4">
-        <h3 className="text-lg font-bold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors">{name}</h3>
-        <p className="text-sm text-slate-500 flex items-start gap-1">
-          <MapPin size={14} className="shrink-0 mt-0.5" />
-          {address || "Address not available"}
-        </p>
-      </div>
+    <div className={`group relative flex h-full flex-col overflow-hidden rounded-[28px] border p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 ${
+      isDark ? "border-white/10 bg-slate-900/72 hover:shadow-xl hover:shadow-cyan-950/30" : "border-slate-200/80 bg-white hover:shadow-xl hover:shadow-blue-100/60"
+    }`}>
+      <div className="pointer-events-none absolute inset-x-5 top-0 h-20 rounded-b-[24px] bg-gradient-to-b from-blue-50 to-transparent" />
 
-      <div className="mt-auto pt-4 border-t border-slate-50 space-y-4">
-
-        {/* Price and Stock Info */}
-        <div className="flex items-end justify-between">
-          <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg text-xs font-bold flex items-center gap-1.5 w-max">
-            <Package size={14} />
-            <span>{quantity} in stock</span>
+      <div className="relative flex items-start justify-between gap-3">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] ${isDark ? "bg-blue-500/12 text-blue-200" : "bg-blue-50 text-blue-700"}`}>
+              {medicineName}
+            </span>
+            {homeDelivery && (
+              <span className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-semibold ${isDark ? "bg-emerald-500/12 text-emerald-200" : "bg-emerald-50 text-emerald-700"}`}>
+                <Bike size={12} />
+                Home delivery
+              </span>
+            )}
           </div>
-          <span className="text-2xl font-bold text-slate-800">₹{price}</span>
+          <h3 className={`mt-3 text-xl font-bold transition-colors ${isDark ? "text-slate-100 group-hover:text-blue-300" : "text-slate-800 group-hover:text-blue-700"}`}>
+            {name}
+          </h3>
+          <p className={`mt-2 flex items-start gap-2 text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+            <MapPin size={15} className={`mt-0.5 shrink-0 ${isDark ? "text-slate-500" : "text-slate-400"}`} />
+            <span>{address || "Address not available"}</span>
+          </p>
         </div>
 
-        {/* Quantity Selector & Actions */}
-        <div className="flex items-center justify-between gap-3">
-          {/* Quantity Selector */}
-          <div className="flex items-center border border-slate-200 rounded-xl bg-slate-50">
+        <div className={`rounded-2xl border px-3 py-2 text-right ${isDark ? "border-blue-300/20 bg-blue-500/10" : "border-blue-100 bg-blue-50"}`}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-blue-600">Per unit</p>
+          <p className={`mt-1 text-2xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>Rs. {Number(price || 0).toFixed(0)}</p>
+        </div>
+      </div>
+
+      <div className="relative mt-5 grid grid-cols-2 gap-3">
+        <InfoChip icon={<Package size={14} />} label={`${quantity} in stock`} tone="emerald" />
+        <InfoChip
+          icon={<Clock3 size={14} />}
+          label={openingTime && closingTime ? `${openingTime} - ${closingTime}` : "Hours not listed"}
+          tone="blue"
+        />
+        <InfoChip icon={<MapPin size={14} />} label={district || "Local area"} tone="slate" />
+        <InfoChip icon={<MapPin size={14} />} label={state || "State not listed"} tone="slate" />
+      </div>
+
+      <div className="relative mt-5">
+        <div className={`mb-2 flex items-center justify-between text-xs font-semibold ${isDark ? "text-slate-400" : "text-slate-500"}`}>
+          <span>Stock confidence</span>
+          <span>{quantity > 10 ? "Ready to dispense" : quantity > 3 ? "Limited units" : "Low stock"}</span>
+        </div>
+        <div className={`h-2 rounded-full ${isDark ? "bg-slate-800" : "bg-slate-100"}`}>
+          <div
+            className={`h-full rounded-full transition-all ${
+              quantity > 10 ? "bg-emerald-500" : quantity > 3 ? "bg-amber-500" : "bg-rose-500"
+            }`}
+            style={{ width: `${stockLevel}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="relative mt-auto pt-5">
+        {cartQuantity > 0 && (
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+            <ShoppingCart size={14} />
+            {cartQuantity} in cart
+          </div>
+        )}
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className={`flex items-center rounded-2xl border ${isDark ? "border-white/10 bg-white/8" : "border-slate-200 bg-slate-50"}`}>
             <button
               onClick={decrement}
               disabled={count <= 1}
-              className="p-2 text-slate-500 hover:text-blue-600 disabled:opacity-30 disabled:hover:text-slate-500 transition-colors"
+              className={`p-3 transition-colors disabled:cursor-not-allowed disabled:opacity-30 ${isDark ? "text-slate-300 hover:text-blue-300" : "text-slate-500 hover:text-blue-600"}`}
             >
               <Minus size={16} />
             </button>
-            <span className="w-8 text-center font-bold text-slate-700">{count}</span>
+            <span className={`w-10 text-center text-base font-bold ${isDark ? "text-slate-100" : "text-slate-700"}`}>{count}</span>
             <button
               onClick={increment}
               disabled={count >= quantity}
-              className="p-2 text-slate-500 hover:text-blue-600 disabled:opacity-30 disabled:hover:text-slate-500 transition-colors"
+              className={`p-3 transition-colors disabled:cursor-not-allowed disabled:opacity-30 ${isDark ? "text-slate-300 hover:text-blue-300" : "text-slate-500 hover:text-blue-600"}`}
             >
               <Plus size={16} />
             </button>
           </div>
 
-          <div className="flex gap-2 flex-1 justify-end">
+          <div className="flex flex-1 gap-2">
             <button
-              onClick={() => onAddToCart({ ...pharmacy, price, medicineName, quantity: count })}
-              className="bg-blue-600 text-white px-3 py-2 rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 flex items-center gap-2 flex-1 justify-center whitespace-nowrap"
+              onClick={() => onAddToCart(pharmacy, count)}
+              disabled={quantity <= 0}
+              className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:shadow-none"
             >
-              Add to Cart
+              <ShoppingCart size={17} />
+              Add to cart
             </button>
             <a
               href={directionsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-slate-100 text-slate-600 p-2 rounded-xl hover:bg-slate-200 transition-colors"
+              className={`inline-flex items-center justify-center rounded-2xl border px-4 transition-colors ${isDark ? "border-white/10 bg-white/8 text-slate-300 hover:bg-white/12 hover:text-blue-200" : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-blue-700"}`}
               title="Get Directions"
             >
-              <Navigation size={20} />
+              <Navigation size={18} />
             </a>
           </div>
         </div>
@@ -80,5 +164,21 @@ const PharmacyCard = ({ pharmacy, onAddToCart, medicineName }) => {
     </div>
   );
 };
+
+function InfoChip({ icon, label, tone }) {
+  const { isDark } = useDashboardTheme();
+  const tones = {
+    emerald: isDark ? "border-emerald-300/20 bg-emerald-500/10 text-emerald-200" : "border-emerald-100 bg-emerald-50 text-emerald-700",
+    blue: isDark ? "border-blue-300/20 bg-blue-500/10 text-blue-200" : "border-blue-100 bg-blue-50 text-blue-700",
+    slate: isDark ? "border-white/10 bg-white/8 text-slate-300" : "border-slate-200 bg-slate-50 text-slate-600",
+  };
+
+  return (
+    <div className={`flex items-center gap-2 rounded-2xl border px-3 py-2 text-sm font-medium ${tones[tone]}`}>
+      <span className="shrink-0">{icon}</span>
+      <span className="truncate">{label}</span>
+    </div>
+  );
+}
 
 export default PharmacyCard;

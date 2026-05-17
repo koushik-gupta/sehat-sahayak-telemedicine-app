@@ -2,8 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 import AuthLayout from "../../components/AuthLayout";
+import { getUiCopy } from "../../i18n/uiCopy";
 
-function Login({ t, onLogin, onSwitchToRegister, onForgotPassword, onBack }) {
+function Login({ t, language, onLanguageChange, onLogin, onSwitchToRegister, onForgotPassword, onBack }) {
+  const ui = getUiCopy(language).auth;
+  const roleLabels = {
+    patient: t.patient || "Patient",
+    doctor: t.doctor || "Doctor",
+    pharmacy: t.pharmacy || "Pharmacy",
+    admin: t.admin || "Admin",
+  };
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mobile, setMobile] = useState("");
@@ -60,6 +68,9 @@ function Login({ t, onLogin, onSwitchToRegister, onForgotPassword, onBack }) {
       title={t.login || "Welcome Back"}
       subtitle={t.loginPrompt || "Sign in to access your dashboard"}
       onBack={onBack}
+      backLabel={ui.backToHome}
+      language={language}
+      onLanguageChange={onLanguageChange}
     >
       <div className="space-y-6">
         {/* Role Selection Tabs */}
@@ -74,7 +85,7 @@ function Login({ t, onLogin, onSwitchToRegister, onForgotPassword, onBack }) {
                 : 'text-slate-500 hover:text-slate-700'
                 }`}
             >
-              {r}
+              {roleLabels[r] || r}
             </button>
           ))}
         </div>
@@ -90,7 +101,7 @@ function Login({ t, onLogin, onSwitchToRegister, onForgotPassword, onBack }) {
                 onChange={() => setLoginMethod("email")}
                 className="w-4 h-4 text-blue-600"
               />
-              Email
+              {t.email || "Email"}
             </label>
             <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-slate-600">
               <input
@@ -100,7 +111,7 @@ function Login({ t, onLogin, onSwitchToRegister, onForgotPassword, onBack }) {
                 onChange={() => setLoginMethod("mobile")}
                 className="w-4 h-4 text-blue-600"
               />
-              Mobile
+              {t.mobile || "Mobile"}
             </label>
           </div>
         )}
@@ -160,15 +171,15 @@ function Login({ t, onLogin, onSwitchToRegister, onForgotPassword, onBack }) {
             disabled={isSubmitting}
             className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5 transition-all text-sm uppercase tracking-wide disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Authenticating...' : (t.logIn || "Secure Login")}
+            {isSubmitting ? ui.authenticating : (t.logIn || ui.secureLogin)}
           </button>
         </form>
 
         <div className="text-center pt-2">
           <p className="text-slate-500 text-sm">
-            New to SehatSahayak? {' '}
+            {ui.newTo}{" "}
             <button onClick={onSwitchToRegister} className="text-blue-600 font-bold hover:underline">
-              Create an account
+              {ui.createAnAccount}
             </button>
           </p>
         </div>

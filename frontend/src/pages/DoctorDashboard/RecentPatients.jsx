@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { User, Activity, Clock, ChevronRight, FileText, Phone, Mail, Calendar, Pill } from "lucide-react";
-import PrescriptionBuilder from "./PrescriptionBuilder";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion as Motion } from "framer-motion";
+import { Activity, Calendar, ChevronRight, Mail, Phone, Pill, Search, User } from "lucide-react";
+import { getGlassCardClass, getGlassPanelClass, useDashboardTheme } from "../Dashboard/DashboardThemeContext";
 
 const MOCK_PATIENT = {
   id: "mock-1",
@@ -18,56 +19,44 @@ const MOCK_PATIENT = {
       appointment_datetime: "2025-02-01T09:30:00",
       status: "completed",
       notes: "Patient reported mild headaches. Blood pressure normal. Advised rest and hydration.",
-      prescription_text: "Paracetamol 500mg (SOS)"
+      prescription_text: "Paracetamol 500mg (SOS)",
     },
     {
       id: 102,
       appointment_datetime: "2025-01-15T14:00:00",
       status: "completed",
       notes: "Routine checkup. Everything looks good.",
-      prescription_text: "Multivitamin (Daily)"
-    }
-  ]
+      prescription_text: "Multivitamin (Daily)",
+    },
+  ],
 };
 
-function RecentPatients({ onViewDetails, detailPage }) {
+function RecentPatients({ onViewDetails, detailPage, searchQuery = "", t }) {
+  const { isDark } = useDashboardTheme();
+  const glassPanelClass = getGlassPanelClass(isDark);
+  const glassCardClass = getGlassCardClass(isDark);
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [error, setError] = useState(null);
+  const [localSearch, setLocalSearch] = useState("");
 
-  // Fetch recent patients list
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await fetch('/api/v1/doctor/recent-patients', { credentials: 'include' });
-        if (!response.ok) throw new Error('Failed to fetch patients');
+        const response = await fetch("/api/v1/doctor/recent-patients", { credentials: "include" });
+        if (!response.ok) throw new Error("Failed to fetch patients");
         const data = await response.json();
 
-        // Use mock data if list is empty, for demonstration
         if (!data || data.length === 0) {
-          setPatients([{
-            id: MOCK_PATIENT.id,
-            name: MOCK_PATIENT.name,
-            type: MOCK_PATIENT.type,
-            date: MOCK_PATIENT.date,
-            status: MOCK_PATIENT.status
-          }]);
+          setPatients([{ id: MOCK_PATIENT.id, name: MOCK_PATIENT.name, type: MOCK_PATIENT.type, date: MOCK_PATIENT.date, status: MOCK_PATIENT.status }]);
         } else {
           setPatients(data);
         }
-
       } catch (err) {
         console.error("Error loading patients:", err);
-        // Fallback to mock data on error for demo purposes
-        setPatients([{
-          id: MOCK_PATIENT.id,
-          name: MOCK_PATIENT.name,
-          type: MOCK_PATIENT.type,
-          date: MOCK_PATIENT.date,
-          status: MOCK_PATIENT.status
-        }]);
+        setPatients([{ id: MOCK_PATIENT.id, name: MOCK_PATIENT.name, type: MOCK_PATIENT.type, date: MOCK_PATIENT.date, status: MOCK_PATIENT.status }]);
       } finally {
         setIsLoading(false);
       }
@@ -75,10 +64,8 @@ function RecentPatients({ onViewDetails, detailPage }) {
     fetchPatients();
   }, []);
 
-  // Fetch full details when a patient is selected via detailPage prop
   useEffect(() => {
     if (detailPage) {
-      // Handle Mock Data Click
       if (detailPage === MOCK_PATIENT.id) {
         setSelectedPatient(MOCK_PATIENT);
         return;
@@ -87,8 +74,8 @@ function RecentPatients({ onViewDetails, detailPage }) {
       const fetchDetails = async () => {
         setIsLoadingDetails(true);
         try {
-          const response = await fetch(`/api/v1/doctor/patients/${detailPage}`, { credentials: 'include' });
-          if (!response.ok) throw new Error('Failed to fetch stats');
+          const response = await fetch(`/api/v1/doctor/patients/${detailPage}`, { credentials: "include" });
+          if (!response.ok) throw new Error("Failed to fetch stats");
           const data = await response.json();
           setSelectedPatient(data);
         } catch (err) {
@@ -103,104 +90,115 @@ function RecentPatients({ onViewDetails, detailPage }) {
     }
   }, [detailPage]);
 
-  // If a detailPage is active, show patient details
-  if (detailPage) {
-    if (isLoadingDetails) return <div className="p-10 text-center text-slate-400">Loading patient details...</div>;
-    if (error && !selectedPatient) return (
-      <div className="p-8 text-center text-slate-500">
-        <p>Patient details not found.</p>
-        <button onClick={() => onViewDetails(null)} className="text-blue-600 font-bold mt-2 hover:underline">Back to list</button>
-      </div>
+  const filteredPatients = useMemo(() => {
+    const query = (searchQuery || localSearch).toLowerCase().trim();
+    if (!query) return patients;
+    return patients.filter((patient) =>
+      [patient.name, patient.type, patient.status, patient.date].filter(Boolean).some((value) => String(value).toLowerCase().includes(query))
     );
+  }, [localSearch, patients, searchQuery]);
 
-    // Fallback if selectedPatient is null for some reason
+  if (detailPage) {
+    if (isLoadingDetails) return <div className={`rounded-[34px] p-10 text-center ${glassPanelClass}`}>{t.patients.loadingDetails}</div>;
+    if (error && !selectedPatient)
+      return (
+        <div className={`rounded-[34px] p-8 text-center ${glassPanelClass}`}>
+          <p className={isDark ? "text-slate-300" : "text-slate-500"}>{t.patients.detailsNotFound}</p>
+          <button onClick={() => onViewDetails(null)} className="mt-3 font-bold text-cyan-600 hover:underline">
+            {t.patients.backToList}
+          </button>
+        </div>
+      );
+
     if (!selectedPatient) return null;
 
     return (
-      <div className="space-y-6 animation-slide-in">
-        <button
-          onClick={() => onViewDetails(null)}
-          className="flex items-center gap-2 text-slate-500 hover:text-blue-600 font-medium transition-colors"
-        >
-          <ChevronRight size={18} className="rotate-180" /> Back to Patients
+      <div className="doctor-page space-y-6">
+        <button onClick={() => onViewDetails(null)} className={`flex items-center gap-2 font-semibold transition-colors ${isDark ? "text-slate-300 hover:text-cyan-200" : "text-slate-500 hover:text-blue-600"}`}>
+          <ChevronRight size={18} className="rotate-180" /> {t.patients.backToPatients}
         </button>
 
-        <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-xl">
-          {/* Header Section */}
-          <div className="flex flex-col md:flex-row md:items-center gap-6 mb-8 pb-8 border-b border-slate-100">
-            <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200">
-              <User size={40} />
+        <div className={`overflow-hidden rounded-[34px] p-6 md:p-8 ${glassPanelClass}`}>
+          <div className="hero-grid-overlay absolute inset-0 opacity-30" />
+          <div className="relative flex flex-col gap-6 border-b border-slate-200/50 pb-8 md:flex-row md:items-center">
+            <div className="flex h-24 w-24 items-center justify-center rounded-[30px] bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-500 text-white shadow-[0_22px_55px_-24px_rgba(37,99,235,0.9)]">
+              <User size={42} />
             </div>
             <div>
-              <h2 className="text-3xl font-bold text-slate-800">{selectedPatient.name}</h2>
-              <div className="flex flex-wrap items-center gap-4 mt-2 text-slate-500">
+              <p className={`text-[11px] font-semibold uppercase tracking-[0.24em] ${isDark ? "text-slate-400" : "text-slate-400"}`}>{t.patients.profile}</p>
+              <h2 className={`mt-1 text-3xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>{selectedPatient.name}</h2>
+              <div className={`mt-3 flex flex-wrap items-center gap-3 ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                 {selectedPatient.gender && <span className="flex items-center gap-1"><User size={14} /> {selectedPatient.gender}</span>}
-                {selectedPatient.dob && <span className="flex items-center gap-1"><Calendar size={14} /> DOB: {selectedPatient.dob}</span>}
+                {selectedPatient.dob && <span className="flex items-center gap-1"><Calendar size={14} /> {t.patients.dob}: {selectedPatient.dob}</span>}
               </div>
             </div>
-            <div className="md:ml-auto flex flex-col gap-2">
+            <div className="md:ml-auto grid gap-2">
               {selectedPatient.phone && (
-                <a href={`tel:${selectedPatient.phone}`} className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
-                  <Phone size={16} className="text-blue-500" /> {selectedPatient.phone}
+                <a href={`tel:${selectedPatient.phone}`} className={`flex items-center gap-2 rounded-2xl border px-4 py-2 ${isDark ? "border-white/10 bg-white/8 text-slate-200" : "border-slate-200 bg-white text-slate-700"}`}>
+                  <Phone size={16} className="text-cyan-500" /> {selectedPatient.phone}
                 </a>
               )}
               {selectedPatient.email && (
-                <a href={`mailto:${selectedPatient.email}`} className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
-                  <Mail size={16} className="text-blue-500" /> {selectedPatient.email}
+                <a href={`mailto:${selectedPatient.email}`} className={`flex items-center gap-2 rounded-2xl border px-4 py-2 ${isDark ? "border-white/10 bg-white/8 text-slate-200" : "border-slate-200 bg-white text-slate-700"}`}>
+                  <Mail size={16} className="text-cyan-500" /> {selectedPatient.email}
                 </a>
               )}
             </div>
           </div>
 
-          {/* Medical History Section */}
-          <div className="space-y-6">
-            <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <Activity className="text-blue-500" /> Consultation History
+          <div className="relative mt-8 space-y-5">
+            <h3 className={`flex items-center gap-2 text-xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>
+              <Activity className="text-cyan-500" /> {t.patients.history}
             </h3>
 
             {selectedPatient.history && selectedPatient.history.length > 0 ? (
               <div className="grid gap-4">
-                {selectedPatient.history.map((record) => (
-                  <div key={record.id} className="p-6 bg-slate-50 rounded-2xl border border-slate-100 hover:border-blue-200 transition-colors">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-2 text-sm font-bold text-slate-500">
+                {selectedPatient.history.map((record, index) => (
+                  <Motion.div
+                    key={record.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className={`rounded-[28px] border p-5 ${isDark ? "border-white/10 bg-white/7" : "border-slate-200/80 bg-white/88"}`}
+                  >
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <div className={`flex items-center gap-2 text-sm font-bold ${isDark ? "text-slate-300" : "text-slate-500"}`}>
                         <Calendar size={16} />
                         {new Date(record.appointment_datetime).toLocaleString()}
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${record.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                        }`}>
+                      <span className={`rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide ${record.status === "completed" ? "bg-green-100 text-green-700" : "bg-blue-100 text-blue-700"}`}>
                         {record.status}
                       </span>
                     </div>
 
                     {record.notes && (
                       <div className="mb-4">
-                        <h4 className="text-sm font-bold text-slate-700 mb-1">Doctor's Notes</h4>
-                        <p className="text-slate-600 leading-relaxed">{record.notes}</p>
+                        <h4 className={`mb-1 text-sm font-bold ${isDark ? "text-slate-200" : "text-slate-700"}`}>{t.patients.doctorNotes}</h4>
+                        <p className={`leading-relaxed ${isDark ? "text-slate-300" : "text-slate-600"}`}>{record.notes}</p>
                       </div>
                     )}
 
                     {record.prescription_text && (
-                      <div className="bg-white p-4 rounded-xl border border-slate-200">
-                        <h4 className="text-sm font-bold text-emerald-600 mb-2 flex items-center gap-2">
-                          <Pill size={16} /> Prescribed Medicines
+                      <div className={`rounded-2xl border p-4 ${isDark ? "border-emerald-400/15 bg-emerald-400/10" : "border-emerald-100 bg-emerald-50/70"}`}>
+                        <h4 className="mb-2 flex items-center gap-2 text-sm font-bold text-emerald-600">
+                          <Pill size={16} /> {t.patients.prescribedMedicines}
                         </h4>
-                        <p className="text-slate-700 font-mono text-sm">{record.prescription_text}</p>
+                        <p className={`font-mono text-sm ${isDark ? "text-emerald-100" : "text-slate-700"}`}>{record.prescription_text}</p>
                       </div>
                     )}
-                  </div>
+                  </Motion.div>
                 ))}
               </div>
             ) : (
-              <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                <p className="text-slate-500">No previous consultation history found with this doctor.</p>
+              <div className={`rounded-[28px] border border-dashed p-8 text-center ${isDark ? "border-white/10 bg-white/6 text-slate-400" : "border-slate-200 bg-white/72 text-slate-500"}`}>
+                {t.patients.noHistory}
               </div>
             )}
           </div>
 
-          <div className="mt-8 pt-6 border-t border-slate-100 flex gap-4">
-            <button className="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all">
-              Start New Consultation
+          <div className="relative mt-8 border-t border-slate-200/50 pt-6">
+            <button className="doctor-gradient-button w-full px-5 py-3 font-bold">
+              <span className="relative">{t.patients.startNewConsultation}</span>
             </button>
           </div>
         </div>
@@ -208,51 +206,69 @@ function RecentPatients({ onViewDetails, detailPage }) {
     );
   }
 
-  // Main patient list
   return (
-    <div className="space-y-6 animation-fade-in">
-      <div>
-        <h2 className="text-2xl font-bold text-slate-800">Recent Patients</h2>
-        <p className="text-slate-500">View and manage your recent patient interactions.</p>
+    <div className="doctor-page space-y-6">
+      <div className={`rounded-[34px] p-6 md:p-8 ${glassPanelClass}`}>
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className={`text-[11px] font-semibold uppercase tracking-[0.24em] ${isDark ? "text-slate-400" : "text-slate-400"}`}>{t.patients.directory}</p>
+            <h2 className={`mt-2 text-3xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>{t.patients.recentPatients}</h2>
+            <p className={`mt-2 ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t.patients.description}</p>
+          </div>
+          <div className={`doctor-glass-field flex min-w-0 items-center gap-3 rounded-[24px] border px-4 py-3 md:w-80 ${isDark ? "border-white/10 bg-slate-950/55 focus-within:border-cyan-400/35" : "border-slate-200/90 bg-white/96 focus-within:border-cyan-300"}`}>
+            <Search size={18} className="text-cyan-500" />
+            <input
+              value={localSearch}
+              onChange={(event) => setLocalSearch(event.target.value)}
+              placeholder={t.patients.searchPlaceholder}
+              className={`min-w-0 flex-1 bg-transparent text-sm outline-none ${isDark ? "text-slate-100 placeholder:text-slate-500" : "text-slate-700 placeholder:text-slate-400"}`}
+            />
+          </div>
+        </div>
       </div>
 
       {isLoading ? (
-        <div className="flex justify-center py-10"><div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div></div>
-      ) : patients.length === 0 ? (
-        <div className="p-10 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-          <User size={48} className="mx-auto text-slate-300 mb-4" />
-          <p className="text-slate-500">No recent patients found.</p>
+        <div className={`flex justify-center rounded-[34px] py-14 ${glassPanelClass}`}>
+          <div className="h-9 w-9 animate-spin rounded-full border-4 border-cyan-500/25 border-t-cyan-500" />
+        </div>
+      ) : filteredPatients.length === 0 ? (
+        <div className={`rounded-[34px] border border-dashed p-12 text-center ${glassPanelClass}`}>
+          <User size={48} className={`mx-auto mb-4 ${isDark ? "text-slate-500" : "text-slate-300"}`} />
+          <p className={isDark ? "text-slate-400" : "text-slate-500"}>{t.patients.noRecent}</p>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-          {patients.map((p, index) => (
-            <div
-              key={p.id}
-              onClick={() => onViewDetails(p.id)}
-              className={`group p-5 flex items-center justify-between cursor-pointer hover:bg-blue-50/50 transition-all ${index !== patients.length - 1 ? 'border-b border-slate-100' : ''
-                }`}
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {filteredPatients.map((patient, index) => (
+            <Motion.button
+              key={patient.id}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04 }}
+              whileHover={{ y: -4, scale: 1.01 }}
+              onClick={() => onViewDetails(patient.id)}
+              className={`group rounded-[30px] p-5 text-left ${glassCardClass}`}
             >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-slate-100 text-slate-500 rounded-full flex items-center justify-center group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">
-                  <User size={20} />
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[22px] bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-500 text-white shadow-[0_18px_42px_-24px_rgba(37,99,235,0.9)]">
+                  <User size={24} />
                 </div>
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${patient.status === "Active" ? "bg-emerald-100 text-emerald-700" : isDark ? "bg-white/8 text-slate-300" : "bg-slate-100 text-slate-600"}`}>
+                  {patient.status === "Active" ? t.patients.active : patient.status || t.patients.recent}
+                </span>
+              </div>
+              <h3 className={`text-lg font-bold transition-colors group-hover:text-cyan-500 ${isDark ? "text-slate-50" : "text-slate-900"}`}>{patient.name}</h3>
+              <div className={`mt-3 flex flex-wrap gap-2 text-sm ${isDark ? "text-slate-300" : "text-slate-500"}`}>
+                <span className={`rounded-full px-3 py-1 ${isDark ? "bg-white/8" : "bg-slate-50"}`}>{patient.type || t.patients.generalConsult}</span>
+                <span className={`rounded-full px-3 py-1 ${isDark ? "bg-white/8" : "bg-slate-50"}`}>{patient.gender || t.patients.ageGenderPending}</span>
+              </div>
+              <div className={`mt-5 flex items-center justify-between border-t pt-4 ${isDark ? "border-white/10" : "border-slate-100"}`}>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-800 group-hover:text-blue-700 transition-colors">{p.name}</h3>
-                  <div className="flex items-center gap-2 text-sm text-slate-500">
-                    <Activity size={14} className="text-slate-400" />
-                    {p.type}
-                  </div>
+                  <p className={`text-[11px] font-bold uppercase tracking-[0.22em] ${isDark ? "text-slate-500" : "text-slate-400"}`}>{t.patients.lastVisit}</p>
+                  <p className={`mt-1 text-sm font-semibold ${isDark ? "text-slate-300" : "text-slate-600"}`}>{patient.date || t.patients.recently}</p>
                 </div>
+                <ChevronRight size={20} className="text-cyan-500" />
               </div>
-
-              <div className="flex items-center gap-6">
-                <div className="text-right hidden sm:block">
-                  <p className="text-xs font-bold text-slate-400 uppercase">Last Visit</p>
-                  <p className="text-sm font-semibold text-slate-600">{p.date}</p>
-                </div>
-                <ChevronRight size={20} className="text-slate-300 group-hover:text-blue-500 transition-colors" />
-              </div>
-            </div>
+            </Motion.button>
           ))}
         </div>
       )}

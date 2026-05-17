@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { Video, ChevronRight, Activity, Star, Pill, Truck } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import LanguageSwitcher from './LanguageSwitcher';
+import { getUiCopy } from '../i18n/uiCopy';
 
 // Use the local path or the embedded artifact logic for the mocked image
 const DASHBOARD_IMAGE = "/sehat_sahayak_app_dashboard_mockup.png";
@@ -183,7 +185,8 @@ const TestimonialCard = ({ name, loc, text, stars }) => {
 
 // --- Landing Page Component ---
 
-const LandingPage = ({ onLoginClick, onRegisterClick }) => {
+const LandingPage = ({ language = 'en', onLanguageChange, onLoginClick, onRegisterClick }) => {
+    const ui = getUiCopy(language).landing;
     const [scrolled, setScrolled] = useState(false);
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
@@ -251,7 +254,7 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                     </div>
 
                     <div className="hidden md:flex items-center gap-4 lg:gap-8 font-medium text-slate-600 text-sm lg:text-base">
-                        {['Home', 'Services', 'How it Works', 'Reviews'].map((item) => (
+                        {ui.nav.map((item) => (
                             <a key={item} href={`#${item.toLowerCase().replace(/\s/g, '-')}`} className="hover:text-teal-600 transition-colors relative group">
                                 {item}
                                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-teal-600 transition-all group-hover:w-full"></span>
@@ -260,11 +263,12 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
+                        <LanguageSwitcher language={language} onChange={onLanguageChange} compact />
                         <button
                             onClick={onLoginClick}
                             className="text-slate-600 font-semibold hover:text-teal-600 transition-colors text-xs sm:text-sm md:text-base whitespace-nowrap"
                         >
-                            Sign In
+                            {ui.signIn}
                         </button>
                         <motion.button
                             whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(14, 165, 233, 0.3)" }}
@@ -272,7 +276,7 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                             onClick={onRegisterClick}
                             className="px-4 py-2 md:px-6 md:py-2.5 bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold rounded-full transition-all text-xs sm:text-sm md:text-base whitespace-nowrap"
                         >
-                            Get Started
+                            {ui.getStarted}
                         </motion.button>
                     </div>
                 </div>
@@ -288,20 +292,18 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                     className="space-y-6 md:space-y-8 z-20"
                 >
                     <motion.div variants={fadeInUp} className="inline-block px-4 py-1.5 bg-blue-50 text-blue-600 font-bold rounded-full text-xs md:text-sm mb-2 border border-blue-100 shadow-sm">
-                        🇮🇳 India's Most Trusted Telemedicine Platform
+                        {ui.trustBadge}
                     </motion.div>
                     <motion.h1 variants={fadeInUp} className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-extrabold leading-tight text-slate-900 tracking-tight">
                         Healthcare made <br />
                         <span className="block h-[1.3em]">
                             <WordRotator
-                                words={["Simple & Smart", "Fast & Secure", "Trusted & Affordable"]}
+                                words={ui.heroWords}
                                 className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600"
                             />
                         </span>
                     </motion.h1>
-                    <motion.p variants={fadeInUp} className="text-base md:text-lg text-slate-500 max-w-lg leading-relaxed">
-                        Connect with top doctors, order medicines, and book lab tests from the comfort of your home. Your health, our priority.
-                    </motion.p>
+                    <motion.p variants={fadeInUp} className="text-base md:text-lg text-slate-500 max-w-lg leading-relaxed">{ui.heroDescription}</motion.p>
 
                     <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 pt-2">
                         <motion.button
@@ -310,20 +312,20 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                             onClick={onRegisterClick}
                             className="px-6 py-3 md:px-8 md:py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 text-sm md:text-base"
                         >
-                            Book Appointment <ChevronRight size={20} />
+                            {ui.primaryCta} <ChevronRight size={20} />
                         </motion.button>
                         <motion.button
                             whileHover={{ scale: 1.05, translateY: -4, backgroundColor: "#f8fafc" }}
                             whileTap={{ scale: 0.95 }}
                             className="px-6 py-3 md:px-8 md:py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-sm md:text-base"
                         >
-                            <Video size={20} className="text-teal-500" /> Watch Demo
+                            <Video size={20} className="text-teal-500" /> {ui.secondaryCta}
                         </motion.button>
                     </motion.div>
 
                     {/* Localization Badges */}
                     <motion.div variants={fadeInUp} className="pt-8 border-t border-slate-200/50">
-                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Trusted by Leading Partners</p>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">{ui.partnersTitle}</p>
                         <div className="flex flex-wrap items-center gap-6 md:gap-8 opacity-70 grayscale hover:grayscale-0 transition-all hover:opacity-100">
                             <span className="font-bold text-slate-600 text-base md:text-lg hover:text-blue-600 transition-colors cursor-default">Apollo <span className="text-orange-500">24|7</span></span>
                             <span className="font-bold text-slate-600 text-base md:text-lg hover:text-blue-600 transition-colors cursor-default">Practo</span>
@@ -367,7 +369,7 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                                     <Activity size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-slate-500 font-bold">Active Doctors</p>
+                                    <p className="text-xs text-slate-500 font-bold">{ui.activeDoctors}</p>
                                     <p className="text-lg font-bold text-slate-900">2,500+</p>
                                 </div>
                             </motion.div>
@@ -386,9 +388,9 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                         variants={staggerContainer}
                         className="text-center mb-16 max-w-2xl mx-auto"
                     >
-                        <motion.span variants={fadeInUp} className="text-teal-600 font-bold tracking-wider uppercase text-sm bg-teal-50 px-3 py-1 rounded-full">Our Services</motion.span>
-                        <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-4 mb-4">Complete Healthcare Ecosystem</motion.h2>
-                        <motion.p variants={fadeInUp} className="text-slate-500 text-lg">Everything you need for your family's health, all in one place.</motion.p>
+                        <motion.span variants={fadeInUp} className="text-teal-600 font-bold tracking-wider uppercase text-sm bg-teal-50 px-3 py-1 rounded-full">{ui.servicesTag}</motion.span>
+                        <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-extrabold text-slate-900 mt-4 mb-4">{ui.servicesTitle}</motion.h2>
+                        <motion.p variants={fadeInUp} className="text-slate-500 text-lg">{ui.servicesSubtitle}</motion.p>
                     </motion.div>
 
                     <motion.div
@@ -398,30 +400,10 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                         variants={staggerContainer}
                         className="grid md:grid-cols-4 gap-8"
                     >
-                        <FeatureCard
-                            icon={<Video size={32} />}
-                            title="Video Consult"
-                            desc="Connect with top specialists in 10 minutes."
-                            color="blue"
-                        />
-                        <FeatureCard
-                            icon={<Pill size={32} />}
-                            title="Order Medicine"
-                            desc="Genuine medicines delivered to your doorstep."
-                            color="teal"
-                        />
-                        <FeatureCard
-                            icon={<Activity size={32} />}
-                            title="Lab Tests"
-                            desc="Home sample collection & digital reports."
-                            color="orange"
-                        />
-                        <FeatureCard
-                            icon={<Truck size={32} />}
-                            title="Emergency"
-                            desc="24/7 Ambulance request at one tap."
-                            color="red"
-                        />
+                        <FeatureCard icon={<Video size={32} />} title={ui.services[0].title} desc={ui.services[0].desc} color="blue" />
+                        <FeatureCard icon={<Pill size={32} />} title={ui.services[1].title} desc={ui.services[1].desc} color="teal" />
+                        <FeatureCard icon={<Activity size={32} />} title={ui.services[2].title} desc={ui.services[2].desc} color="orange" />
+                        <FeatureCard icon={<Truck size={32} />} title={ui.services[3].title} desc={ui.services[3].desc} color="red" />
                     </motion.div>
                 </div>
             </section>
@@ -444,15 +426,15 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                                 <div className="absolute bottom-0 left-0 right-0 p-8 glass-effect m-8 rounded-3xl border border-white/50 backdrop-blur-md">
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">1</div>
-                                        <h3 className="text-xl font-bold">Search Doctor</h3>
+                                        <h3 className="text-xl font-bold">{ui.heroSteps[0]}</h3>
                                     </div>
                                     <div className="flex items-center gap-4 mb-4">
                                         <div className="w-12 h-12 bg-white text-blue-600 rounded-full flex items-center justify-center font-bold text-xl shadow-md">2</div>
-                                        <h3 className="text-xl font-bold">Book Slot</h3>
+                                        <h3 className="text-xl font-bold">{ui.heroSteps[1]}</h3>
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-white text-blue-600 rounded-full flex items-center justify-center font-bold text-xl shadow-md">3</div>
-                                        <h3 className="text-xl font-bold">Get Cured</h3>
+                                        <h3 className="text-xl font-bold">{ui.heroSteps[2]}</h3>
                                     </div>
                                 </div>
                             </div>
@@ -466,24 +448,12 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                             className="order-1 lg:order-2 space-y-8"
                         >
                             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-extrabold text-slate-900">
-                                How SehatSahayak Works
+                                {ui.howTitle}
                             </motion.h2>
                             <div className="space-y-6">
-                                <StepRow
-                                    step="01"
-                                    title="Create Account"
-                                    desc="Sign up seamlessly using your mobile number or email. Secure & Verified."
-                                />
-                                <StepRow
-                                    step="02"
-                                    title="Choose Specialist"
-                                    desc="Filter by specialty (Cardio, Derma, etc.), reviews, and consultation fee."
-                                />
-                                <StepRow
-                                    step="03"
-                                    title="Live Consultation"
-                                    desc="High-quality video call with digital prescription sent immediately after."
-                                />
+                                {ui.steps.map((item) => (
+                                    <StepRow key={item.step} step={item.step} title={item.title} desc={item.desc} />
+                                ))}
                             </div>
                         </motion.div>
                     </div>
@@ -500,7 +470,7 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                         transition={{ duration: 0.6 }}
                         className="text-3xl font-bold mb-12"
                     >
-                        Trusted by <span className="text-blue-600"><StatsCounter end={10} suffix=" Lakh+" /></span> Indians
+                        {ui.testimonialsTitleLead} <span className="text-blue-600"><StatsCounter end={10} suffix=" Lakh+" /></span> {ui.testimonialsTitleSuffix}
                     </motion.h2>
                     <motion.div
                         initial="hidden"
@@ -509,24 +479,9 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                         variants={staggerContainer}
                         className="grid md:grid-cols-3 gap-8"
                     >
-                        <TestimonialCard
-                            name="Rahul Sharma"
-                            loc="Mumbai"
-                            text="The best app for quick consultation. I got my prescription in 15 mins."
-                            stars={5}
-                        />
-                        <TestimonialCard
-                            name="Priya Patel"
-                            loc="Ahmedabad"
-                            text="Very easy to use for my parents. Medicine delivery is super fast!"
-                            stars={5}
-                        />
-                        <TestimonialCard
-                            name="Amit Singh"
-                            loc="Delhi"
-                            text="Saved me a trip to the hospital during traffic. Highly recommended."
-                            stars={4}
-                        />
+                        <TestimonialCard name={ui.testimonials[0].name} loc={ui.testimonials[0].location} text={ui.testimonials[0].text} stars={5} />
+                        <TestimonialCard name={ui.testimonials[1].name} loc={ui.testimonials[1].location} text={ui.testimonials[1].text} stars={5} />
+                        <TestimonialCard name={ui.testimonials[2].name} loc={ui.testimonials[2].location} text={ui.testimonials[2].text} stars={4} />
                     </motion.div>
                 </div>
             </section>
@@ -539,10 +494,10 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                             <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
                                 <span className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-xl">+</span> SehatSahayak
                             </h3>
-                            <p className="text-slate-400 max-w-sm">Making healthcare accessible, affordable, and available to every Indian family. Join the revolution today.</p>
+                            <p className="text-slate-400 max-w-sm">{ui.footerDescription}</p>
                         </div>
                         <div>
-                            <h4 className="font-bold mb-4">Quick Links</h4>
+                            <h4 className="font-bold mb-4">{ui.quickLinks}</h4>
                             <ul className="space-y-2 text-slate-400">
                                 <li><a href="#" className="hover:text-blue-400 transition-colors">About Us</a></li>
                                 <li><a href="#" className="hover:text-blue-400 transition-colors">Doctors</a></li>
@@ -551,7 +506,7 @@ const LandingPage = ({ onLoginClick, onRegisterClick }) => {
                             </ul>
                         </div>
                         <div>
-                            <h4 className="font-bold mb-4">Support</h4>
+                            <h4 className="font-bold mb-4">{ui.support}</h4>
                             <ul className="space-y-2 text-slate-400">
                                 <li><a href="#" className="hover:text-blue-400 transition-colors">Help Center</a></li>
                                 <li><a href="#" className="hover:text-blue-400 transition-colors">Privacy Policy</a></li>

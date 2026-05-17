@@ -34,6 +34,20 @@ def _parse_datetime(value):
     except ValueError:
         return None
 
+
+def _to_isoformat(value):
+    parsed = _parse_datetime(value)
+    return parsed.isoformat() if parsed else value
+
+
+def _is_within_cancel_window(value):
+    parsed = _parse_datetime(value)
+    if not parsed:
+        return False
+
+    grace_window = timedelta(minutes=30)
+    return parsed >= datetime.now() - grace_window
+
 # --- Doctor & Appointment Management ---
 
 @appointment_bp.route('/doctors', methods=['GET'])
@@ -84,6 +98,7 @@ def book_appointment(current_user):
     
     data = request.get_json()
     doctor_id = data.get('doctorId')
+    reason = (data.get('reason') or '').strip()
 
     if not doctor_id:
         return jsonify({"error": "Doctor ID is required"}), 400
@@ -92,6 +107,17 @@ def book_appointment(current_user):
     try:
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT u.id, u.full_name, COALESCE(dp.specialty, d.specialization) AS specialty, dp.hospital
+            FROM users u
+            JOIN doctors d ON u.id = d.user_id
+            LEFT JOIN doctor_profiles dp ON u.id = dp.user_id
+            WHERE u.id = %s AND u.role = 'doctor' AND u.status IN ('active', 'approved')
+        """, (doctor_id,))
+        doctor = cursor.fetchone()
+        if not doctor:
+            return jsonify({"error": "Doctor not found"}), 404
 
         # --- INSTANT BOOKING & QUEUE LOGIC ---
         now = datetime.now()
@@ -119,15 +145,17 @@ def book_appointment(current_user):
         # --- END OF LOGIC ---
         
         video_room_code = secrets.token_hex(16)
-        query = "INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, video_room_code) VALUES (%s, %s, %s, %s);"
-        cursor.execute(query, (current_user['id'], doctor_id, appointment_datetime_str, video_room_code))
+        query = """
+            INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, reason, video_room_code)
+            VALUES (%s, %s, %s, %s, %s);
+        """
+        cursor.execute(query, (current_user['id'], doctor_id, appointment_datetime_str, reason, video_room_code))
+        appointment_id = cursor.lastrowid
         conn.commit()
 
         # Fetch details for the notification message
         cursor.execute("SELECT email, mobile, full_name FROM users WHERE id = %s", (current_user['id'],))
         patient = cursor.fetchone()
-        cursor.execute("SELECT full_name FROM users WHERE id = %s", (doctor_id,))
-        doctor = cursor.fetchone()
         
         # Format the time nicely for the user
         formatted_time = appointment_datetime_obj.strftime("%I:%M %p on %B %d, %Y")
@@ -138,7 +166,20 @@ def book_appointment(current_user):
         if patient.get('email'): send_email(patient['email'], subject, body)
         if patient.get('mobile'): send_sms(patient['mobile'], body)
 
-        return jsonify({"message": "Appointment booked successfully!", "roomCode": video_room_code}), 201
+        return jsonify({
+            "message": "Appointment booked successfully!",
+            "appointment": {
+                "id": appointment_id,
+                "doctor_name": doctor['full_name'],
+                "specialty": doctor.get('specialty'),
+                "hospital": doctor.get('hospital'),
+                "appointment_datetime": appointment_datetime_obj.isoformat(),
+                "status": "scheduled",
+                "video_room_code": video_room_code,
+                "reason": reason,
+            },
+            "roomCode": video_room_code
+        }), 201
 
     except Exception as e:
         if conn: conn.rollback()
@@ -159,13 +200,32 @@ def get_my_appointments(current_user):
         cursor = conn.cursor(dictionary=True)
         if current_user['role'] == 'patient':
             query = """
-            SELECT a.id, a.appointment_datetime, a.status, a.video_room_code, u.full_name as doctor_name
-            FROM appointments a JOIN users u ON a.doctor_id = u.id
+            SELECT a.id,
+                   a.appointment_datetime,
+                   a.created_at,
+                   a.status,
+                   a.reason,
+                   a.video_room_code,
+                   u.full_name as doctor_name,
+                   COALESCE(dp.specialty, d.specialization) as specialty,
+                   dp.hospital,
+                   dp.fee,
+                   dp.profile_pic_url as image
+            FROM appointments a
+            JOIN users u ON a.doctor_id = u.id
+            JOIN doctors d ON a.doctor_id = d.user_id
+            LEFT JOIN doctor_profiles dp ON a.doctor_id = dp.user_id
             WHERE a.patient_id = %s ORDER BY a.appointment_datetime ASC;
             """
         elif current_user['role'] == 'doctor':
             query = """
-            SELECT a.id, a.appointment_datetime, a.status, a.video_room_code, u.full_name as patient_name
+            SELECT a.id,
+                   a.appointment_datetime,
+                   a.created_at,
+                   a.status,
+                   a.reason,
+                   a.video_room_code,
+                   u.full_name as patient_name
             FROM appointments a JOIN users u ON a.patient_id = u.id
             WHERE a.doctor_id = %s ORDER BY a.appointment_datetime ASC;
             """
@@ -176,9 +236,59 @@ def get_my_appointments(current_user):
         for apt in appointments:
             parsed_datetime = _parse_datetime(apt.get('appointment_datetime'))
             apt['appointment_datetime'] = parsed_datetime.isoformat() if parsed_datetime else apt.get('appointment_datetime')
+            apt['created_at'] = _to_isoformat(apt.get('created_at'))
+            if current_user['role'] == 'patient':
+                apt['image'] = apt.get('image') or '/images/doc1.png'
+                apt['can_cancel'] = bool(
+                    (apt.get('status') or '').lower() == 'scheduled' and _is_within_cancel_window(apt.get('appointment_datetime'))
+                )
         return jsonify(appointments), 200
     except Exception as e:
         print(f"Error fetching appointments: {e}")
+        return jsonify({"error": "An internal server error occurred"}), 500
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+
+@appointment_bp.route('/<int:appointment_id>/cancel', methods=['POST'])
+@login_required
+def cancel_appointment(current_user, appointment_id):
+    if current_user['role'] != 'patient':
+        return jsonify({"error": "Only patients can cancel appointments"}), 403
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT id, appointment_datetime, status
+            FROM appointments
+            WHERE id = %s AND patient_id = %s
+        """, (appointment_id, current_user['id']))
+        appointment = cursor.fetchone()
+
+        if not appointment:
+            return jsonify({"error": "Appointment not found"}), 404
+
+        status = (appointment.get('status') or '').lower()
+        if status == 'cancelled':
+            return jsonify({"error": "Appointment is already cancelled"}), 400
+
+        if not _is_within_cancel_window(appointment.get('appointment_datetime')):
+            return jsonify({"error": "This appointment can no longer be cancelled"}), 400
+
+        cursor.execute(
+            "UPDATE appointments SET status = 'cancelled' WHERE id = %s AND patient_id = %s",
+            (appointment_id, current_user['id'])
+        )
+        conn.commit()
+        return jsonify({"message": "Appointment cancelled successfully"}), 200
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(f"Error cancelling appointment: {e}")
         return jsonify({"error": "An internal server error occurred"}), 500
     finally:
         if conn and conn.is_connected():

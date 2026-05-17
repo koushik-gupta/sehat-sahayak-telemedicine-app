@@ -1,247 +1,189 @@
-import React, { useState, useEffect } from 'react';
-import { Users, Calendar, DollarSign, Star } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { motion as Motion } from "framer-motion";
+import { Calendar, DollarSign, Star, TrendingUp, Users } from "lucide-react";
+import { getGlassCardClass, getGlassPanelClass, useDashboardTheme } from "../Dashboard/DashboardThemeContext";
 
-const AnalyticsDashboard = () => {
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
+const AnalyticsDashboard = ({ t }) => {
+  const { isDark } = useDashboardTheme();
+  const glassPanelClass = getGlassPanelClass(isDark);
+  const glassCardClass = getGlassCardClass(isDark);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchStats = async () => {
-            try {
-                const response = await fetch('/api/v1/doctor/stats');
-                if (response.ok) {
-                    const data = await response.json();
-                    setStats(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch stats", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchStats();
-    }, []);
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("/api/v1/doctor/stats");
+        if (response.ok) {
+          const data = await response.json();
+          setStats(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch stats", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
 
-    if (loading) return <div className="p-8 text-center text-slate-500">Loading analytics...</div>;
-    if (!stats) return <div className="p-8 text-center text-red-500">Failed to load analytics.</div>;
+  if (loading) return <div className={`rounded-[34px] p-10 text-center ${glassPanelClass}`}>{t.analytics.loading}</div>;
+  if (!stats) return <div className={`rounded-[34px] p-10 text-center text-red-500 ${glassPanelClass}`}>{t.analytics.failed}</div>;
 
-    const trends = stats.charts?.trends || [];
-    const demographics = stats.charts?.demographics || [];
+  const trends = stats.charts?.trends || [];
+  const demographics = stats.charts?.demographics || [];
+  const statCards = [
+    { icon: Users, label: t.analytics.totalPatients, value: stats.total_patients, detail: t.analytics.lifetimeReach },
+    { icon: Calendar, label: t.analytics.completed, value: stats.appointments_this_month, detail: t.analytics.thisMonth },
+    { icon: DollarSign, label: t.analytics.revenue, value: `Rs ${stats.total_earnings}`, detail: t.analytics.estimatedEarnings },
+    { icon: Star, label: t.analytics.satisfaction, value: stats.rating, detail: t.analytics.patientRating },
+  ];
 
-    return (
-        <div className="space-y-6 animation-fade-in pb-10">
+  return (
+    <div className="doctor-page space-y-6 pb-10">
+      <section className={`rounded-[34px] p-6 md:p-8 ${glassPanelClass}`}>
+        <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className={`text-[11px] font-semibold uppercase tracking-[0.24em] ${isDark ? "text-slate-400" : "text-slate-400"}`}>{t.analytics.intelligence}</p>
+            <h2 className={`mt-2 text-3xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>{t.analytics.title}</h2>
+            <p className={`mt-2 max-w-2xl ${isDark ? "text-slate-300" : "text-slate-500"}`}>{t.analytics.description}</p>
+          </div>
+          <div className={`rounded-2xl border px-4 py-2 text-sm font-bold ${isDark ? "border-emerald-400/15 bg-emerald-400/10 text-emerald-200" : "border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
+            {t.analytics.weeklyTrend}
+          </div>
+        </div>
+      </section>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {statCards.map((card, index) => (
+          <Motion.div key={card.label} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} whileHover={{ y: -4, scale: 1.01 }} className={`rounded-[30px] p-5 ${glassCardClass}`}>
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-[20px] bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-500 text-white shadow-[0_18px_42px_-24px_rgba(37,99,235,0.9)]">
+              <card.icon size={22} />
+            </div>
+            <p className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${isDark ? "text-slate-400" : "text-slate-400"}`}>{card.label}</p>
+            <h3 className={`mt-2 text-3xl font-extrabold ${isDark ? "text-slate-50" : "text-slate-900"}`}>{card.value}</h3>
+            <p className={`mt-1 text-sm ${isDark ? "text-slate-300" : "text-slate-500"}`}>{card.detail}</p>
+          </Motion.div>
+        ))}
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
+        <div className={`rounded-[34px] p-6 ${glassPanelClass}`}>
+          <div className="mb-6 flex items-center justify-between">
             <div>
-                <h2 className="text-2xl font-bold text-slate-800">Practice Analytics</h2>
-                <p className="text-slate-500">Insights into your consultations and earnings.</p>
+              <h3 className={`text-xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>{t.analytics.consultationGrowth}</h3>
+              <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>{t.analytics.weeklyAppointmentTrend}</p>
             </div>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                    icon={<Users size={24} />}
-                    label="Total Patients"
-                    value={stats.total_patients}
-                    color="blue"
-                />
-                <StatCard
-                    icon={<Calendar size={24} />}
-                    label="Appointments (This Month)"
-                    value={stats.appointments_this_month}
-                    color="indigo"
-                />
-                <StatCard
-                    icon={<DollarSign size={24} />}
-                    label="Estimated Earnings"
-                    value={`Rs ${stats.total_earnings}`}
-                    color="emerald"
-                />
-                <StatCard
-                    icon={<Star size={24} />}
-                    label="Patient Rating"
-                    value={stats.rating}
-                    color="amber"
-                />
-            </div>
-
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                {/* Appointment Trends Chart */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col">
-                    <h3 className="text-lg font-bold text-slate-800 mb-6">Appointment Trends</h3>
-                    <div className="flex-1 min-h-[250px] flex items-end justify-center">
-                        <SimpleBarChart data={trends} />
-                    </div>
-                </div>
-
-                {/* Patient Demographics Chart */}
-                <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col">
-                    <h3 className="text-lg font-bold text-slate-800 mb-6">Patient Gender Demographics</h3>
-                    <div className="flex-1 min-h-[250px] flex items-center justify-center">
-                        <SimpleDonutChart data={demographics} />
-                    </div>
-                </div>
-            </div>
+            <TrendingUp className="text-cyan-500" />
+          </div>
+          <div className="min-h-[280px]">
+            <SimpleBarChart data={trends} isDark={isDark} t={t} />
+          </div>
         </div>
-    );
+
+        <div className={`rounded-[34px] p-6 ${glassPanelClass}`}>
+          <div className="mb-6">
+            <h3 className={`text-xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>{t.analytics.patientMix}</h3>
+            <p className={`text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>{t.analytics.demographicDistribution}</p>
+          </div>
+          <div className="min-h-[280px]">
+            <SimpleDonutChart data={demographics} isDark={isDark} t={t} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-// --- Helper Components ---
+const SimpleBarChart = ({ data, isDark, t }) => {
+  if (!data || data.length === 0) return <div className={isDark ? "text-slate-400" : "text-slate-500"}>{t.analytics.noData}</div>;
 
-const StatCard = ({ icon, label, value, color }) => {
-    const colorClasses = {
-        blue: "bg-blue-50 text-blue-600",
-        indigo: "bg-indigo-50 text-indigo-600",
-        emerald: "bg-emerald-50 text-emerald-600",
-        amber: "bg-amber-50 text-amber-600",
-    };
+  const maxVal = Math.max(...data.map((d) => d.value), 10);
+  const height = 210;
+  const width = 360;
+  const barWidth = 34;
+  const gap = (width - data.length * barWidth) / (data.length + 1);
 
-    return (
-        <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all">
-            <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-2xl ${colorClasses[color]}`}>
-                    {icon}
-                </div>
-                <div>
-                    <p className="text-sm font-bold text-slate-400 uppercase">{label}</p>
-                    <h3 className="text-2xl font-extrabold text-slate-800">{value}</h3>
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <svg viewBox={`0 0 ${width} ${height + 34}`} className="h-full max-h-[300px] w-full">
+      <defs>
+        <linearGradient id="doctorBars" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stopColor="#22d3ee" />
+          <stop offset="55%" stopColor="#3b82f6" />
+          <stop offset="100%" stopColor="#6366f1" />
+        </linearGradient>
+      </defs>
+      <line x1="0" y1={height} x2={width} y2={height} stroke={isDark ? "#334155" : "#e2e8f0"} strokeWidth="1" />
+      <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke={isDark ? "#1e293b" : "#f1f5f9"} strokeDasharray="4" />
+
+      {data.map((d, i) => {
+        const barHeight = (d.value / maxVal) * height;
+        const x = gap + i * (barWidth + gap);
+        const y = height - barHeight;
+        return (
+          <g key={d.label || i} className="group cursor-pointer">
+            <rect x={x} y={y} width={barWidth} height={barHeight} fill="url(#doctorBars)" rx="10" className="transition-all group-hover:opacity-80" />
+            <text x={x + barWidth / 2} y={height + 23} textAnchor="middle" fontSize="12" fill={isDark ? "#94a3b8" : "#64748b"} className="font-medium">
+              {d.label}
+            </text>
+            <text x={x + barWidth / 2} y={y - 8} textAnchor="middle" fontSize="12" fill={isDark ? "#e2e8f0" : "#1e293b"} className="font-bold opacity-0 transition-opacity group-hover:opacity-100">
+              {d.value}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
 };
 
-const SimpleBarChart = ({ data }) => {
-    if (!data || data.length === 0) return <div className="text-slate-400">No data available</div>;
+const SimpleDonutChart = ({ data, isDark, t }) => {
+  if (!data || data.length === 0) return <div className={isDark ? "text-slate-400" : "text-slate-500"}>{t.analytics.noData}</div>;
 
-    const maxVal = Math.max(...data.map(d => d.value), 10); // Ensure at least scale of 10
-    const height = 200;
-    const width = 300;
-    const barWidth = 30;
-    const gap = (width - (data.length * barWidth)) / (data.length + 1);
+  const total = data.reduce((sum, d) => sum + d.value, 0);
+  let cumulativePercent = 0;
+  const colors = ["#22d3ee", "#6366f1", "#f59e0b", "#10b981", "#3b82f6"];
 
-    return (
-        <svg viewBox={`0 0 ${width} ${height + 30}`} className="w-full h-full max-h-[250px]">
-            {/* Grid lines */}
-            <line x1="0" y1={height} x2={width} y2={height} stroke="#e2e8f0" strokeWidth="1" />
-            <line x1="0" y1={0} x2={width} y2={0} stroke="#f1f5f9" strokeDasharray="4" />
-            <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="#f1f5f9" strokeDasharray="4" />
+  const getCoordinatesForPercent = (percent) => [Math.cos(2 * Math.PI * percent), Math.sin(2 * Math.PI * percent)];
 
-            {data.map((d, i) => {
-                const barHeight = (d.value / maxVal) * height;
-                const x = gap + (i * (barWidth + gap));
-                const y = height - barHeight;
-                return (
-                    <g key={i} className="group cursor-pointer">
-                        <rect
-                            x={x}
-                            y={y}
-                            width={barWidth}
-                            height={barHeight}
-                            fill="#3b82f6"
-                            rx="4"
-                            className="transition-all hover:opacity-80"
-                        />
-                        <text
-                            x={x + barWidth / 2}
-                            y={height + 20}
-                            textAnchor="middle"
-                            fontSize="12"
-                            fill="#64748b"
-                            className="font-medium"
-                        >
-                            {d.label}
-                        </text>
-                        {/* Tooltip value on hover (simplified as text above bar) */}
-                        <text
-                            x={x + barWidth / 2}
-                            y={y - 5}
-                            textAnchor="middle"
-                            fontSize="12"
-                            fill="#1e293b"
-                            className="font-bold opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                            {d.value}
-                        </text>
-                    </g>
-                );
-            })}
+  return (
+    <div className="flex flex-col items-center gap-8 sm:flex-row">
+      <div className="relative h-44 w-44">
+        <svg viewBox="-1 -1 2 2" className="h-full w-full -rotate-90">
+          {data.map((d, i) => {
+            const startPercent = cumulativePercent;
+            const slicePercent = total > 0 ? d.value / total : 0;
+            cumulativePercent += slicePercent;
+            if (slicePercent === 0) return null;
+            if (slicePercent === 1) return <circle key={d.label || i} cx="0" cy="0" r="0.8" fill="transparent" stroke={colors[i % colors.length]} strokeWidth="0.4" />;
+
+            const [startX, startY] = getCoordinatesForPercent(startPercent);
+            const [endX, endY] = getCoordinatesForPercent(cumulativePercent);
+            const largeArcFlag = slicePercent > 0.5 ? 1 : 0;
+            const pathData = [`M ${startX} ${startY}`, `A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY}`, "L 0 0"].join(" ");
+
+            return <path key={d.label || i} d={pathData} fill={colors[i % colors.length]} className="origin-center transition-all hover:scale-105" />;
+          })}
+          <circle cx="0" cy="0" r="0.58" fill={isDark ? "#0f172a" : "white"} />
         </svg>
-    );
-};
-
-const SimpleDonutChart = ({ data }) => {
-    if (!data || data.length === 0) return <div className="text-slate-400">No data available</div>;
-
-    const total = data.reduce((sum, d) => sum + d.value, 0);
-    let cumulativePercent = 0;
-
-    const getCoordinatesForPercent = (percent) => {
-        const x = Math.cos(2 * Math.PI * percent);
-        const y = Math.sin(2 * Math.PI * percent);
-        return [x, y];
-    };
-
-    const colors = ['#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6'];
-
-    return (
-        <div className="flex items-center gap-8">
-            <div className="relative w-40 h-40">
-                <svg viewBox="-1 -1 2 2" className="transform -rotate-90 w-full h-full">
-                    {data.map((d, i) => {
-                        const startPercent = cumulativePercent;
-                        const slicePercent = d.value / total;
-                        cumulativePercent += slicePercent;
-
-                        const [startX, startY] = getCoordinatesForPercent(startPercent);
-                        const [endX, endY] = getCoordinatesForPercent(cumulativePercent);
-                        const largeArcFlag = slicePercent > 0.5 ? 1 : 0;
-
-                        // Don't draw if 0
-                        if (slicePercent === 0) return null;
-
-                        // Full circle case
-                        if (slicePercent === 1) {
-                            return <circle key={i} cx="0" cy="0" r="0.8" fill="transparent" stroke={colors[i % colors.length]} strokeWidth="0.4" />;
-                        }
-
-                        const pathData = [
-                            `M ${startX} ${startY}`,
-                            `A 1 1 0 ${largeArcFlag} 1 ${endX} ${endY}`,
-                            `L 0 0`,
-                        ].join(' ');
-
-                        return (
-                            <path
-                                key={i}
-                                d={pathData}
-                                fill={colors[i % colors.length]}
-                                className="transition-all hover:scale-105 origin-center"
-                            />
-                        );
-                    })}
-                    {/* Inner circle for Donut effect */}
-                    <circle cx="0" cy="0" r="0.6" fill="white" />
-                </svg>
-                <div className="absolute inset-0 flex items-center justify-center flex-col">
-                    <span className="text-2xl font-bold text-slate-800">{total}</span>
-                    <span className="text-xs text-slate-500 font-bold uppercase">Patients</span>
-                </div>
-            </div>
-
-            {/* Legend */}
-            <div className="space-y-3">
-                {data.map((d, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                        <span className="w-3 h-3 rounded-full" style={{ backgroundColor: colors[i % colors.length] }}></span>
-                        <div>
-                            <p className="text-sm font-bold text-slate-700">{d.label}</p>
-                            <p className="text-xs text-slate-500">{((d.value / total) * 100).toFixed(1)}%</p>
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className={`text-3xl font-bold ${isDark ? "text-slate-50" : "text-slate-800"}`}>{total}</span>
+          <span className={`text-xs font-bold uppercase ${isDark ? "text-slate-400" : "text-slate-500"}`}>{t.analytics.patients}</span>
         </div>
-    );
+      </div>
+
+      <div className="space-y-3">
+        {data.map((d, i) => (
+          <div key={d.label || i} className="flex items-center gap-3">
+            <span className="h-3 w-3 rounded-full" style={{ backgroundColor: colors[i % colors.length] }} />
+            <div>
+              <p className={`text-sm font-bold ${isDark ? "text-slate-200" : "text-slate-700"}`}>{d.label}</p>
+              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-500"}`}>{total ? ((d.value / total) * 100).toFixed(1) : 0}%</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default AnalyticsDashboard;

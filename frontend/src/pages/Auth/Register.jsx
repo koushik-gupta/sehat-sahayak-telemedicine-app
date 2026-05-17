@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
 import AuthLayout from "../../components/AuthLayout";
 import { User, Mail, Phone, Lock, CreditCard, MapPin, Stethoscope, Building2, ShieldCheck, CheckCircle, AlertCircle } from 'lucide-react';
+import { getUiCopy } from "../../i18n/uiCopy";
 
-function Register({ t, onRegister, onSwitchToLogin, onBack }) {
+function Register({ t, language, onLanguageChange, onRegister, onSwitchToLogin, onBack }) {
+  const ui = getUiCopy(language).auth;
+  const roleLabels = {
+    patient: t.patient || "Patient",
+    doctor: t.doctor || "Doctor",
+    pharmacy: t.pharmacy || "Pharmacy",
+    admin: t.admin || "Admin",
+  };
   // --- States for all fields ---
   const [role, setRole] = useState("patient");
   const [fullName, setFullName] = useState("");
@@ -45,7 +53,7 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
     setIsSendingOtp(true);
     const identifier = loginMethod === 'email' ? email : mobile;
     if (!identifier) {
-      setError(`Please enter your ${loginMethod} to receive an OTP.`);
+      setError(ui.enterYourMethod);
       setIsSendingOtp(false);
       return;
     }
@@ -72,7 +80,7 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
 
   const handleVerifyOtp = async () => {
     if (!otp || otp.length !== 6) {
-      setError("Please enter the 6-digit OTP code.");
+      setError(ui.enterSixDigitOtp);
       return;
     }
     setError("");
@@ -104,7 +112,7 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
     setError("");
 
     if (role === 'patient' && !otpVerified) {
-      setError("Please verify your email or mobile number with the OTP before registering.");
+      setError(ui.verifyBeforeRegistering);
       return;
     }
 
@@ -154,22 +162,25 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
       title={t.register || "Create Account"}
       subtitle={t.chooseRolePrompt || "Join our community to get started."}
       onBack={onBack}
+      backLabel={ui.backToHome}
+      language={language}
+      onLanguageChange={onLanguageChange}
     >
       <div className="space-y-6">
 
         {/* Role Selection */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-slate-700">{t.selectRole || "I am registering as a:"}</label>
+          <label className="block text-sm font-medium text-slate-700">{ui.registerAs}</label>
           <div className="relative">
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
               className="w-full px-4 py-3 pl-12 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none appearance-none bg-white text-slate-700 font-medium cursor-pointer"
             >
-              <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
-              <option value="pharmacy">Pharmacy</option>
-              <option value="admin">Admin</option>
+              <option value="patient">{roleLabels.patient}</option>
+              <option value="doctor">{roleLabels.doctor}</option>
+              <option value="pharmacy">{roleLabels.pharmacy}</option>
+              <option value="admin">{roleLabels.admin}</option>
             </select>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
               {role === 'patient' && <User size={20} />}
@@ -183,8 +194,8 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
         {/* Patient Login Method Toggle */}
         {role === "patient" && (
           <div className="flex bg-slate-100 p-1 rounded-xl">
-            <button type="button" onClick={() => setLoginMethod("email")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${loginMethod === "email" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`} disabled={otpSent}>Email</button>
-            <button type="button" onClick={() => setLoginMethod("mobile")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${loginMethod === "mobile" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`} disabled={otpSent}>Mobile</button>
+            <button type="button" onClick={() => setLoginMethod("email")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${loginMethod === "email" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`} disabled={otpSent}>{t.email || "Email"}</button>
+            <button type="button" onClick={() => setLoginMethod("mobile")} className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${loginMethod === "mobile" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-700"}`} disabled={otpSent}>{t.mobile || "Mobile"}</button>
           </div>
         )}
 
@@ -214,13 +225,13 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
               <div className="flex gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="relative flex-grow">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><Lock size={20} /></div>
-                  <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder="Enter OTP" className="w-full px-4 py-3 pl-12 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium text-center tracking-widest text-slate-700 placeholder:text-slate-400" />
+                  <input type="text" value={otp} onChange={(e) => setOtp(e.target.value)} placeholder={ui.enterOtp} className="w-full px-4 py-3 pl-12 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium text-center tracking-widest text-slate-700 placeholder:text-slate-400" />
                 </div>
-                <button type="button" onClick={handleVerifyOtp} className="px-6 py-3 bg-teal-500 text-white font-bold rounded-xl hover:bg-teal-600 transition-colors shadow-lg shadow-teal-100/50">Verify</button>
+                <button type="button" onClick={handleVerifyOtp} className="px-6 py-3 bg-teal-500 text-white font-bold rounded-xl hover:bg-teal-600 transition-colors shadow-lg shadow-teal-100/50">{ui.verify}</button>
               </div>
             ) : (
               <button type="button" onClick={handleSendOtp} disabled={isSendingOtp} className="w-full py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-colors flex items-center justify-center gap-2">
-                {isSendingOtp ? 'Sending...' : `Send OTP via ${loginMethod === 'email' ? 'Email' : 'SMS'}`}
+                {isSendingOtp ? ui.sending : loginMethod === 'email' ? ui.sendOtpViaEmail : ui.sendOtpViaSms}
               </button>
             )
           )}
@@ -241,7 +252,7 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
           {role === "doctor" && (
             <div className="relative animate-in fade-in slide-in-from-top-2">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><Stethoscope size={20} /></div>
-              <input type="text" value={doctorRegistrationNumber} onChange={(e) => setDoctorRegistrationNumber(e.target.value)} placeholder="Medical Registration Number" className="w-full px-4 py-3 pl-12 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium text-slate-700 placeholder:text-slate-400" />
+              <input type="text" value={doctorRegistrationNumber} onChange={(e) => setDoctorRegistrationNumber(e.target.value)} placeholder={ui.medicalRegistrationNumber} className="w-full px-4 py-3 pl-12 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium text-slate-700 placeholder:text-slate-400" />
             </div>
           )}
 
@@ -250,14 +261,14 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
             <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
               <div className="relative">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"><Building2 size={20} /></div>
-                <input type="text" value={pharmacyLicenseNumber} onChange={(e) => setPharmacyLicenseNumber(e.target.value)} placeholder="Pharmacy License Number" className="w-full px-4 py-3 pl-12 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium text-slate-700 placeholder:text-slate-400" />
+                <input type="text" value={pharmacyLicenseNumber} onChange={(e) => setPharmacyLicenseNumber(e.target.value)} placeholder={ui.pharmacyLicenseNumber} className="w-full px-4 py-3 pl-12 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none font-medium text-slate-700 placeholder:text-slate-400" />
               </div>
               <div className="space-y-2">
                 <div className="relative">
-                  <textarea value={pharmacyAddress} onChange={(e) => setPharmacyAddress(e.target.value)} placeholder="Pharmacy Address" rows="3" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none resize-none font-medium text-slate-700 placeholder:text-slate-400"></textarea>
+                  <textarea value={pharmacyAddress} onChange={(e) => setPharmacyAddress(e.target.value)} placeholder={ui.pharmacyAddress} rows="3" className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all outline-none resize-none font-medium text-slate-700 placeholder:text-slate-400"></textarea>
                 </div>
                 <button type="button" onClick={handleGeolocation} disabled={isFetchingLocation} className="text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1 transition-colors">
-                  <MapPin size={16} /> {isFetchingLocation ? "Fetching location..." : "Use Current Location"}
+                  <MapPin size={16} /> {isFetchingLocation ? ui.fetchingLocation : ui.useCurrentLocation}
                 </button>
                 {geolocationError && <p className="text-red-500 text-xs">{geolocationError}</p>}
               </div>
@@ -268,13 +279,13 @@ function Register({ t, onRegister, onSwitchToLogin, onBack }) {
           {successMessage && <div className="p-3 bg-green-50 text-green-600 text-sm rounded-xl flex items-center gap-2 border border-green-100 animate-in fade-in"><CheckCircle size={16} /> {successMessage}</div>}
 
           <button type="submit" disabled={isSubmitting || (role === 'patient' && !otpVerified)} className="w-full py-3.5 bg-gradient-to-r from-teal-500 to-blue-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none mt-2">
-            {isSubmitting ? 'Creating Account...' : (t.register || "Create Account")}
+            {isSubmitting ? ui.creatingAccount : (t.register || "Create Account")}
           </button>
         </form>
 
         <div className="text-center pt-6 border-t border-slate-100">
-          <p className="text-slate-500 text-sm mb-2">{t.loginPrompt || "Already have an account?"}</p>
-          <button onClick={onSwitchToLogin} className="text-blue-600 font-bold hover:underline transition-all hover:text-blue-700">{t.login || "Sign In"}</button>
+          <p className="text-slate-500 text-sm mb-2">{ui.alreadyHaveAccount}</p>
+          <button onClick={onSwitchToLogin} className="text-blue-600 font-bold hover:underline transition-all hover:text-blue-700">{t.login || ui.signIn}</button>
         </div>
       </div>
     </AuthLayout>
