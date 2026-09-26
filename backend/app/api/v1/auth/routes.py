@@ -48,6 +48,10 @@ def register_user():
     try:
         data = request.get_json()
         role = data.get('role')
+        allowed_roles = {'patient', 'doctor', 'pharmacy'}
+
+        if role not in allowed_roles:
+                      return jsonify({"error": "Invalid registration role."}), 403
         full_name = data.get('name')
         email = data.get('email')
         mobile = data.get('mobile')
@@ -74,10 +78,13 @@ def register_user():
 
         user_query = "INSERT INTO users (role, status, full_name, email, mobile, aadhar_number, password_hash) VALUES (%s, %s, %s, %s, %s, %s, %s)"
         # For doctors/pharmacies, the frontend should send 'pending_verification' as the status
-        status = 'active' if role == 'patient' else data.get('status', 'pending_verification')
+        status = 'active' if role == 'patient' else 'pending_admin_approval'
         user_values = (role, status, full_name, email, mobile, data.get('aadhar'), password_hash)
-        cursor.execute(user_query, user_values)
-        user_id = cursor.lastrowid
+        cursor.execute(
+          user_query + " RETURNING id",
+          user_values
+         )
+        user_id = cursor.fetchone()["id"]
 
         if role == 'doctor':
             cursor.execute("INSERT INTO doctors (user_id, registration_number) VALUES (%s, %s)", (user_id, data.get('registrationNumber')))

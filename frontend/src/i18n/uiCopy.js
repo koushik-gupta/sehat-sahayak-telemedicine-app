@@ -15,8 +15,7 @@ const base = {
     heroWords: ['Simple & Smart', 'Fast & Secure', 'Trusted & Affordable'],
     heroDescription:
       'Connect with top doctors, order medicines, and book lab tests from the comfort of your home. Your health, our priority.',
-    primaryCta: 'Book Appointment',
-    secondaryCta: 'Watch Demo',
+    primaryCta: 'Sign In',
     partnersTitle: 'Trusted by Leading Partners',
     activeDoctors: 'Active Doctors',
     servicesTag: 'Our Services',

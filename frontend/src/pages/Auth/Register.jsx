@@ -180,7 +180,7 @@ function Register({ t, language, onLanguageChange, onRegister, onSwitchToLogin, 
               <option value="patient">{roleLabels.patient}</option>
               <option value="doctor">{roleLabels.doctor}</option>
               <option value="pharmacy">{roleLabels.pharmacy}</option>
-              <option value="admin">{roleLabels.admin}</option>
+             
             </select>
             <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
               {role === 'patient' && <User size={20} />}

@@ -19,7 +19,93 @@ const DoctorProfile = ({ doctor, onBack, onBookAppointment, isBooking, t }) => {
   const glassPanelClass = getGlassPanelClass(isDark);
   const glassCardClass = getGlassCardClass(isDark);
   const [reason, setReason] = useState("");
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentTime, setAppointmentTime] = useState("");
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+  const today = new Date();
+  return new Date(today.getFullYear(), today.getMonth(), 1);
+});
+  const availability = Array.isArray(doctor?.availability)
+  ? doctor.availability.filter((slot) => Number(slot.is_available) === 1)
+  : [];
 
+const availableDays = availability.map((slot) => slot.day_of_week);
+const calendarDays = useMemo(() => {
+  const year = calendarMonth.getFullYear();
+  const month = calendarMonth.getMonth();
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  const days = [];
+
+  for (let i = 0; i < firstDay; i++) {
+    days.push(null);
+  }
+
+  for (let date = 1; date <= daysInMonth; date++) {
+    days.push({
+      year,
+      month: month + 1,
+      date,
+    });
+  }
+
+  return days;
+}, [calendarMonth]);
+const availableTimeSlots = useMemo(() => {
+  if (!appointmentDate) {
+    return [];
+  }
+
+  const selectedDay = new Date(`${appointmentDate}T00:00:00`).toLocaleDateString(
+    "en-US",
+    { weekday: "long" }
+  );
+
+  const dayAvailability = availability.find(
+    (slot) => slot.day_of_week === selectedDay
+  );
+
+  if (!dayAvailability) {
+    return [];
+  }
+
+  const slots = [];
+  const [startHour, startMinute] = String(dayAvailability.start_time)
+    .split(":")
+    .map(Number);
+  const [endHour, endMinute] = String(dayAvailability.end_time)
+    .split(":")
+    .map(Number);
+
+  let currentMinutes = startHour * 60 + startMinute;
+  const endMinutes = endHour * 60 + endMinute;
+
+  while (currentMinutes < endMinutes) {
+    const hour = Math.floor(currentMinutes / 60);
+    const minute = currentMinutes % 60;
+
+    slots.push(
+      `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`
+    );
+
+    currentMinutes += 30;
+  }
+
+const bookedSlots = Array.isArray(doctor?.booked_slots)
+  ? doctor.booked_slots
+  : [];
+
+const bookedSlotSet = new Set(
+  bookedSlots.map((slot) => String(slot).replace("T", " ").slice(0, 16))
+);
+
+return slots.filter((slot) => {
+  const slotDateTime = `${appointmentDate} ${slot}`;
+  return !bookedSlotSet.has(slotDateTime);
+});
+}, [appointmentDate, availability]);
   const languageList = useMemo(() => {
     if (Array.isArray(doctor?.languages)) {
       return doctor.languages;
@@ -47,11 +133,17 @@ const DoctorProfile = ({ doctor, onBack, onBookAppointment, isBooking, t }) => {
   }
 
   const handleBooking = () => {
-    onBookAppointment({
-      doctorId: doctor.id,
-      reason,
-    });
-  };
+  if (!appointmentDate || !appointmentTime) {
+    alert("Please select an appointment date and time.");
+    return;
+  }
+
+  onBookAppointment({
+    doctorId: doctor.id,
+    reason,
+    appointmentDatetime: `${appointmentDate}T${appointmentTime}`,
+  });
+};
 
   return (
     <div className="space-y-6">
@@ -145,9 +237,9 @@ const DoctorProfile = ({ doctor, onBack, onBookAppointment, isBooking, t }) => {
         <aside className="space-y-6">
           <section className={`rounded-[32px] p-6 ${glassCardClass}`}>
             <p className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">Book appointment</p>
-            <h2 className={`mt-2 text-2xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>Instant consultation queue</h2>
+            <h2 className={`mt-2 text-2xl font-bold ${isDark ? "text-slate-50" : "text-slate-900"}`}>Schedule an appointment</h2>
             <p className={`mt-3 text-sm ${isDark ? "text-slate-300" : "text-slate-500"}`}>
-              This patient flow uses instant queue-based booking. The backend assigns the next available consultation time automatically.
+              Choose a date and time that works for you. Your appointment request will be sent to the doctor for confirmation.
             </p>
 
             <div className={`mt-5 rounded-[24px] p-4 ${isDark ? "bg-white/8" : "bg-slate-50"}`}>
@@ -161,7 +253,142 @@ const DoctorProfile = ({ doctor, onBack, onBookAppointment, isBooking, t }) => {
                 </div>
               </div>
             </div>
+             <div className="mt-5 grid gap-4">
+  <label className={`block text-sm font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
+    Appointment date
+   <div className="mt-2 rounded-2xl border border-slate-200 bg-white p-4">
+  <div className="mb-3 flex items-center justify-between">
+    <button
+      type="button"
+      onClick={() =>
+        setCalendarMonth(
+          new Date(
+            calendarMonth.getFullYear(),
+            calendarMonth.getMonth() - 1,
+            1
+          )
+        )
+      }
+      className="rounded-lg px-3 py-2 text-sm hover:bg-slate-100"
+    >
+      ←
+    </button>
 
+    <div className="font-bold">
+      {calendarMonth.toLocaleDateString("en-US", {
+        month: "long",
+        year: "numeric",
+      })}
+    </div>
+
+    <button
+      type="button"
+      onClick={() =>
+        setCalendarMonth(
+          new Date(
+            calendarMonth.getFullYear(),
+            calendarMonth.getMonth() + 1,
+            1
+          )
+        )
+      }
+      className="rounded-lg px-3 py-2 text-sm hover:bg-slate-100"
+    >
+      →
+    </button>
+  </div>
+
+  <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-slate-400">
+    {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
+      <div key={index}>{day}</div>
+    ))}
+  </div>
+
+  <div className="mt-2 grid grid-cols-7 gap-1">
+    {calendarDays.map((day, index) => {
+      if (!day) {
+        return <div key={`empty-${index}`} />;
+      }
+
+      const dateString = `${day.year}-${String(day.month).padStart(2, "0")}-${String(day.date).padStart(2, "0")}`;
+
+      const selectedDay = new Date(
+        `${dateString}T00:00:00`
+      ).toLocaleDateString("en-US", {
+        weekday: "long",
+      });
+
+      const isAvailable = availableDays.includes(selectedDay);
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const cellDate = new Date(`${dateString}T00:00:00`);
+      const isPast = cellDate < today;
+
+      const isSelected = appointmentDate === dateString;
+
+      return (
+        <button
+          key={dateString}
+          type="button"
+          disabled={!isAvailable || isPast}
+          onClick={() => {
+            setAppointmentDate(dateString);
+            setAppointmentTime("");
+          }}
+          className={`rounded-lg py-2 text-sm font-semibold transition ${
+            isSelected
+              ? "bg-blue-600 text-white"
+              : isAvailable && !isPast
+                ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                : "text-slate-300"
+          }`}
+        >
+          {day.date}
+        </button>
+      );
+    })}
+  </div>
+
+  <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+    <span className="h-3 w-3 rounded bg-blue-100" />
+    Doctor available
+  </div>
+</div>
+  </label>
+
+  <label className={`block text-sm font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
+  Appointment time
+
+  <select
+    value={appointmentTime}
+    onChange={(event) => setAppointmentTime(event.target.value)}
+    disabled={!appointmentDate || availableTimeSlots.length === 0}
+    className={`mt-2 w-full rounded-2xl border px-4 py-3 text-sm outline-none ${
+      isDark
+        ? "border-white/10 bg-slate-950/55 text-slate-100"
+        : "border-slate-200 bg-slate-50 text-slate-700"
+    }`}
+  >
+    <option value="">
+      {!appointmentDate
+        ? "Select a date first"
+        : availableTimeSlots.length === 0
+          ? "No available slots"
+          : "Select a time"}
+    </option>
+
+    {availableTimeSlots.map((slot) => (
+      <option key={slot} value={slot}>
+        {formatTimeSlot(slot)}
+      </option>
+    ))}
+  </select>
+</label>
+
+  
+</div>
             <label className={`mt-5 block text-sm font-semibold ${isDark ? "text-slate-200" : "text-slate-700"}`}>
               Consultation reason
               <textarea
@@ -192,7 +419,7 @@ const DoctorProfile = ({ doctor, onBack, onBookAppointment, isBooking, t }) => {
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-4 text-sm font-bold text-white shadow-lg shadow-blue-200 transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-blue-300"
             >
               <Video size={18} />
-              {isBooking ? "Booking appointment..." : "Book instant consultation"}
+              {isBooking ? "Requesting appointment..." : "Request appointment"}
             </button>
           </section>
 
@@ -270,6 +497,17 @@ function formatFee(value) {
 
   const parsed = Number(String(value).replace(/[^0-9.]/g, ""));
   return Number.isNaN(parsed) ? String(value) : `Rs. ${parsed}`;
+}
+function formatTimeSlot(time) {
+  const [hour, minute] = time.split(":").map(Number);
+
+  const date = new Date();
+  date.setHours(hour, minute, 0, 0);
+
+  return date.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 export default DoctorProfile;

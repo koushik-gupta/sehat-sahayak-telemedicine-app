@@ -108,15 +108,71 @@ def get_approved_doctors():
         doctors = cursor.fetchall()
         for doctor in doctors:
             doctor['image'] = doctor.get('image') or '/images/doc1.png'
+
             languages = doctor.get('languages')
             if languages:
-                doctor['languages'] = [lang.strip() for lang in str(languages).split(',') if lang.strip()]
+                doctor['languages'] = [
+                    lang.strip()
+                    for lang in str(languages).split(',')
+                    if lang.strip()
+                ]
             else:
                 doctor['languages'] = []
+
+            cursor.execute("""
+                SELECT day_of_week, start_time, end_time, is_available
+                FROM doctor_availability
+                WHERE doctor_id = %s
+                ORDER BY id
+            """, (doctor['id'],))
+
+            availability = cursor.fetchall()
+
+            for slot in availability:
+                if slot.get('start_time'):
+                    slot['start_time'] = str(slot['start_time'])[:8]
+
+                if slot.get('end_time'):
+                    slot['end_time'] = str(slot['end_time'])[:8]
+
+            doctor['availability'] = availability
+                        # Fetch already booked appointment times
+            cursor.execute("""
+                SELECT appointment_datetime
+                FROM appointments
+                WHERE doctor_id = %s
+                  AND status IN ('pending', 'approved', 'scheduled')
+            """, (doctor['id'],))
+
+            booked_appointments = cursor.fetchall()
+
+            doctor['booked_slots'] = [
+                str(appointment['appointment_datetime'])
+                for appointment in booked_appointments
+                if appointment.get('appointment_datetime')
+            ]
+                        # Get already booked appointment slots
+            cursor.execute("""
+                SELECT appointment_datetime
+                FROM appointments
+                WHERE doctor_id = %s
+                  AND status IN ('pending', 'approved', 'scheduled')
+            """, (doctor['id'],))
+
+            booked_slots = cursor.fetchall()
+
+            doctor['booked_slots'] = [
+                str(slot['appointment_datetime']).replace('T', ' ')
+                for slot in booked_slots
+                if slot.get('appointment_datetime')
+            ]
+
         return jsonify(doctors), 200
+
     except Exception as e:
         print(f"Error in get_approved_doctors: {e}")
         return jsonify({"error": "An internal error occurred"}), 500
+
     finally:
         cursor.close()
         conn.close()
@@ -408,11 +464,12 @@ def handle_prescriptions(current_user):
         try:
             # 1. Create Prescription Header
             cursor.execute("""
-                INSERT INTO prescriptions (patient_id, doctor_id, appointment_id, notes)
-                VALUES (%s, %s, %s, %s)
-            """, (data['patient_id'], current_user['id'], data.get('appointment_id'), data.get('notes')))
-            
-            prescription_id = cursor.lastrowid
+           INSERT INTO prescriptions (patient_id, doctor_id, appointment_id, notes)
+           VALUES (%s, %s, %s, %s)
+           RETURNING id
+           """, (...))
+
+            prescription_id = cursor.fetchone()["id"]
             
             # 2. Insert Medicine Items
             item_query = """

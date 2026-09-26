@@ -307,20 +307,17 @@ const LandingPage = ({ language = 'en', onLanguageChange, onLoginClick, onRegist
 
                     <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 pt-2">
                         <motion.button
-                            whileHover={{ scale: 1.05, translateY: -4, boxShadow: "0 20px 25px -5px rgba(37, 99, 235, 0.4)" }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={onRegisterClick}
-                            className="px-6 py-3 md:px-8 md:py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 text-sm md:text-base"
-                        >
-                            {ui.primaryCta} <ChevronRight size={20} />
-                        </motion.button>
-                        <motion.button
-                            whileHover={{ scale: 1.05, translateY: -4, backgroundColor: "#f8fafc" }}
-                            whileTap={{ scale: 0.95 }}
-                            className="px-6 py-3 md:px-8 md:py-4 bg-white text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md text-sm md:text-base"
-                        >
-                            <Video size={20} className="text-teal-500" /> {ui.secondaryCta}
-                        </motion.button>
+                        whileHover={{
+                        scale: 1.05,
+                        translateY: -4,
+                     boxShadow: "0 20px 25px -5px rgba(37, 99, 235, 0.4)"
+                     }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={onLoginClick}
+                      className="px-6 py-3 md:px-8 md:py-4 bg-blue-600 text-white font-bold rounded-2xl shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2 text-sm md:text-base"
+                      >
+                     {ui.primaryCta} <ChevronRight size={20} />
+                     </motion.button>
                     </motion.div>
 
                     {/* Localization Badges */}

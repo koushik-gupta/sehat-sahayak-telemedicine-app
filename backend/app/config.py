@@ -43,6 +43,7 @@ class Config:
     CORS_ORIGINS = _get_list_env('CORS_ORIGINS', 'http://localhost:5173,http://127.0.0.1:5173')
     UPLOAD_FOLDER = _resolve_path_env('UPLOAD_FOLDER', DEFAULT_UPLOAD_FOLDER, base_dir=BACKEND_DIR)
     DB_PATH = _resolve_path_env('DB_PATH', DEFAULT_DB_PATH, base_dir=BACKEND_DIR)
+    SUPABASE_DB_URL = os.environ.get('SUPABASE_DB_URL')
     SQLITE_SEED_PATH = _resolve_path_env('SQLITE_SEED_PATH', DEFAULT_SQLITE_SEED_PATH, base_dir=BACKEND_DIR)
     SQLITE_SCHEMA_PATH = _resolve_path_env('SQLITE_SCHEMA_PATH', DEFAULT_SQLITE_SCHEMA_PATH, base_dir=BACKEND_DIR)
     SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME', 'swasthyasetu_session')
@@ -50,6 +51,8 @@ class Config:
     SESSION_COOKIE_SECURE = _get_bool_env('SESSION_COOKIE_SECURE', False)
     SESSION_COOKIE_SAMESITE = os.environ.get('SESSION_COOKIE_SAMESITE', 'Lax')
     PREFERRED_URL_SCHEME = 'https' if SESSION_COOKIE_SECURE else 'http'
+
+
 
     # Email configuration
     MAIL_SERVER = os.environ.get('MAIL_SERVER')

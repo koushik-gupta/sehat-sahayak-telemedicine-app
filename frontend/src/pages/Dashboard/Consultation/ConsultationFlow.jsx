@@ -20,9 +20,28 @@ const ConsultationFlow = ({ user, onBack, t }) => {
         setStage('in_call');
     };
 
-    const handleEndCall = () => {
-        setStage('post_call');
-    };
+    const handleEndCall = async () => {
+    try {
+        const response = await fetch(
+            `/api/v1/appointment/${selectedAppointment.id}/complete`,
+            {
+                method: "POST",
+                credentials: "include",
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Failed to complete appointment.");
+        }
+
+        setStage("post_call");
+    } catch (error) {
+        console.error("Failed to complete appointment:", error);
+        alert(error.message || "Failed to complete appointment.");
+    }
+};
 
     const handleDone = () => {
         // Go back to the list, which will re-fetch and show the updated status

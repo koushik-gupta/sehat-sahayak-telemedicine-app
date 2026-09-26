@@ -170,11 +170,14 @@ const MyConsultationsScreen = ({ onSelectAppointment, onBack, t }) => {
 
                             <button
                                 onClick={() => onSelectAppointment(apt)}
-                                disabled={apt.status === 'completed' || apt.status === 'cancelled'}
-                                className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${apt.status === 'scheduled'
-                                        ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
-                                        : isDark ? 'bg-white/8 text-slate-500 cursor-not-allowed' : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                                    }`}
+                                disabled={apt.status === 'pending' || apt.status === 'completed' || apt.status === 'cancelled'}
+                                className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+                                 apt.status === 'scheduled' || apt.status === 'approved'
+                                 ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-200'
+                                 : isDark
+                                 ? 'bg-white/8 text-slate-500 cursor-not-allowed'
+                                 : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                                 }`}
                             >
                                 <Video size={18} />
                                 {t.goToCall || "Join Consultation"}

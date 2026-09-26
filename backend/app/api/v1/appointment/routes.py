@@ -3,6 +3,7 @@
 import os
 import time
 import secrets
+import traceback
 from datetime import datetime, timedelta # Import datetime for time calculations
 from flask import Blueprint, request, jsonify, current_app
 from app.db_utils import get_db_connection
@@ -75,7 +76,14 @@ def get_all_doctors(current_user):
         
         for doctor in doctors:
             doctor['image'] = '/images/doc1.png'
-            doctor['slots'] = ["10:00 AM", "11:30 AM", "4:00 PM", "6:00 PM"]
+            cursor.execute("""
+        SELECT day_of_week, start_time, end_time, is_available
+        FROM doctor_availability
+        WHERE doctor_id = %s
+        ORDER BY id
+    """, (doctor['id'],))
+
+        doctor['availability'] = cursor.fetchall()
         
         return jsonify(doctors), 200
 
@@ -119,40 +127,96 @@ def book_appointment(current_user):
         if not doctor:
             return jsonify({"error": "Doctor not found"}), 404
 
-        # --- INSTANT BOOKING & QUEUE LOGIC ---
-        now = datetime.now()
-        today_str = now.strftime("%Y-%m-%d")
+        # --- SCHEDULED APPOINTMENT ---
+        appointment_datetime_str = data.get('appointmentDatetime')
 
-        # 1. Find the last scheduled appointment for this doctor today.
-        cursor.execute(
-            "SELECT appointment_datetime FROM appointments WHERE doctor_id = %s AND DATE(appointment_datetime) = %s ORDER BY appointment_datetime DESC LIMIT 1",
-            (doctor_id, today_str)
-        )
-        last_appointment = cursor.fetchone()
+        if not appointment_datetime_str:
+         return jsonify({"error": "Appointment date and time are required"}), 400
 
-        # 2. Calculate the new appointment time.
-        start_time = now
-        last_appointment_time = _parse_datetime(last_appointment['appointment_datetime']) if last_appointment else None
-        
-        # If the last appointment is still in the future (meaning a queue has formed),
-        # add 10 minutes to the last appointment's time.
-        if last_appointment_time and last_appointment_time > now:
-            start_time = last_appointment_time + timedelta(minutes=10)
-        
-        # If the last appointment is in the past or doesn't exist, the queue starts now.
-        appointment_datetime_obj = start_time
-        appointment_datetime_str = appointment_datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
-        # --- END OF LOGIC ---
-        
+        try:
+            appointment_datetime_obj = _parse_datetime(appointment_datetime_str)
+
+            if not appointment_datetime_obj:
+                raise ValueError("Invalid appointment date/time")
+
+            if appointment_datetime_obj <= datetime.now():
+                return jsonify({
+                    "error": "Appointment date and time must be in the future"
+                }), 400
+
+        except (ValueError, TypeError):
+            return jsonify({
+                "error": "Invalid appointment date and time"
+            }), 400
+                # --- VERIFY DOCTOR AVAILABILITY ---
+        requested_day = appointment_datetime_obj.strftime("%A")
+        requested_time = appointment_datetime_obj.strftime("%H:%M:%S")
+
+        cursor.execute("""
+            SELECT start_time, end_time, is_available
+            FROM doctor_availability
+            WHERE doctor_id = %s
+              AND day_of_week = %s
+              AND is_available = 1
+        """, (doctor_id, requested_day))
+
+        availability = cursor.fetchone()
+
+        if not availability:
+            return jsonify({
+                "error": f"Doctor is not available on {requested_day}."
+            }), 400
+
+        start_time = str(availability["start_time"])[:8]
+        end_time = str(availability["end_time"])[:8]
+
+        if not (start_time <= requested_time < end_time):
+            return jsonify({
+                "error": (
+                    f"Doctor is available on {requested_day} "
+                    f"only between {start_time[:5]} and {end_time[:5]}."
+                )
+            }), 400
+                # --- PREVENT DOUBLE BOOKING ---
+        cursor.execute("""
+            SELECT id
+            FROM appointments
+            WHERE doctor_id = %s
+              AND appointment_datetime = %s
+              AND status IN ('pending', 'approved', 'scheduled')
+        """, (doctor_id, appointment_datetime_str))
+
+        existing_appointment = cursor.fetchone()
+
+        if existing_appointment:
+            return jsonify({
+                "error": "This time slot has already been booked. Please choose another time."
+            }), 409
         video_room_code = secrets.token_hex(16)
-        query = """
-            INSERT INTO appointments (patient_id, doctor_id, appointment_datetime, reason, video_room_code)
-            VALUES (%s, %s, %s, %s, %s);
-        """
-        cursor.execute(query, (current_user['id'], doctor_id, appointment_datetime_str, reason, video_room_code))
-        appointment_id = cursor.lastrowid
-        conn.commit()
 
+        query = """
+            INSERT INTO appointments
+            (patient_id, doctor_id, appointment_datetime, reason, video_room_code, status)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            RETURNING id
+        """
+
+
+        cursor.execute(
+        query,
+        (
+            current_user['id'],
+            doctor_id,
+            appointment_datetime_str,
+            reason,
+            video_room_code,
+            'pending',
+        )
+    )
+
+        appointment_id = cursor.fetchone()["id"]
+
+        conn.commit()
         # Fetch details for the notification message
         cursor.execute("SELECT email, mobile, full_name FROM users WHERE id = %s", (current_user['id'],))
         patient = cursor.fetchone()
@@ -174,7 +238,7 @@ def book_appointment(current_user):
                 "specialty": doctor.get('specialty'),
                 "hospital": doctor.get('hospital'),
                 "appointment_datetime": appointment_datetime_obj.isoformat(),
-                "status": "scheduled",
+                "status": "pending",
                 "video_room_code": video_room_code,
                 "reason": reason,
             },
@@ -182,14 +246,15 @@ def book_appointment(current_user):
         }), 201
 
     except Exception as e:
-        if conn: conn.rollback()
-        print(f"Error booking appointment: {e}")
-        return jsonify({"error": "An internal server error occurred"}), 500
-    finally:
-        if conn and conn.is_connected():
-            cursor.close()
-            conn.close()
 
+      if conn:
+        conn.rollback()
+
+      print(f"Error booking appointment: {e}")
+
+      traceback.print_exc()
+
+      return jsonify({"error": "An internal server error occurred"}), 500
 @appointment_bp.route('/my-appointments', methods=['GET'])
 @login_required
 def get_my_appointments(current_user):
@@ -295,6 +360,175 @@ def cancel_appointment(current_user, appointment_id):
             cursor.close()
             conn.close()
 
+@appointment_bp.route('/<int:appointment_id>/complete', methods=['POST'])
+@login_required
+def complete_appointment(current_user, appointment_id):
+    if current_user['role'] not in ('patient', 'doctor'):
+        return jsonify({"error": "Unauthorized"}), 403
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT id, patient_id, doctor_id, status
+            FROM appointments
+            WHERE id = %s
+        """, (appointment_id,))
+
+        appointment = cursor.fetchone()
+
+        if not appointment:
+            return jsonify({"error": "Appointment not found"}), 404
+
+        # Only the patient or doctor belonging to this appointment can complete it
+        if current_user['id'] not in (
+            appointment['patient_id'],
+            appointment['doctor_id']
+        ):
+            return jsonify({"error": "Unauthorized"}), 403
+
+        if appointment['status'] == 'completed':
+            return jsonify({"message": "Appointment is already completed"}), 200
+
+        if appointment['status'] == 'cancelled':
+            return jsonify({"error": "Cancelled appointments cannot be completed"}), 400
+
+        cursor.execute("""
+            UPDATE appointments
+            SET status = 'completed'
+            WHERE id = %s
+        """, (appointment_id,))
+
+        conn.commit()
+
+        return jsonify({
+            "message": "Appointment completed successfully",
+            "status": "completed"
+        }), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+
+        print(f"Error completing appointment: {e}")
+        return jsonify({"error": "An internal server error occurred"}), 500
+
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+@appointment_bp.route('/<int:appointment_id>/approve', methods=['POST'])
+@login_required
+def approve_appointment(current_user, appointment_id):
+    if current_user['role'] != 'doctor':
+        return jsonify({"error": "Only doctors can approve appointments"}), 403
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT id, patient_id, doctor_id, status
+            FROM appointments
+            WHERE id = %s
+        """, (appointment_id,))
+
+        appointment = cursor.fetchone()
+
+        if not appointment:
+            return jsonify({"error": "Appointment not found"}), 404
+
+        if appointment['doctor_id'] != current_user['id']:
+            return jsonify({"error": "You are not authorized to approve this appointment"}), 403
+
+        if appointment['status'] != 'pending':
+            return jsonify({
+                "error": f"Appointment cannot be approved because its status is '{appointment['status']}'."
+            }), 400
+
+        cursor.execute("""
+            UPDATE appointments
+            SET status = 'approved'
+            WHERE id = %s
+        """, (appointment_id,))
+
+        conn.commit()
+
+        return jsonify({
+            "message": "Appointment approved successfully",
+            "status": "approved"
+        }), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+
+        print(f"Error approving appointment: {e}")
+        return jsonify({"error": "An internal server error occurred"}), 500
+
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
+
+
+@appointment_bp.route('/<int:appointment_id>/reject', methods=['POST'])
+@login_required
+def reject_appointment(current_user, appointment_id):
+    if current_user['role'] != 'doctor':
+        return jsonify({"error": "Only doctors can reject appointments"}), 403
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute("""
+            SELECT id, patient_id, doctor_id, status
+            FROM appointments
+            WHERE id = %s
+        """, (appointment_id,))
+
+        appointment = cursor.fetchone()
+
+        if not appointment:
+            return jsonify({"error": "Appointment not found"}), 404
+
+        if appointment['doctor_id'] != current_user['id']:
+            return jsonify({"error": "You are not authorized to reject this appointment"}), 403
+
+        if appointment['status'] != 'pending':
+            return jsonify({
+                "error": f"Appointment cannot be rejected because its status is '{appointment['status']}'."
+            }), 400
+
+        cursor.execute("""
+            UPDATE appointments
+            SET status = 'rejected'
+            WHERE id = %s
+        """, (appointment_id,))
+
+        conn.commit()
+
+        return jsonify({
+            "message": "Appointment rejected successfully",
+            "status": "rejected"
+        }), 200
+
+    except Exception as e:
+        if conn:
+            conn.rollback()
+
+        print(f"Error rejecting appointment: {e}")
+        return jsonify({"error": "An internal server error occurred"}), 500
+
+    finally:
+        if conn and conn.is_connected():
+            cursor.close()
+            conn.close()
 # --- Migrated Helper Endpoints (Unchanged) ---
 
 @appointment_bp.route('/translate', methods=['POST'])

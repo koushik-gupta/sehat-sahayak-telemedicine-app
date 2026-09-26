@@ -32,17 +32,17 @@ export default defineConfig({
     proxy: {
       // Rule for standard API calls (HTTP)
       '/api': {
-        target: 'http://127.0.0.1:5000', // Your Flask backend address
+        target: 'http://127.0.0.1:5001', // Your Flask backend address
         changeOrigin: true,
       },
       // Rule for file uploads (HTTP)
       '/uploads': {
-        target: 'http://127.0.0.1:5000',
+        target: 'http://127.0.0.1:5001',
         changeOrigin: true,
       },
       // NEW, CRUCIAL RULE for the WebSocket signaling server
       '/signal': {
-        target: 'ws://127.0.0.1:5000', // Note the 'ws://' protocol for WebSockets
+        target: 'ws://127.0.0.1:5001', // Note the 'ws://' protocol for WebSockets
         ws: true, // This is the essential flag that tells Vite to proxy WebSocket connections
       },
     }

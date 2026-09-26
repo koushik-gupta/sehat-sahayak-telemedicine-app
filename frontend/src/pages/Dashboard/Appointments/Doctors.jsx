@@ -562,13 +562,109 @@ function getDoctorBadges(doctor, index) {
 }
 
 function getDoctorAvailabilityLabel(doctor) {
-  if (Array.isArray(doctor.slots) && doctor.slots.length > 0) {
-    return doctor.slots[0];
+  const availability = Array.isArray(doctor.availability)
+    ? doctor.availability.filter(
+        (slot) => Number(slot.is_available) === 1
+      )
+    : [];
+
+  if (availability.length === 0) {
+    return "No schedule available";
   }
 
-  return "";
-}
+  const bookedSlots = Array.isArray(doctor.booked_slots)
+    ? doctor.booked_slots
+    : [];
 
+  const bookedSet = new Set(
+    bookedSlots.map((slot) =>
+      String(slot).replace("T", " ").slice(0, 16)
+    )
+  );
+
+  const dayOrder = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const now = new Date();
+
+  for (let offset = 0; offset < 30; offset++) {
+    const checkDate = new Date(now);
+    checkDate.setDate(now.getDate() + offset);
+
+    const dayName = dayOrder[checkDate.getDay()];
+
+    const dayAvailability = availability.find(
+      (slot) => slot.day_of_week === dayName
+    );
+
+    if (!dayAvailability) {
+      continue;
+    }
+
+    const [startHour, startMinute] = String(
+      dayAvailability.start_time
+    )
+      .split(":")
+      .map(Number);
+
+    const [endHour, endMinute] = String(
+      dayAvailability.end_time
+    )
+      .split(":")
+      .map(Number);
+
+    let currentMinutes = startHour * 60 + startMinute;
+    const endMinutes = endHour * 60 + endMinute;
+
+    while (currentMinutes < endMinutes) {
+      const hour = Math.floor(currentMinutes / 60);
+      const minute = currentMinutes % 60;
+
+      const slotDateTime = new Date(checkDate);
+      slotDateTime.setHours(hour, minute, 0, 0);
+
+      if (slotDateTime <= now) {
+        currentMinutes += 30;
+        continue;
+      }
+
+      const year = slotDateTime.getFullYear();
+      const month = String(slotDateTime.getMonth() + 1).padStart(2, "0");
+      const day = String(slotDateTime.getDate()).padStart(2, "0");
+      const hours = String(hour).padStart(2, "0");
+      const minutes = String(minute).padStart(2, "0");
+
+      const slotKey = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+      if (!bookedSet.has(slotKey)) {
+        const formattedTime = slotDateTime.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+        });
+
+        const formattedDate =
+          offset === 0
+            ? "Today"
+            : offset === 1
+              ? "Tomorrow"
+              : dayName;
+
+        return `${formattedDate} · ${formattedTime}`;
+      }
+
+      currentMinutes += 30;
+    }
+  }
+
+  return "No upcoming availability";
+}
 function formatSortLabel(value) {
   switch (value) {
     case "fee_low":

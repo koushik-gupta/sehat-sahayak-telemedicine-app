@@ -100,7 +100,7 @@ export default function AppointmentFlow({ user, t, onBack, initialSearchQuery, o
       }
 
       setAppointmentsVersion((current) => current + 1);
-      setNotice(`Appointment confirmed with ${payload.appointment?.doctor_name || "your doctor"}.`);
+      setNotice(`Appointment request sent to ${payload.appointment?.doctor_name || "your doctor"}.`);
       setView("my_appointments");
     } catch (bookingError) {
       setError(bookingError.message || "Booking failed.");

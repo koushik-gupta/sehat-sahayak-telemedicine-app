@@ -88,18 +88,22 @@ def add_stock_item(current_user):
         cursor.execute("SELECT id FROM medicines WHERE name = %s", (name_clean,))
         med = cursor.fetchone()
         if not med:
-            cursor.execute("INSERT INTO medicines (name) VALUES (%s)", (name_clean,))
-            medicine_id = cursor.lastrowid
+           cursor.execute(
+           "INSERT INTO medicines (name) VALUES (%s) RETURNING id",
+            (name_clean,)
+            )
+           medicine_id = cursor.fetchone()["id"]
         else:
             medicine_id = med['id']
 
         # Insert Stock
         cursor.execute("""
-            INSERT INTO pharmacy_stock (pharmacy_id, medicine_id, quantity, price)
-            VALUES (%s, %s, %s, %s)
-        """, (pharmacy_id, medicine_id, data.get('quantity', 0), data.get('price', 0)))
-        
-        new_id = cursor.lastrowid
+        INSERT INTO pharmacy_stock (pharmacy_id, medicine_id, quantity, price)
+        VALUES (%s, %s, %s, %s)
+        RETURNING id
+          """, (...))
+
+        new_id = cursor.fetchone()["id"]
         conn.commit()
         
         return jsonify({
@@ -452,10 +456,12 @@ def place_order(current_user):
         
         # 4. Create Order
         cursor.execute("""
-            INSERT INTO pharmacy_orders (pharmacy_id, patient_id, total_amount, status)
-            VALUES (%s, %s, %s, 'pending')
-        """, (pharmacy_id, current_user['id'], total_amount))
-        order_id = cursor.lastrowid
+        INSERT INTO pharmacy_orders (pharmacy_id, patient_id, total_amount, status)
+         VALUES (%s, %s, %s, 'pending')
+         RETURNING id
+            """, (...))
+
+        order_id = cursor.fetchone()["id"]
 
         # 5. Process Items & Update Stock
         for item in normalized_items:

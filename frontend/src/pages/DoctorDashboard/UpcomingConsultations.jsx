@@ -3,6 +3,7 @@ import { motion as Motion } from "framer-motion";
 import {
   AlertCircle,
   Calendar,
+  Check,
   Clock,
   FilePlus2,
   MessageSquareText,
@@ -13,6 +14,7 @@ import {
   Users,
   Video,
   Wallet,
+  X,
 } from "lucide-react";
 import { getGlassCardClass, getGlassPanelClass, useDashboardTheme } from "../Dashboard/DashboardThemeContext";
 
@@ -32,6 +34,7 @@ const UpcomingConsultations = ({ onStartCall, t, onNavigate }) => {
   const [appointments, setAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [actionLoading, setActionLoading] = useState(null);
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -59,6 +62,38 @@ const UpcomingConsultations = ({ onStartCall, t, onNavigate }) => {
     };
     fetchAppointments();
   }, []);
+  const updateAppointmentStatus = async (appointmentId, status) => {
+  try {
+    setActionLoading(appointmentId);
+
+    const response = await fetch(
+      `/api/v1/appointment/${appointmentId}/${status}`,
+      {
+        method: "POST",
+        credentials: "include",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || `Failed to ${status} appointment.`);
+    }
+
+    setAppointments((prev) =>
+      prev.map((appointment) =>
+        appointment.id === appointmentId
+          ? { ...appointment, status: status === "approve" ? "approved" : "rejected" }
+          : appointment
+      )
+    );
+  } catch (error) {
+    console.error(`Failed to ${status} appointment:`, error);
+    alert(error.message || `Failed to ${status} appointment.`);
+  } finally {
+    setActionLoading(null);
+  }
+};
 
   const normalizedAppointments = useMemo(
     () =>
@@ -229,7 +264,7 @@ const UpcomingConsultations = ({ onStartCall, t, onNavigate }) => {
           ) : (
             <div className="grid gap-4">
               {normalizedAppointments.map((apt, index) => (
-                <AppointmentCard key={apt.id || `${apt.patient_name}-${apt.appointment_datetime}`} appointment={apt} index={index} onStartCall={onStartCall} formatDate={formatDate} formatTime={formatTime} t={t} />
+                <AppointmentCard key={apt.id || `${apt.patient_name}-${apt.appointment_datetime}`} appointment={apt} index={index} onStartCall={onStartCall} onUpdateStatus={updateAppointmentStatus} actionLoading={actionLoading} formatDate={formatDate} formatTime={formatTime} t={t} />
               ))}
             </div>
           )}
@@ -264,7 +299,7 @@ const UpcomingConsultations = ({ onStartCall, t, onNavigate }) => {
   );
 };
 
-const AppointmentCard = ({ appointment, index, onStartCall, formatDate, formatTime, t }) => {
+const AppointmentCard = ({ appointment, index, onStartCall, onUpdateStatus, actionLoading, formatDate, formatTime, t }) => {
   const { isDark } = useDashboardTheme();
   const status = appointment.status || t.schedule.scheduled;
   const isUrgent = appointment.urgency?.toLowerCase?.().includes("urgent") || appointment.reason?.toLowerCase?.().includes("urgent");
@@ -317,12 +352,40 @@ const AppointmentCard = ({ appointment, index, onStartCall, formatDate, formatTi
           <button className={`rounded-2xl border px-4 py-2.5 text-sm font-bold ${isDark ? "border-white/10 bg-white/8 text-slate-200 hover:bg-white/12" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}>
             {t.schedule.viewDetails}
           </button>
-          <button className="doctor-gradient-button inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold" onClick={() => onStartCall(appointment)}>
+          {appointment.status === "pending" && (
+  <>
+    <button
+      type="button"
+      onClick={() => onUpdateStatus(appointment.id, "approve")}
+      disabled={actionLoading === appointment.id}
+      className="inline-flex items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-700 disabled:opacity-50"
+    >
+      <Check size={17} />
+      {actionLoading === appointment.id ? "Processing..." : "Approve"}
+    </button>
+
+    <button
+      type="button"
+      onClick={() => onUpdateStatus(appointment.id, "reject")}
+      disabled={actionLoading === appointment.id}
+      className="inline-flex items-center gap-2 rounded-2xl bg-red-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-red-700 disabled:opacity-50"
+    >
+      <X size={17} />
+      {actionLoading === appointment.id ? "Processing..." : "Reject"}
+    </button>
+  </>
+)}
+          {appointment.status === "approved" && (
+  <button
+    className="doctor-gradient-button inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold"
+    onClick={() => onStartCall(appointment)}
+  >
             <span className="relative flex items-center gap-2">
               <Video size={17} />
               {t.schedule.startCall}
             </span>
           </button>
+          )}
         </div>
       </div>
     </Motion.div>
